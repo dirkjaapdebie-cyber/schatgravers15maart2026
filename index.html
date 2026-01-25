@@ -3,68 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schatgravers - Olijfberg</title>
+    <title>Schatgravers Live</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #1e3799; --accent: #eb4d4b; --success: #20bf6b;
-            --bg: #0a3d62; --white: #ffffff;
-        }
-
-        body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Fredoka', sans-serif; overflow: hidden; background: var(--bg); color: #333; }
+        :root { --primary: #1e3799; --accent: #eb4d4b; --success: #20bf6b; --bg: #0a3d62; }
+        body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Fredoka', sans-serif; overflow: hidden; background: var(--bg); }
         
         .bg-fixed {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(10, 61, 98, 0.85), rgba(10, 61, 98, 0.85)), url('schatgravers15maart.jpg');
+            background: linear-gradient(rgba(10, 61, 98, 0.9), rgba(10, 61, 98, 0.9)), url('schatgravers15maart.jpg');
             background-size: cover; background-position: center; z-index: -1;
         }
 
-        /* Navigatie Stipjes */
-        .nav-dots {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            display: flex; gap: 40px; z-index: 100;
+        .container { display: none; height: 100vh; padding: 20px; box-sizing: border-box; flex-direction: column; }
+
+        /* FASE 3: GIGANTISCHE KLUIZEN */
+        .vault-grid-full {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 20px;
+            height: 100%;
+            width: 100%;
         }
-        .dot { width: 12px; height: 12px; background: rgba(255,255,255,0.3); border-radius: 50%; transition: 0.3s; }
-        .dot.active { background: white; transform: scale(1.4); box-shadow: 0 0 10px white; }
-
-        .container { display: none; height: 100vh; padding: 80px 30px 30px; box-sizing: border-box; }
-
-        /* Fase 3 Layout */
-        .layout-grid { display: grid; grid-template-columns: 320px 1fr; gap: 20px; height: 100%; }
-        .vault-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        
-        .vault-box { 
-            background: var(--white); border-radius: 15px; padding: 15px; 
-            display: flex; flex-direction: column; transition: 0.3s; border: 3px solid transparent;
+        .vault-huge {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            border: 5px solid transparent;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
-        .vault-box.active-vault { border-color: var(--primary); box-shadow: 0 0 20px rgba(30, 55, 153, 0.3); }
-        .vault-header { font-weight: bold; font-size: 0.8rem; color: var(--primary); margin-bottom: 10px; border-bottom: 1px solid #eee; }
-        .vault-list { flex: 1; overflow-y: auto; font-size: 0.9rem; }
+        .vault-huge.active-vault { border-color: var(--primary); transform: scale(1.02); background: #fff; }
+        .v-title { color: var(--primary); font-size: 1.5rem; font-weight: bold; border-bottom: 2px solid #eee; margin-bottom: 10px; padding-bottom: 5px; }
+        .v-list { flex: 1; overflow-y: auto; font-size: 1.2rem; }
 
-        /* Story Overlay */
-        #story-view {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 2000; display: none;
-            justify-content: center; align-items: center; padding: 20px;
-        }
-        .story-content { background: white; width: 100%; max-width: 750px; padding: 40px; border-radius: 15px; line-height: 1.6; }
+        /* FASE 4: REBUS */
+        .rebus-card { background: white; border-radius: 30px; padding: 50px; text-align: center; max-width: 800px; margin: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .rebus-visual { font-size: 4rem; margin: 30px 0; letter-spacing: 15px; }
 
-        /* Knoppen & Input */
-        .card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-        .btn { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-family: 'Fredoka'; }
-        .input-field { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; margin-bottom: 10px; box-sizing: border-box; font-family: 'Fredoka'; }
-
-        /* Dobbelsteen */
-        .dice-wrap { text-align: center; }
-        .cube { width: 60px; height: 60px; margin: 15px auto; transform-style: preserve-3d; transition: 1s; }
-        .face { position: absolute; width: 60px; height: 60px; background: white; border: 2px solid var(--primary); line-height: 60px; font-size: 24px; font-weight: bold; border-radius: 5px; text-align: center; }
+        /* Algemene Elementen */
+        .input-bar { position: fixed; bottom: 80px; left: 20px; width: 260px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 100; }
+        .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; font-family: 'Fredoka'; font-weight: bold; }
+        .input-field { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
 
         /* Regie */
-        .regie-tools { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 8px; z-index: 3000; }
-        .regie-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid white; background: none; color: white; cursor: pointer; font-weight: bold; }
-        .regie-btn.active { background: white; color: var(--bg); }
+        .regie { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 3000; }
+        .r-btn { width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; background: rgba(0,0,0,0.5); color: white; cursor: pointer; font-weight: bold; }
+        .r-btn.active { background: white; color: var(--bg); }
 
-        .item { background: #f8f9fa; padding: 6px 10px; border-radius: 6px; margin-bottom: 5px; border-left: 3px solid var(--primary); }
+        #story-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:4000; display:none; justify-content:center; align-items:center; }
+        .story-box { background:white; padding:40px; border-radius:20px; max-width:700px; font-size:1.2rem; line-height:1.6; }
+        .pill { background: #f0f2f5; padding: 8px 12px; border-radius: 10px; margin-bottom: 8px; border-left: 5px solid var(--primary); }
     </style>
 </head>
 <body>
@@ -72,75 +63,63 @@
 <audio id="ping-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
 <div class="bg-fixed"></div>
 
-<div class="nav-dots">
-    <div class="dot" id="dot-p1"></div>
-    <div class="dot" id="dot-p2"></div>
-    <div class="dot" id="dot-p3"></div>
-</div>
-
 <div id="phase-1" class="container" style="display:flex; justify-content:center; align-items:center;">
-    <div class="card" style="width: 350px; text-align: center;">
-        <h2 style="margin-top:0;">Aanmelden</h2>
-        <input type="text" id="name-in" placeholder="Naam leerling" class="input-field">
-        <button onclick="sendName()" class="btn">DEELNEMEN</button>
+    <div style="background:white; padding:40px; border-radius:20px; text-align:center;">
+        <h2>Aanmelden</h2>
+        <input type="text" id="name-in" placeholder="Je naam" class="input-field">
+        <button onclick="sendName()" class="btn">DOE MEE</button>
     </div>
 </div>
 
 <div id="phase-2" class="container" style="display:flex; justify-content:center; align-items:center;">
-    <div class="card" style="text-align: center; width: 450px;">
-        <h1 id="timer-display" style="font-size: 3.5rem; margin: 0; color: var(--accent);">01:30</h1>
-        <p>Verken de omgeving van de Olijfberg.</p>
-        <a href="https://earth.google.com/web/search/Mount+of+Olives,+Jerusalem" target="_blank" class="btn" style="text-decoration:none; display:block;">OPEN GOOGLE EARTH</a>
+    <div style="background:white; padding:40px; border-radius:20px; text-align:center;">
+        <h1 id="timer-display" style="font-size:5rem; color:var(--accent); margin:0;">01:30</h1>
+        <p>Verken de Olijfberg!</p>
+        <a href="https://earth.google.com/web/search/Mount+of+Olives,+Jerusalem" target="_blank" class="btn" style="text-decoration:none; display:inline-block;">OPEN GOOGLE EARTH</a>
     </div>
 </div>
 
 <div id="phase-3" class="container">
-    <div class="layout-grid">
-        <div class="sidebar-controls">
-            <div class="card dice-wrap">
-                <div class="cube" id="cube">
-                    <div class="face" style="transform:rotateY(0deg) translateZ(30px)">1</div>
-                    <div class="face" style="transform:rotateY(180deg) translateZ(30px)">2</div>
-                    <div class="face" style="transform:rotateY(-90deg) translateZ(30px)">3</div>
-                    <div class="face" style="transform:rotateY(90deg) translateZ(30px)">4</div>
-                    <div class="face" style="transform:rotateX(-90deg) translateZ(30px)">5</div>
-                    <div class="face" style="transform:rotateX(90deg) translateZ(30px)">6</div>
-                </div>
-                <button onclick="triggerRoll()" class="btn">DOBBELEN</button>
-                <p id="active-stmt" style="font-size:0.85rem; margin-top:15px; font-weight:600;"></p>
-            </div>
-            <div class="card" style="margin-top:15px;">
-                <input type="text" id="thought-in" placeholder="Antwoord invoeren..." class="input-field">
-                <button onclick="sendThought()" class="btn" style="background:var(--success);">VERZENDEN</button>
-            </div>
-        </div>
-
-        <div class="vault-container">
-            <div class="vault-box" id="vault-1"><div class="vault-header">1. ANGST</div><div class="vault-list"></div></div>
-            <div class="vault-box" id="vault-2"><div class="vault-header">2. KEUZES</div><div class="vault-list"></div></div>
-            <div class="vault-box" id="vault-3"><div class="vault-header">3. ENGELEN</div><div class="vault-list"></div></div>
-            <div class="vault-box" id="vault-4"><div class="vault-header">4. BIDDEN</div><div class="vault-list"></div></div>
-            <div class="vault-box" id="vault-5"><div class="vault-header">5. ALLEEN</div><div class="vault-list"></div></div>
-            <div class="vault-box" id="vault-6"><div class="vault-header">6. HERSTEL</div><div class="vault-list"></div></div>
-        </div>
+    <div class="vault-grid-full">
+        <div class="vault-huge" id="vault-1"><div class="v-title">1. ANGST</div><div class="v-list"></div></div>
+        <div class="vault-huge" id="vault-2"><div class="v-title">2. KEUZES</div><div class="v-list"></div></div>
+        <div class="vault-huge" id="vault-3"><div class="v-title">3. ENGELEN</div><div class="v-list"></div></div>
+        <div class="vault-huge" id="vault-4"><div class="v-title">4. BIDDEN</div><div class="v-list"></div></div>
+        <div class="vault-huge" id="vault-5"><div class="v-title">5. ALLEEN</div><div class="v-list"></div></div>
+        <div class="vault-huge" id="vault-6"><div class="v-title">6. HERSTEL</div><div class="v-list"></div></div>
+    </div>
+    <div class="input-bar">
+        <div id="dice-result" style="font-size:1.5rem; text-align:center; font-weight:bold; color:var(--primary); margin-bottom:10px;">Gooi de steen...</div>
+        <button onclick="triggerRoll()" class="btn" style="margin-bottom:10px;">DOBBELEN 🎲</button>
+        <input type="text" id="thought-in" placeholder="Jouw gedachte..." class="input-field">
+        <button onclick="sendThought()" class="btn" style="background:var(--success);">VERSTUUR</button>
     </div>
 </div>
 
-<div id="story-view">
-    <div class="story-content">
-        <h2 style="margin-top:0;">Het verhaal van de Olijfberg</h2>
-        <div id="story-body">
-            <p>Jezus ging naar de Olijfberg om te bidden. Hij wist dat er een moeilijke tijd aanbrak en voelde zich angstig. Hij vroeg zijn discipelen om wakker te blijven en met Hem te bidden, maar zij vielen in slaap.</p>
-            <p>Hoewel Hij zich alleen voelde, bleef Jezus bidden. Er verscheen een engel uit de hemel die Hem nieuwe kracht gaf voor wat er komen ging.</p>
-        </div>
+<div id="phase-4" class="container" style="justify-content:center; align-items:center;">
+    <div class="rebus-card">
+        <h2 style="color:var(--primary); margin:0;">🧩 De Gebeds-Code</h2>
+        <p>Wat ontving Jezus op de Olijfberg?</p>
+        <div class="rebus-visual">K + 🎡 + CHT</div>
+        <input type="text" id="rebus-in" placeholder="Oplossing..." class="input-field" style="width:60%; font-size:1.2rem; text-align:center;">
+        <button onclick="checkRebus()" class="btn" style="width:60%; background:var(--primary);">CONTROLEER</button>
+        <h3 id="rebus-msg" style="margin-top:20px;"></h3>
     </div>
 </div>
 
-<div class="regie-tools">
-    <button class="regie-btn" id="r1" onclick="updatePhase('p1')">1</button>
-    <button class="regie-btn" id="r2" onclick="updatePhase('p2')">2</button>
-    <button class="regie-btn" id="r3" onclick="updatePhase('p3')">3</button>
-    <button class="regie-btn" id="rS" onclick="toggleStory()" style="background:var(--accent); border:none;">📖</button>
+<div id="story-overlay">
+    <div class="story-box">
+        <h2 style="margin-top:0; color:var(--primary);">Het verhaal van de Olijfberg</h2>
+        <p>Jezus was op de berg. Hij wist dat het moeilijk zou worden en bad tot God. Zijn vrienden sliepen, maar God stuurde een engel om Hem <strong>kracht</strong> te geven.</p>
+    </div>
+</div>
+
+<div class="regie">
+    <button class="r-btn" id="r1" onclick="updatePhase('p1')">1</button>
+    <button class="r-btn" id="r2" onclick="updatePhase('p2')">2</button>
+    <button class="r-btn" id="r3" onclick="updatePhase('p3')">3</button>
+    <button class="r-btn" id="r4" onclick="updatePhase('p4')">4</button>
+    <button class="r-btn" id="rS" onclick="toggleStory()" style="background:var(--accent); border:none;">📖</button>
 </div>
 
 <script type="module">
@@ -157,51 +136,57 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    let timerInterval, currentDiceResult = 1, storyVisible = false;
-
-    const stellingen = ["ANGST", "KEUZES", "ENGELEN", "BIDDEN", "ALLEEN", "HERSTEL"];
+    let timerInterval, currentDice = 1;
 
     window.updatePhase = (p) => set(ref(db, 'currentPhase'), p);
-    window.toggleStory = () => { storyVisible = !storyVisible; set(ref(db, 'storyVisible'), storyVisible); };
+    window.toggleStory = () => { onValue(ref(db, 'sV'), s => set(ref(db, 'sV'), !s.val()), {onlyOnce: true}); };
     window.sendName = () => { const v = document.getElementById('name-in').value; if(v) push(ref(db, 'names'), v); };
-    window.triggerRoll = () => set(ref(db, 'gameState'), {r: Math.floor(Math.random()*6)+1, t: Date.now()});
+    window.triggerRoll = () => set(ref(db, 'dice'), Math.floor(Math.random()*6)+1);
     window.sendThought = () => { 
         const v = document.getElementById('thought-in').value; 
-        if(v) { push(ref(db, 'vaults/' + currentDiceResult), v); document.getElementById('thought-in').value=''; }
+        if(v) { push(ref(db, 'vaults/' + currentDice), v); document.getElementById('thought-in').value=''; }
+    };
+    window.checkRebus = () => {
+        const v = document.getElementById('rebus-in').value.toLowerCase().trim();
+        document.getElementById('rebus-msg').innerText = (v === 'kracht') ? "✅ GOED GEDAAN! (Engel gaf kracht)" : "❌ Nog eens proberen...";
     };
 
     onValue(ref(db, 'currentPhase'), s => {
         const p = s.val() || 'p1';
         document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
         document.getElementById('phase-' + p.replace('p','')).style.display = 'flex';
-        document.querySelectorAll('.dot, .regie-btn').forEach(el => el.classList.remove('active'));
-        document.getElementById('dot-' + p).classList.add('active');
+        document.querySelectorAll('.r-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('r' + p.replace('p','')).classList.add('active');
-        if (p === 'p2') startTimer(); else clearInterval(timerInterval);
+        if(p === 'p2') startTimer(); else clearInterval(timerInterval);
     });
 
-    onValue(ref(db, 'storyVisible'), s => {
-        const visible = s.val();
-        document.getElementById('story-view').style.display = visible ? 'flex' : 'none';
-        document.getElementById('rS').classList.toggle('active', visible);
-        storyVisible = visible;
-    });
+    onValue(ref(db, 'sV'), s => document.getElementById('story-overlay').style.display = s.val() ? 'flex' : 'none');
 
-    onValue(ref(db, 'gameState'), s => {
-        const d = s.val(); if(d) {
-            currentDiceResult = d.r;
-            const rotations = {1:'rotateY(0deg)', 2:'rotateY(180deg)', 3:'rotateY(-90deg)', 4:'rotateY(90deg)', 5:'rotateX(-90deg)', 6:'rotateX(90deg)'};
-            document.getElementById('cube').style.transform = rotations[d.r];
-            document.getElementById('active-stmt').innerText = "Huidige thema: " + stellingen[d.r-1];
-            document.querySelectorAll('.vault-box').forEach(v => v.classList.remove('active-vault'));
-            document.getElementById('vault-' + d.r).classList.add('active-vault');
-        }
+    onValue(ref(db, 'dice'), s => {
+        currentDice = s.val() || 1;
+        const titels = ["ANGST", "KEUZES", "ENGELEN", "BIDDEN", "ALLEEN", "HERSTEL"];
+        document.getElementById('dice-result').innerText = "THEMA: " + titels[currentDice-1];
+        document.querySelectorAll('.vault-huge').forEach(v => v.classList.remove('active-vault'));
+        document.getElementById('vault-' + currentDice).classList.add('active-vault');
     });
 
     onValue(ref(db, 'vaults'), s => {
         const data = s.val(); 
         for(let i=1; i<=6; i++) {
-            const list = document.querySelector(`#vault-${i} .vault-list`);
+            const list = document.querySelector(`#vault-${i} .v-list`);
             list.innerHTML = "";
-            if(data && data[i]) Object.values(data[i]).forEach(t => {
-                list
+            if(data && data[i]) Object.values(data[i]).forEach(t => list.innerHTML += `<div class="pill">${t}</div>`);
+        }
+    });
+
+    function startTimer() {
+        let t = 90;
+        timerInterval = setInterval(() => {
+            let m=Math.floor(t/60), s=t%60;
+            document.getElementById('timer-display').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            if(t-- <= 0) { clearInterval(timerInterval); document.getElementById('ping-sound').play(); }
+        }, 1000);
+    }
+</script>
+</body>
+</html>
