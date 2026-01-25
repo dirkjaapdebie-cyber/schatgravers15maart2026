@@ -3,110 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schatgravers Live - Van Proosdijkerk naar Olijfberg</title>
+    <title>Schatgravers Live - Het Grote Avontuur</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #1e3799; --accent: #ff7675; --success: #20bf6b;
-            --white: rgba(255, 255, 255, 0.95); --gold: #f1c40f;
+            --primary: #4834d4; --accent: #eb4d4b; --success: #6ab04c;
+            --white: rgba(255, 255, 255, 0.95); --gold: #f9ca24;
+            --sky: #686de0;
         }
 
-        body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Fredoka', sans-serif; overflow: hidden; background: #0a3d62; }
+        body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Fredoka', sans-serif; overflow: hidden; background: #130f40; color: #2d3436; }
         
+        /* Bewegende achtergrond */
         .bg-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: url('schatgravers15maart.jpg'); background-size: cover; background-position: center;
-            filter: blur(10px) brightness(0.3); z-index: -2;
+            filter: blur(8px) brightness(0.4); z-index: -2; transition: 1s;
         }
 
-        /* FASE CONTROLS (Alleen voor jou zichtbaar of onderaan) */
-        .phase-nav { position: fixed; bottom: 10px; left: 10px; z-index: 1000; display: flex; gap: 5px; }
-        .btn-nav { background: var(--gold); border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
+        /* Dynamische Reis-Tracker */
+        .travel-bar {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            width: 80%; height: 60px; background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px); border-radius: 30px; display: flex; 
+            align-items: center; justify-content: space-between; padding: 0 30px; z-index: 100;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        .travel-dot { width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.5s; opacity: 0.4; }
+        .travel-dot.active { opacity: 1; transform: scale(1.3); box-shadow: 0 0 20px var(--gold); background: var(--gold); }
 
-        /* FASE 1: NAMEN */
-        #phase-1 { display: none; height: 100vh; flex-direction: column; align-items: center; justify-content: center; color: white; }
-        
-        /* FASE 2: VERHAAL & REIS */
-        #phase-2 { display: none; height: 100vh; justify-content: center; align-items: center; padding: 20px; }
-        .story-card { background: white; width: 95%; max-width: 1100px; height: 85vh; border-radius: 40px; display: flex; overflow: hidden; }
-        .story-text { flex: 1.2; padding: 40px; overflow-y: auto; color: #2d3436; }
-        
+        /* Kaartjes Styling */
+        .card { 
+            background: var(--white); border-radius: 40px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4); animation: slideIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-bottom: 8px solid rgba(0,0,0,0.1);
+        }
+
+        /* FASE 1: SPEELS AANMELDEN */
+        #phase-1 { display: none; height: 100vh; flex-direction: column; align-items: center; justify-content: center; }
+        .welcome-box { padding: 40px; text-align: center; max-width: 500px; }
+
+        /* FASE 2: STORY-SCROLL */
+        #phase-2 { display: none; height: 100vh; padding: 100px 40px 40px; box-sizing: border-box; }
+        .story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; height: 100%; width: 100%; }
+        .story-text-area { padding: 30px; overflow-y: auto; font-size: 1.2rem; line-height: 1.5; }
+        .map-visual { border-radius: 30px; background: url('https://images.unsplash.com/photo-1549102011-8276f70f6128?q=80&w=1000&auto=format&fit=crop') center; background-size: cover; position: relative; }
+        .ede-marker { position: absolute; top: 20px; left: 20px; background: var(--accent); color: white; padding: 10px 20px; border-radius: 20px; font-weight: bold; transform: rotate(-5deg); }
+
         /* FASE 3: DOBBELSTEEN */
-        #phase-3 { display: none; flex-direction: column; height: 100vh; }
-        .main-stage { display: flex; flex: 1; padding: 20px; gap: 20px; height: 70vh; }
-        .dice-zone { width: 350px; background: var(--white); border-radius: 40px; padding: 25px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
-        
-        /* 3D DOBBELSTEEN */
-        .scene { width: 100px; height: 100px; perspective: 600px; margin: 20px; }
-        .cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .cube__face { position: absolute; width: 100px; height: 100px; background: white; border: 4px solid var(--primary); line-height: 100px; font-size: 40px; border-radius: 20px; text-align: center; color: var(--primary); font-weight: bold; }
-        .cube__face--1 { transform: rotateY(0deg) translateZ(50px); }
-        .cube__face--2 { transform: rotateY(180deg) translateZ(50px); }
-        .cube__face--3 { transform: rotateY(-90deg) translateZ(50px); }
-        .cube__face--4 { transform: rotateY(90deg) translateZ(50px); }
-        .cube__face--5 { transform: rotateX(-90deg) translateZ(50px); }
-        .cube__face--6 { transform: rotateX(90deg) translateZ(50px); }
+        #phase-3 { display: none; padding: 100px 20px 20px; height: 100vh; box-sizing: border-box; }
+        .dice-container { display: flex; gap: 20px; height: 100%; }
 
-        .thought-cloud { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; overflow-y: auto; padding: 10px; }
-        .bubble { background: white; padding: 15px; border-radius: 20px 20px 20px 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); animation: float 4s ease-in-out infinite; }
-        
-        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        /* Admin knoppen kleiner en subtieler */
+        .admin-nav { position: fixed; bottom: 10px; right: 10px; opacity: 0.3; transition: 0.3s; z-index: 1000; }
+        .admin-nav:hover { opacity: 1; }
+
+        @keyframes slideIn { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .bubble { background: white; padding: 15px 20px; border-radius: 25px 25px 25px 5px; margin: 10px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); font-weight: 600; transition: 0.3s; }
     </style>
 </head>
 <body>
 
-<div class="bg-overlay"></div>
+<div class="bg-overlay" id="bg"></div>
+
+<div class="travel-bar">
+    <div class="travel-dot" id="dot-p1">🏠</div>
+    <div style="flex:1; border-top: 3px dashed rgba(255,255,255,0.3); margin: 0 15px;"></div>
+    <div class="travel-dot" id="dot-p2">✈️</div>
+    <div style="flex:1; border-top: 3px dashed rgba(255,255,255,0.3); margin: 0 15px;"></div>
+    <div class="travel-dot" id="dot-p3">🌳</div>
+</div>
 
 <div id="phase-1">
-    <h1>Welkom bij de Proosdijkerk!</h1>
-    <p>Typ je naam om mee te doen aan de reis:</p>
-    <div style="display:flex; gap:10px;">
-        <input type="text" id="name-in" placeholder="Je naam..." style="padding:15px; border-radius:30px; border:none; width:250px;">
-        <button onclick="sendName()" style="padding:15px 30px; border-radius:30px; border:none; background:var(--success); color:white; font-weight:bold; cursor:pointer;">IK BEN ER!</button>
+    <div class="card welcome-box">
+        <h1 style="color:var(--primary); margin-top:0;">Reis je mee? 🎒</h1>
+        <p>We verzamelen bij de <strong>Proosdijkerk</strong>. Laat weten dat je er bent!</p>
+        <input type="text" id="name-in" placeholder="Je voornaam..." style="width:80%; padding:15px; border-radius:20px; border:2px solid #ddd; margin-bottom:15px; font-size:1.1rem; font-family:'Fredoka';">
+        <button onclick="sendName()" style="width:80%; padding:15px; background:var(--success); color:white; border:none; border-radius:20px; font-weight:bold; cursor:pointer; font-size:1.1rem;">IK DOE MEE! ✨</button>
+        <div id="names-list" style="margin-top:20px; display:flex; gap:8px; flex-wrap:wrap; justify-content:center;"></div>
     </div>
-    <div id="names-list" style="margin-top:30px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center; max-width:800px;"></div>
 </div>
 
 <div id="phase-2">
-    <div class="story-card">
-        <div class="story-text">
-            <h2 style="color:var(--primary)">📍 Vertrek: Ede, Proosdijkerk</h2>
-            <p>Vanaf de rotonde bij de Veenderweg gaan we op reis. Een tocht van <strong>4.400 kilometer</strong> naar het zuiden, naar Jeruzalem.</p>
-            <hr>
-            <h3>Het verhaal van de Olijfberg</h3>
-            <p>Jezus kwam aan op de berg. Hij wist dat het moeilijk zou worden. Hij vroeg zijn vrienden: "Blijf wakker en bid om kracht." Maar zij vielen in slaap...</p>
-            <p>Jezus bad zo hard dat zijn zweet als bloeddruppels op de grond viel. Toen kwam er een engel om Hem kracht te geven.</p>
-            <div style="background:#f0f2f5; padding:15px; border-radius:20px; margin-top:10px;">
-                <a href="https://earth.google.com/web/search/Mount+of+Olives,+Jerusalem" target="_blank" style="color:var(--primary); font-weight:bold; text-decoration:none;">🌍 VLIEG NAAR DE OLIJFBERG (Google Earth)</a>
-            </div>
+    <div class="story-grid">
+        <div class="card story-text-area">
+            <h2 style="color:var(--accent); margin-top:0;">De Grote Reis 🗺️</h2>
+            <p>Stel je voor: we rijden de parkeerplaats bij de <strong>Proosdijkerk</strong> af. De rotonde over, en dan... nog 4.400 kilometer gaan!</p>
+            <p style="background: #fff9e6; padding: 15px; border-radius: 15px; font-size: 1rem;">
+                Dat is alsof je <strong>11.000 keer</strong> rond het voetbalveld van Ede rent!
+            </p>
+            <p>Eindelijk komen we aan bij de Olijfberg. Het is nacht. De wind waait zachtjes door de oude bomen. Jezus is hier, en Hij heeft onze hulp (en gebeden) nodig.</p>
+            <a href="https://earth.google.com/web/search/Mount+of+Olives,+Jerusalem" target="_blank" style="text-decoration:none; display:block; text-align:center; background:var(--primary); color:white; padding:15px; border-radius:20px; font-weight:bold;">BEKIJK DE BERG IN 3D 🌍</a>
         </div>
-        <div style="flex:0.8; background-image: url('https://images.unsplash.com/photo-1549102011-8276f70f6128?q=80&w=1000&auto=format&fit=crop'); background-size:cover;"></div>
+        <div class="map-visual">
+            <div class="ede-marker">START: EDE 📍</div>
+        </div>
     </div>
 </div>
 
 <div id="phase-3">
-    <div style="background:rgba(255,255,255,0.1); padding:10px; display:flex; gap:10px; justify-content:center;" id="live-names-bar"></div>
-    <div class="main-stage">
-        <div class="dice-zone">
-            <div class="scene"><div class="cube" id="cube">
-                <div class="cube__face cube__face--1">1</div><div class="cube__face cube__face--2">2</div>
-                <div class="cube__face cube__face--3">3</div><div class="cube__face cube__face--4">4</div>
-                <div class="cube__face cube__face--5">5</div><div class="cube__face cube__face--6">6</div>
+    <div class="dice-container">
+        <div class="card" style="width:350px; padding:30px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+            <div class="scene"><div class="cube" id="cube" style="width:100px; height:100px; position:relative; transform-style:preserve-3d; transition:1.2s;">
+                <div class="cube__face cube__face--1" style="position:absolute; width:100px; height:100px; background:white; border:4px solid var(--primary); line-height:100px; font-size:40px; text-align:center; transform:rotateY(0deg) translateZ(50px);">1</div>
+                <div class="cube__face cube__face--2" style="position:absolute; width:100px; height:100px; background:white; border:4px solid var(--primary); line-height:100px; font-size:40px; text-align:center; transform:rotateY(180deg) translateZ(50px);">2</div>
+                <div class="cube__face cube__face--3" style="position:absolute; width:100px; height:100px; background:white; border:4px solid var(--primary); line-height:100px; font-size:40px; text-align:center; transform:rotateY(-90deg) translateZ(50px);">3</div>
+                <div class="cube__face cube__face--4" style="position:absolute; width:100px; height:100px; background:white; border:4px solid var(--primary); line-height:100px; font-size:40px; text-align:center; transform:rotateY(90deg) translateZ(50px);">4</div>
+                <div class="cube__face cube__face--5" style="position:absolute; width:100px; height:100px; background:white; border:4px solid var(--primary); line-height:100px; font-size:40px; text-align:center; transform:rotateX(-90deg) translateZ(50px);">5</div>
+                <div class="cube__face cube__face--6" style="position:absolute; width:100px; height:100px; background:white; border:4px solid var(--primary); line-height:100px; font-size:40px; text-align:center; transform:rotateX(90deg) translateZ(50px);">6</div>
             </div></div>
-            <button class="btn-nav" onclick="triggerRoll()" style="width:100%; height:50px; background:var(--primary); color:white; font-size:1rem; margin-bottom:10px;">GOOI DOBBELSTEEN</button>
-            <div id="active-stmt" style="text-align:center; font-weight:600; color:var(--primary); min-height:80px;">Wacht op de meester...</div>
-            <input type="text" id="thought-in" placeholder="Jouw antwoord..." style="width:100%; padding:10px; border-radius:15px; border:1px solid #ddd; margin-bottom:10px;">
-            <button onclick="sendThought()" style="width:100%; padding:10px; background:var(--success); color:white; border:none; border-radius:15px; font-weight:bold; cursor:pointer;">DEEL ✨</button>
+            <button onclick="triggerRoll()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:20px; font-weight:bold; cursor:pointer; margin:20px 0;">GOOI DE DOBBELSTEEN 🎲</button>
+            <div id="active-stmt" style="text-align:center; font-weight:bold; color:var(--primary); font-size:1.1rem; min-height:80px;">Druk op de knop!</div>
+            <input type="text" id="thought-in" placeholder="Jouw gedachte..." style="width:100%; padding:12px; border-radius:15px; border:1px solid #ddd; margin-bottom:10px;">
+            <button onclick="sendThought()" style="width:100%; padding:12px; background:var(--success); color:white; border:none; border-radius:15px; font-weight:bold;">DEEL ✨</button>
         </div>
-        <div class="thought-cloud" id="live-thoughts"></div>
+        <div id="live-thoughts" style="flex:1; overflow-y:auto; display:flex; flex-wrap:wrap; align-content:start;"></div>
     </div>
 </div>
 
-<div class="phase-nav">
-    <button class="btn-nav" onclick="updatePhase('p1')">1. NAMEN</button>
-    <button class="btn-nav" onclick="updatePhase('p2')">2. VERHAAL</button>
-    <button class="btn-nav" onclick="updatePhase('p3')">3. INTERACTIE</button>
-    <button class="btn-nav" onclick="hardReset()" style="background:var(--accent); color:white;">RESET</button>
+<div class="admin-nav">
+    <button onclick="updatePhase('p1')">1</button>
+    <button onclick="updatePhase('p2')">2</button>
+    <button onclick="updatePhase('p3')">3</button>
+    <button onclick="hardReset()" style="background:red; color:white;">X</button>
 </div>
 
 <script type="module">
@@ -134,28 +153,27 @@
         "HERSTEL: Hoe maak jij iets wat kapot is weer goed?"
     ];
 
-    // SYNC FUNCTIES
     window.updatePhase = (p) => set(ref(db, 'currentPhase'), p);
     window.sendName = () => { const v = document.getElementById('name-in').value; if(v) push(ref(db, 'names'), v); document.getElementById('name-in').value=''; };
     window.triggerRoll = () => set(ref(db, 'gameState'), {r: Math.floor(Math.random()*6)+1, t: Date.now()});
     window.sendThought = () => { const v = document.getElementById('thought-in').value; if(v) push(ref(db, 'live'), v); document.getElementById('thought-in').value=''; };
-    window.hardReset = () => { if(confirm("Wissen?")) remove(ref(db, '/')); };
+    window.hardReset = () => { if(confirm("Reset?")) remove(ref(db, '/')); };
 
-    // REAL-TIME LUISTERAARS
     onValue(ref(db, 'currentPhase'), s => {
         const p = s.val() || 'p1';
         document.getElementById('phase-1').style.display = (p === 'p1') ? 'flex' : 'none';
         document.getElementById('phase-2').style.display = (p === 'p2') ? 'flex' : 'none';
         document.getElementById('phase-3').style.display = (p === 'p3') ? 'flex' : 'none';
+        
+        document.querySelectorAll('.travel-dot').forEach(d => d.classList.remove('active'));
+        document.getElementById('dot-' + p).classList.add('active');
+        document.getElementById('bg').style.filter = (p === 'p3') ? 'blur(10px) brightness(0.2)' : 'blur(8px) brightness(0.4)';
     });
 
     onValue(ref(db, 'names'), s => {
-        const list = document.getElementById('names-list'); 
-        const bar = document.getElementById('live-names-bar');
-        list.innerHTML = ""; bar.innerHTML = "";
+        const list = document.getElementById('names-list'); list.innerHTML = "";
         const data = s.val(); if(data) Object.values(data).forEach(n => {
-            const span = `<span style="background:white; color:var(--primary); padding:5px 15px; border-radius:20px; font-weight:bold;">${n}</span>`;
-            list.innerHTML += span; bar.innerHTML += span;
+            list.innerHTML += `<span style="background:var(--sky); color:white; padding:5px 12px; border-radius:15px; font-size:0.9rem;">${n}</span>`;
         });
     });
 
