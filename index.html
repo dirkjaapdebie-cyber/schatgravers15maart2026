@@ -1,70 +1,63 @@
-<div id="phase-4" class="container">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-        <h2 style="color:white; margin:0;">Wie bad wat? Zoek het op in de Bijbel.</h2>
-        <a href="https://bijbel.nl/bijbel/NBV21/" target="_blank" class="btn" style="width:250px; background:#2980b9; text-decoration:none; text-align:center;">📖 OPEN ONLINE BIJBEL</a>
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schatgravers - Olijfberg Project</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #1e3799; --accent: #eb4d4b; --success: #20bf6b; --bg: #0a3d62; --gold: #f1c40f; }
+        body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Fredoka', sans-serif; overflow: hidden; background: var(--bg); color: #333; }
+        
+        .bg-fixed {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(10, 61, 98, 0.85), rgba(10, 61, 98, 0.85)), url('schatgravers15maart.jpg');
+            background-size: cover; background-position: center; z-index: -1;
+        }
+
+        .container { display: none; height: 100vh; padding: 25px; box-sizing: border-box; flex-direction: column; }
+
+        /* FASE 3: DASHBOARD */
+        .f3-layout { display: grid; grid-template-columns: 320px 1fr; gap: 30px; height: 85vh; }
+        .sidebar { background: white; padding: 25px; border-radius: 20px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .vault-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); gap: 15px; }
+        .vault { background: rgba(255,255,255,0.95); border-radius: 15px; padding: 15px; border: 4px solid transparent; transition: 0.3s; display: flex; flex-direction: column; }
+        .vault.active { border-color: var(--gold); transform: scale(1.03); background: white; box-shadow: 0 0 25px rgba(241,196,15,0.4); }
+        .v-title { font-weight: 600; color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 5px; font-size: 1.2rem; }
+        .v-list { flex: 1; overflow-y: auto; margin-top: 10px; font-size: 0.9rem; }
+
+        /* FASE 4: SLEUR-EN-PLEUR */
+        .drag-box { display: flex; flex-wrap: wrap; gap: 10px; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; margin-bottom: 20px; justify-content: center; }
+        .drag-item { background: var(--gold); padding: 10px 18px; border-radius: 8px; cursor: grab; font-weight: bold; box-shadow: 0 4px 0 #d4ac0d; }
+        .drop-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; overflow-y: auto; flex: 1; padding-bottom: 80px; }
+        .drop-zone { background: white; padding: 15px; border-radius: 12px; min-height: 100px; border: 2px dashed #ccc; transition: 0.2s; }
+        .drop-zone.hover { border-color: var(--success); background: #fafffa; }
+
+        /* UI ELEMENTS */
+        .btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; cursor: pointer; font-family: 'Fredoka'; font-weight: bold; font-size: 1rem; }
+        .input-field { width: 100%; padding: 15px; border-radius: 10px; border: 2px solid #ddd; font-family: 'Fredoka'; font-size: 1rem; box-sizing: border-box; }
+        .regie { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 9999; }
+        .r-btn { width: 45px; height: 45px; border-radius: 50%; border: 2px solid white; background: rgba(0,0,0,0.6); color: white; cursor: pointer; font-weight: bold; }
+        .r-btn.active { background: white; color: var(--bg); }
+    </style>
+</head>
+<body>
+
+<audio id="ping-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+<div class="bg-fixed"></div>
+
+<div id="phase-1" class="container" style="display:flex; justify-content:center; align-items:center;">
+    <div style="background:white; padding:40px; border-radius:25px; text-align:center; width:320px;">
+        <h2 style="margin:0 0 20px 0;">Schatgravers</h2>
+        <input type="text" id="name-in" placeholder="Naam..." class="input-field">
+        <button onclick="sendName()" class="btn" style="width:100%; margin-top:15px;">START</button>
     </div>
-    
-    <div class="drag-container" id="names-source">
-        </div>
-    <div class="drop-grid" id="prayer-targets">
-        </div>
 </div>
 
-<script type="module">
-    // ... (Houd de rest van de Firebase setup gelijk) ...
-
-    const koppelingen = [
-        {n:"Abraham", g:"Ik bid dat er geen onschuldige mensen in de stad Sodom gedood zullen worden.", b:"Genesis 18:22-33"},
-        {n:"Agur", g:"Ik bid om precies te krijgen wat ik nodig heb, niet meer en niet minder.", b:"Spreuken 30:7-9"},
-        {n:"David", g:"Ik bid om vergeving omdat ik iemand vermoord heb.", b:"Psalm 51:3-4"},
-        {n:"Elia", g:"Ik bid dat God mij antwoord geeft.", b:"1 Koningen 18:37"},
-        {n:"Gideon", g:"Ik vraag God om een teken zodat ik weet dat het waar is.", b:"Rechters 6:36"},
-        {n:"Hanna", g:"Ik bid om een zoon.", b:"1 Samuel 1:9-11"},
-        {n:"Jesaja", g:"Ik bid dat God vanuit de hemel naar ons kijkt.", b:"Jesaja 63:15"},
-        {n:"Jezus", g:"Ik bid voor alle mensen die in mij zullen geloven.", b:"Johannes 17:20"},
-        {n:"Jezus", g:"Ik bid: ‘Doe wat U zelf wilt, niet wat ik wil’.", b:"Lucas 22:42"},
-        {n:"Jezus", g:"Ik bid: ‘Vader, vergeef de mensen die mij doden’.", b:"Lucas 23:34"},
-        {n:"Job", g:"Ik bid dat God aan mij denkt.", b:"Job 7:7"},
-        {n:"Mozes", g:"Ik probeer God op andere gedachten te brengen.", b:"Exodus 32:11"},
-        {n:"Nehemia", g:"Ik doe in stilte een schietgebedje om hulp.", b:"Nehemia 2:4"},
-        {n:"Paulus", g:"Ik vraag aan anderen om voor mij te bidden.", b:"Romeinen 15:30"},
-        {n:"Salomo", g:"Ik bid om het verschil tussen goed en kwaad te zien.", b:"1 Koningen 3:9"}
-    ];
-
-    function initSleurPleur() {
-        const source = document.getElementById('names-source');
-        const target = document.getElementById('prayer-targets');
-        source.innerHTML = ''; target.innerHTML = '';
-        
-        // Namen schudden voor willekeurige volgorde
-        const shuffledNames = [...koppelingen].sort(() => Math.random() - 0.5);
-
-        shuffledNames.forEach((k, i) => {
-            const d = document.createElement('div');
-            d.className = 'drag-item'; d.innerText = k.n; d.draggable = true;
-            d.id = 'name-' + i;
-            d.ondragstart = (e) => e.dataTransfer.setData('text', e.target.id);
-            source.appendChild(d);
-        });
-
-        koppelingen.forEach((k, i) => {
-            const z = document.createElement('div');
-            z.className = 'drop-zone';
-            z.innerHTML = `<i>"${k.g}"</i><br><small style="color:var(--primary); font-weight:bold;">${k.b}</small>`;
-            z.ondragover = (e) => { e.preventDefault(); z.classList.add('hover'); };
-            z.ondragleave = () => z.classList.remove('hover');
-            z.ondrop = (e) => {
-                e.preventDefault();
-                const id = e.dataTransfer.getData('text');
-                const name = document.getElementById(id).innerText;
-                z.innerHTML = `<span class="dropped-name">${name}</span><br><i>"${k.g}"</i><br><small>${k.b}</small>`;
-                z.classList.remove('hover');
-                z.style.borderStyle = 'solid';
-                z.style.borderColor = '#20bf6b';
-            };
-            target.appendChild(z);
-        });
-    }
-
-    // ... (Houd de rest van de script logica gelijk) ...
-</script>
+<div id="phase-2" class="container" style="display:flex; justify-content:center; align-items:center;">
+    <div style="background:white; padding:40px; border-radius:25px; text-align:center;">
+        <h1 id="timer-p2" style="font-size:5rem; color:var(--accent); margin:0;">01:30</h1>
+        <p>Verken de Olijfberg!</p>
+        <a href="https://earth.google.com/web/search/Mount+of+Olives" target="_blank" class="btn" style="text-decoration:none; display:inline-block;">GOOGLE EARTH</a>
+    </div>
+</div>
