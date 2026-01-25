@@ -17,28 +17,29 @@
 
         .container { display: none; height: 100vh; padding: 25px; box-sizing: border-box; flex-direction: column; }
 
-        /* FASE 3: DASHBOARD */
-        .f3-layout { display: grid; grid-template-columns: 320px 1fr; gap: 30px; height: 85vh; }
-        .sidebar { background: white; padding: 25px; border-radius: 20px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .vault-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); gap: 15px; }
-        .vault { background: rgba(255,255,255,0.95); border-radius: 15px; padding: 15px; border: 4px solid transparent; transition: 0.3s; display: flex; flex-direction: column; }
-        .vault.active { border-color: var(--gold); transform: scale(1.03); background: white; box-shadow: 0 0 25px rgba(241,196,15,0.4); }
-        .v-title { font-weight: 600; color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 5px; font-size: 1.2rem; }
-        .v-list { flex: 1; overflow-y: auto; margin-top: 10px; font-size: 0.9rem; }
+        /* DASHBOARD FASE 3 */
+        .f3-layout { display: grid; grid-template-columns: 300px 1fr; gap: 20px; height: 80vh; }
+        .sidebar { background: white; padding: 20px; border-radius: 20px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .vault-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); gap: 12px; }
+        .vault { background: rgba(255,255,255,0.95); border-radius: 15px; padding: 12px; border: 4px solid transparent; transition: 0.3s; overflow: hidden; display: flex; flex-direction: column; }
+        .vault.active { border-color: var(--gold); transform: scale(1.02); background: white; box-shadow: 0 0 20px rgba(241,196,15,0.4); }
+        .v-title { font-weight: 600; color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        .v-list { flex: 1; overflow-y: auto; margin-top: 8px; font-size: 0.85rem; }
 
-        /* FASE 4: SLEUR-EN-PLEUR */
-        .drag-box { display: flex; flex-wrap: wrap; gap: 10px; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; margin-bottom: 20px; justify-content: center; }
-        .drag-item { background: var(--gold); padding: 10px 18px; border-radius: 8px; cursor: grab; font-weight: bold; box-shadow: 0 4px 0 #d4ac0d; }
-        .drop-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; overflow-y: auto; flex: 1; padding-bottom: 80px; }
-        .drop-zone { background: white; padding: 15px; border-radius: 12px; min-height: 100px; border: 2px dashed #ccc; transition: 0.2s; }
+        /* SLEUR-EN-PLEUR FASE 4 */
+        .drag-box { display: flex; flex-wrap: wrap; gap: 8px; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; margin-bottom: 15px; justify-content: center; }
+        .drag-item { background: var(--gold); padding: 8px 14px; border-radius: 8px; cursor: grab; font-weight: bold; box-shadow: 0 4px 0 #d4ac0d; user-select: none; }
+        .drop-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; overflow-y: auto; flex: 1; padding-bottom: 100px; }
+        .drop-zone { background: white; padding: 10px; border-radius: 12px; min-height: 80px; border: 2px dashed #ccc; font-size: 0.8rem; }
         .drop-zone.hover { border-color: var(--success); background: #fafffa; }
 
-        /* UI ELEMENTS */
-        .btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; cursor: pointer; font-family: 'Fredoka'; font-weight: bold; font-size: 1rem; }
-        .input-field { width: 100%; padding: 15px; border-radius: 10px; border: 2px solid #ddd; font-family: 'Fredoka'; font-size: 1rem; box-sizing: border-box; }
-        .regie { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 9999; }
-        .r-btn { width: 45px; height: 45px; border-radius: 50%; border: 2px solid white; background: rgba(0,0,0,0.6); color: white; cursor: pointer; font-weight: bold; }
-        .r-btn.active { background: white; color: var(--bg); }
+        /* NAVIGATIE */
+        .navigation-panel { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 12px; z-index: 10000; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 30px; backdrop-filter: blur(5px); }
+        .nav-btn { width: 45px; height: 45px; border-radius: 50%; border: 2px solid white; background: transparent; color: white; cursor: pointer; font-weight: bold; font-size: 1.1rem; }
+        .nav-btn.active { background: white; color: var(--bg); transform: scale(1.1); }
+
+        .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-family: 'Fredoka'; font-weight: bold; width: 100%; }
+        .input-field { width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #ddd; font-family: 'Fredoka'; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -47,10 +48,10 @@
 <div class="bg-fixed"></div>
 
 <div id="phase-1" class="container" style="display:flex; justify-content:center; align-items:center;">
-    <div style="background:white; padding:40px; border-radius:25px; text-align:center; width:320px;">
-        <h2 style="margin:0 0 20px 0;">Schatgravers</h2>
-        <input type="text" id="name-in" placeholder="Naam..." class="input-field">
-        <button onclick="sendName()" class="btn" style="width:100%; margin-top:15px;">START</button>
+    <div style="background:white; padding:40px; border-radius:25px; text-align:center; width:300px;">
+        <h2 style="margin:0 0 15px 0;">Aanmelden</h2>
+        <input type="text" id="name-in" placeholder="Vul je naam in..." class="input-field">
+        <button onclick="sendName()" class="btn" style="margin-top:10px;">DOE MEE</button>
     </div>
 </div>
 
@@ -61,3 +62,197 @@
         <a href="https://earth.google.com/web/search/Mount+of+Olives" target="_blank" class="btn" style="text-decoration:none; display:inline-block;">GOOGLE EARTH</a>
     </div>
 </div>
+
+<div id="phase-3" class="container">
+    <div class="f3-layout">
+        <div class="sidebar">
+            <div style="text-align:center;">
+                <div id="dice-display" style="font-size:5rem;">🎲</div>
+                <h3 id="dice-title" style="margin:5px 0;">Thema</h3>
+                <button onclick="triggerRoll()" class="btn" style="background:var(--gold); color:black;">DOBBELEN</button>
+            </div>
+            <div>
+                <input type="text" id="thought-in" placeholder="Typ je gedachte..." class="input-field">
+                <button onclick="sendThought()" class="btn" style="margin-top:10px; background:var(--success);">VERSTUUR</button>
+            </div>
+        </div>
+        <div class="vault-grid">
+            <div class="vault" id="v-1"><div class="v-title">1. ANGST</div><div class="v-list" id="l1"></div></div>
+            <div class="vault" id="v-2"><div class="v-title">2. KEUZES</div><div class="v-list" id="l2"></div></div>
+            <div class="vault" id="v-3"><div class="v-title">3. ENGELEN</div><div class="v-list" id="l3"></div></div>
+            <div class="vault" id="v-4"><div class="v-title">4. BIDDEN</div><div class="v-list" id="l4"></div></div>
+            <div class="vault" id="v-5"><div class="v-title">5. ALLEEN</div><div class="v-list" id="l5"></div></div>
+            <div class="vault" id="v-6"><div class="v-title">6. HERSTEL</div><div class="v-list" id="l6"></div></div>
+        </div>
+    </div>
+</div>
+
+<div id="phase-4" class="container">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h2 style="color:white; margin:0; font-size:1.2rem;">Sleur en pleur: Wie bad wat?</h2>
+        <a href="https://www.online-bijbel.nl/" target="_blank" class="btn" style="width:200px; background:#2980b9; text-decoration:none; text-align:center; font-size:0.8rem;">BIJBEL.NL</a>
+    </div>
+    <div class="drag-box" id="names-source"></div>
+    <div class="drop-grid" id="prayer-targets"></div>
+</div>
+
+<div id="phase-5" class="container">
+    <div style="text-align:center; color:white;">
+        <div id="ws-timer" style="font-size:3rem; font-weight:bold; margin-bottom:10px;">03:00</div>
+        <div style="display:flex; justify-content:center; gap:25px;">
+            <div id="ws-grid" style="display:grid; grid-template-columns:repeat(15, 30px); gap:4px; background:rgba(255,255,255,0.1); padding:10px; border-radius:10px;"></div>
+            <div id="ws-list" style="background:white; color:#333; padding:15px; border-radius:12px; width:220px; height:450px; overflow-y:auto; text-align:left;"></div>
+        </div>
+    </div>
+</div>
+
+<div class="navigation-panel">
+    <button class="nav-btn" id="btn-p1" onclick="updatePhase('p1')">1</button>
+    <button class="nav-btn" id="btn-p2" onclick="updatePhase('p2')">2</button>
+    <button class="nav-btn" id="btn-p3" onclick="updatePhase('p3')">3</button>
+    <button class="nav-btn" id="btn-p4" onclick="updatePhase('p4')">4</button>
+    <button class="nav-btn" id="btn-p5" onclick="updatePhase('p5')">5</button>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBC3Dzm8PNPXw12VJNimvly5u2I93QeW54",
+        authDomain: "schatgravers15maart2026.firebaseapp.com",
+        projectId: "schatgravers15maart2026",
+        databaseURL: "https://schatgravers15maart2026-default-rtdb.europe-west1.firebasedatabase.app",
+        appId: "1:30561512857:web:fcb7868b87d292d1c97708"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    let p2Int, wsInt, curDice = 1;
+
+    const gebeden = [
+        {n:"Abraham", g:"In Sodom onschuldigen sparen.", b:"Gen. 18:22"},
+        {n:"Agur", g:"Precies wat ik nodig heb.", b:"Spr. 30:7"},
+        {n:"David", g:"Bid om vergeving.", b:"Ps. 51:3"},
+        {n:"Elia", g:"Vraag om Gods antwoord.", b:"1 Kon. 18:37"},
+        {n:"Gideon", g:"Vraag om een teken.", b:"Rech. 6:36"},
+        {n:"Hanna", g:"Bid om een zoon.", b:"1 Sam. 1:9"},
+        {n:"Jesaja", g:"Kijk uit de hemel naar ons.", b:"Jes. 63:15"},
+        {n:"Jezus", g:"Voor alle gelovigen.", b:"Joh. 17:20"},
+        {n:"Jezus", g:"Uw wil geschiede.", b:"Luc. 22:42"},
+        {n:"Jezus", g:"Vader, vergeef hen.", b:"Luc. 23:34"},
+        {n:"Job", g:"Bid dat God aan hem denkt.", b:"Job 7:7"},
+        {n:"Mozes", g:"God op andere gedachten brengen.", b:"Ex. 32:11"},
+        {n:"Nehemia", g:"Stil schietgebedje om hulp.", b:"Neh. 2:4"},
+        {n:"Paulus", g:"Vraag gebed aan anderen.", b:"Rom. 15:30"},
+        {n:"Salomo", g:"Wijsheid (goed en kwaad).", b:"1 Kon. 3:9"}
+    ];
+
+    const woorden = ["OLIJFBERG", "JUDAS", "VERRAAD", "BEKER", "SLAPEN", "ENGEL", "KRACHT", "GEBED", "SOLDATEN", "KUS", "PETRUS", "HAAN", "KRUIS", "PILATUS", "GRAF", "STEEN", "OPGESTAAN", "LEVEN", "MARIA", "PASEN", "LIEFDE", "VRIENDEN", "VERGEVING", "DOORNEN", "STILTE"];
+
+    // FUNCTIES
+    window.sendName = () => {
+        const val = document.getElementById('name-in').value;
+        if(val) {
+            push(ref(db, 'names'), val);
+            document.getElementById('name-in').value = '';
+            alert("Aangemeld!");
+        }
+    };
+
+    window.updatePhase = (p) => set(ref(db, 'currentPhase'), p);
+
+    onValue(ref(db, 'currentPhase'), s => {
+        const p = s.val() || 'p1';
+        document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
+        document.getElementById('phase-' + p.replace('p','')).style.display = 'flex';
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-'+p).classList.add('active');
+        if(p==='p2') startP2();
+        if(p==='p4') initP4();
+        if(p==='p5') startWS();
+    });
+
+    window.triggerRoll = () => set(ref(db, 'dice'), Math.floor(Math.random()*6)+1);
+    
+    window.sendThought = () => {
+        const v = document.getElementById('thought-in').value;
+        if(v) {
+            push(ref(db, 'vaults/'+curDice), v);
+            document.getElementById('thought-in').value='';
+        }
+    };
+
+    onValue(ref(db, 'dice'), s => {
+        curDice = s.val() || 1;
+        const titels = ["ANGST", "KEUZES", "ENGELEN", "BIDDEN", "ALLEEN", "HERSTEL"];
+        document.getElementById('dice-title').innerText = titels[curDice-1];
+        document.querySelectorAll('.vault').forEach(v => v.classList.remove('active'));
+        document.getElementById('v-'+curDice).classList.add('active');
+    });
+
+    onValue(ref(db, 'vaults'), s => {
+        for(let i=1; i<=6; i++) {
+            const l = document.getElementById('l'+i); l.innerHTML = '';
+            if(s.val() && s.val()[i]) {
+                Object.values(s.val()[i]).forEach(t => l.innerHTML += `<div style="background:#eee; margin:3px 0; padding:6px; border-radius:6px; border-left:3px solid var(--primary);">${t}</div>`);
+            }
+        }
+    });
+
+    function initP4() {
+        const src = document.getElementById('names-source'); const trg = document.getElementById('prayer-targets');
+        src.innerHTML = ''; trg.innerHTML = '';
+        [...gebeden].sort(() => Math.random() - 0.5).forEach((k, i) => {
+            const d = document.createElement('div'); d.className = 'drag-item'; d.innerText = k.n; d.draggable = true;
+            d.id = 'd-'+i; d.ondragstart = (e) => e.dataTransfer.setData('text', e.target.id);
+            src.appendChild(d);
+        });
+        gebeden.forEach((k) => {
+            const z = document.createElement('div'); z.className = 'drop-zone';
+            z.innerHTML = `<i>"${k.g}"</i><br><b>${k.b}</b>`;
+            z.ondragover = (e) => { e.preventDefault(); z.classList.add('hover'); };
+            z.ondragleave = () => z.classList.remove('hover');
+            z.ondrop = (e) => {
+                e.preventDefault(); const id = e.dataTransfer.getData('text');
+                z.innerHTML = `<span style="background:var(--primary);color:white;padding:2px 6px;border-radius:4px;">${document.getElementById(id).innerText}</span><br><i>"${k.g}"</i>`;
+                z.classList.remove('hover'); z.style.borderStyle = 'solid'; z.style.borderColor = 'var(--success)';
+            };
+            trg.appendChild(z);
+        });
+    }
+
+    function startWS() {
+        const g = document.getElementById('ws-grid'); const l = document.getElementById('ws-list');
+        g.innerHTML = ''; l.innerHTML = '';
+        const abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        for(let i=0; i<225; i++) {
+            const c = document.createElement('div'); c.style = "width:30px; height:30px; background:white; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer; border-radius:4px;";
+            c.innerText = abc[Math.floor(Math.random()*26)];
+            c.onclick = () => c.style.background = (c.style.background === 'rgb(241, 196, 15)') ? 'white' : 'rgb(241, 196, 15)';
+            g.appendChild(c);
+        }
+        woorden.forEach(w => {
+            const i = document.createElement('div'); i.innerText = w; i.style.padding = "4px 0"; i.style.cursor = "pointer";
+            i.onclick = () => i.style.textDecoration = (i.style.textDecoration === 'line-through') ? 'none' : 'line-through';
+            l.appendChild(i);
+        });
+        let t = 180;
+        wsInt = setInterval(() => {
+            let m=Math.floor(t/60), s=t%60;
+            document.getElementById('ws-timer').innerText = `${m}:${s.toString().padStart(2,'0')}`;
+            if(t-- <= 0) { clearInterval(wsInt); document.getElementById('ping-sound').play(); }
+        }, 1000);
+    }
+
+    function startP2() {
+        let t = 90;
+        p2Int = setInterval(() => {
+            let m=Math.floor(t/60), s=t%60;
+            document.getElementById('timer-p2').innerText = `${m}:${s.toString().padStart(2,'0')}`;
+            if(t-- <= 0) { clearInterval(p2Int); document.getElementById('ping-sound').play(); }
+        }, 1000);
+    }
+</script>
+</body>
+</html>
