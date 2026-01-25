@@ -1,192 +1,70 @@
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schatgravers Live</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        :root { --primary: #1e3799; --accent: #eb4d4b; --success: #20bf6b; --bg: #0a3d62; }
-        body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Fredoka', sans-serif; overflow: hidden; background: var(--bg); }
-        
-        .bg-fixed {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(10, 61, 98, 0.9), rgba(10, 61, 98, 0.9)), url('schatgravers15maart.jpg');
-            background-size: cover; background-position: center; z-index: -1;
-        }
-
-        .container { display: none; height: 100vh; padding: 20px; box-sizing: border-box; flex-direction: column; }
-
-        /* FASE 3: GIGANTISCHE KLUIZEN */
-        .vault-grid-full {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 20px;
-            height: 100%;
-            width: 100%;
-        }
-        .vault-huge {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            border: 5px solid transparent;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-        }
-        .vault-huge.active-vault { border-color: var(--primary); transform: scale(1.02); background: #fff; }
-        .v-title { color: var(--primary); font-size: 1.5rem; font-weight: bold; border-bottom: 2px solid #eee; margin-bottom: 10px; padding-bottom: 5px; }
-        .v-list { flex: 1; overflow-y: auto; font-size: 1.2rem; }
-
-        /* FASE 4: REBUS */
-        .rebus-card { background: white; border-radius: 30px; padding: 50px; text-align: center; max-width: 800px; margin: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .rebus-visual { font-size: 4rem; margin: 30px 0; letter-spacing: 15px; }
-
-        /* Algemene Elementen */
-        .input-bar { position: fixed; bottom: 80px; left: 20px; width: 260px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 100; }
-        .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; font-family: 'Fredoka'; font-weight: bold; }
-        .input-field { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
-
-        /* Regie */
-        .regie { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 3000; }
-        .r-btn { width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; background: rgba(0,0,0,0.5); color: white; cursor: pointer; font-weight: bold; }
-        .r-btn.active { background: white; color: var(--bg); }
-
-        #story-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:4000; display:none; justify-content:center; align-items:center; }
-        .story-box { background:white; padding:40px; border-radius:20px; max-width:700px; font-size:1.2rem; line-height:1.6; }
-        .pill { background: #f0f2f5; padding: 8px 12px; border-radius: 10px; margin-bottom: 8px; border-left: 5px solid var(--primary); }
-    </style>
-</head>
-<body>
-
-<audio id="ping-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
-<div class="bg-fixed"></div>
-
-<div id="phase-1" class="container" style="display:flex; justify-content:center; align-items:center;">
-    <div style="background:white; padding:40px; border-radius:20px; text-align:center;">
-        <h2>Aanmelden</h2>
-        <input type="text" id="name-in" placeholder="Je naam" class="input-field">
-        <button onclick="sendName()" class="btn">DOE MEE</button>
+<div id="phase-4" class="container">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h2 style="color:white; margin:0;">Wie bad wat? Zoek het op in de Bijbel.</h2>
+        <a href="https://bijbel.nl/bijbel/NBV21/" target="_blank" class="btn" style="width:250px; background:#2980b9; text-decoration:none; text-align:center;">📖 OPEN ONLINE BIJBEL</a>
     </div>
-</div>
-
-<div id="phase-2" class="container" style="display:flex; justify-content:center; align-items:center;">
-    <div style="background:white; padding:40px; border-radius:20px; text-align:center;">
-        <h1 id="timer-display" style="font-size:5rem; color:var(--accent); margin:0;">01:30</h1>
-        <p>Verken de Olijfberg!</p>
-        <a href="https://earth.google.com/web/search/Mount+of+Olives,+Jerusalem" target="_blank" class="btn" style="text-decoration:none; display:inline-block;">OPEN GOOGLE EARTH</a>
-    </div>
-</div>
-
-<div id="phase-3" class="container">
-    <div class="vault-grid-full">
-        <div class="vault-huge" id="vault-1"><div class="v-title">1. ANGST</div><div class="v-list"></div></div>
-        <div class="vault-huge" id="vault-2"><div class="v-title">2. KEUZES</div><div class="v-list"></div></div>
-        <div class="vault-huge" id="vault-3"><div class="v-title">3. ENGELEN</div><div class="v-list"></div></div>
-        <div class="vault-huge" id="vault-4"><div class="v-title">4. BIDDEN</div><div class="v-list"></div></div>
-        <div class="vault-huge" id="vault-5"><div class="v-title">5. ALLEEN</div><div class="v-list"></div></div>
-        <div class="vault-huge" id="vault-6"><div class="v-title">6. HERSTEL</div><div class="v-list"></div></div>
-    </div>
-    <div class="input-bar">
-        <div id="dice-result" style="font-size:1.5rem; text-align:center; font-weight:bold; color:var(--primary); margin-bottom:10px;">Gooi de steen...</div>
-        <button onclick="triggerRoll()" class="btn" style="margin-bottom:10px;">DOBBELEN 🎲</button>
-        <input type="text" id="thought-in" placeholder="Jouw gedachte..." class="input-field">
-        <button onclick="sendThought()" class="btn" style="background:var(--success);">VERSTUUR</button>
-    </div>
-</div>
-
-<div id="phase-4" class="container" style="justify-content:center; align-items:center;">
-    <div class="rebus-card">
-        <h2 style="color:var(--primary); margin:0;">🧩 De Gebeds-Code</h2>
-        <p>Wat ontving Jezus op de Olijfberg?</p>
-        <div class="rebus-visual">K + 🎡 + CHT</div>
-        <input type="text" id="rebus-in" placeholder="Oplossing..." class="input-field" style="width:60%; font-size:1.2rem; text-align:center;">
-        <button onclick="checkRebus()" class="btn" style="width:60%; background:var(--primary);">CONTROLEER</button>
-        <h3 id="rebus-msg" style="margin-top:20px;"></h3>
-    </div>
-</div>
-
-<div id="story-overlay">
-    <div class="story-box">
-        <h2 style="margin-top:0; color:var(--primary);">Het verhaal van de Olijfberg</h2>
-        <p>Jezus was op de berg. Hij wist dat het moeilijk zou worden en bad tot God. Zijn vrienden sliepen, maar God stuurde een engel om Hem <strong>kracht</strong> te geven.</p>
-    </div>
-</div>
-
-<div class="regie">
-    <button class="r-btn" id="r1" onclick="updatePhase('p1')">1</button>
-    <button class="r-btn" id="r2" onclick="updatePhase('p2')">2</button>
-    <button class="r-btn" id="r3" onclick="updatePhase('p3')">3</button>
-    <button class="r-btn" id="r4" onclick="updatePhase('p4')">4</button>
-    <button class="r-btn" id="rS" onclick="toggleStory()" style="background:var(--accent); border:none;">📖</button>
+    
+    <div class="drag-container" id="names-source">
+        </div>
+    <div class="drop-grid" id="prayer-targets">
+        </div>
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    // ... (Houd de rest van de Firebase setup gelijk) ...
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyBC3Dzm8PNPXw12VJNimvly5u2I93QeW54",
-        authDomain: "schatgravers15maart2026.firebaseapp.com",
-        projectId: "schatgravers15maart2026",
-        databaseURL: "https://schatgravers15maart2026-default-rtdb.europe-west1.firebasedatabase.app",
-        appId: "1:30561512857:web:fcb7868b87d292d1c97708"
-    };
+    const koppelingen = [
+        {n:"Abraham", g:"Ik bid dat er geen onschuldige mensen in de stad Sodom gedood zullen worden.", b:"Genesis 18:22-33"},
+        {n:"Agur", g:"Ik bid om precies te krijgen wat ik nodig heb, niet meer en niet minder.", b:"Spreuken 30:7-9"},
+        {n:"David", g:"Ik bid om vergeving omdat ik iemand vermoord heb.", b:"Psalm 51:3-4"},
+        {n:"Elia", g:"Ik bid dat God mij antwoord geeft.", b:"1 Koningen 18:37"},
+        {n:"Gideon", g:"Ik vraag God om een teken zodat ik weet dat het waar is.", b:"Rechters 6:36"},
+        {n:"Hanna", g:"Ik bid om een zoon.", b:"1 Samuel 1:9-11"},
+        {n:"Jesaja", g:"Ik bid dat God vanuit de hemel naar ons kijkt.", b:"Jesaja 63:15"},
+        {n:"Jezus", g:"Ik bid voor alle mensen die in mij zullen geloven.", b:"Johannes 17:20"},
+        {n:"Jezus", g:"Ik bid: ‘Doe wat U zelf wilt, niet wat ik wil’.", b:"Lucas 22:42"},
+        {n:"Jezus", g:"Ik bid: ‘Vader, vergeef de mensen die mij doden’.", b:"Lucas 23:34"},
+        {n:"Job", g:"Ik bid dat God aan mij denkt.", b:"Job 7:7"},
+        {n:"Mozes", g:"Ik probeer God op andere gedachten te brengen.", b:"Exodus 32:11"},
+        {n:"Nehemia", g:"Ik doe in stilte een schietgebedje om hulp.", b:"Nehemia 2:4"},
+        {n:"Paulus", g:"Ik vraag aan anderen om voor mij te bidden.", b:"Romeinen 15:30"},
+        {n:"Salomo", g:"Ik bid om het verschil tussen goed en kwaad te zien.", b:"1 Koningen 3:9"}
+    ];
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    let timerInterval, currentDice = 1;
+    function initSleurPleur() {
+        const source = document.getElementById('names-source');
+        const target = document.getElementById('prayer-targets');
+        source.innerHTML = ''; target.innerHTML = '';
+        
+        // Namen schudden voor willekeurige volgorde
+        const shuffledNames = [...koppelingen].sort(() => Math.random() - 0.5);
 
-    window.updatePhase = (p) => set(ref(db, 'currentPhase'), p);
-    window.toggleStory = () => { onValue(ref(db, 'sV'), s => set(ref(db, 'sV'), !s.val()), {onlyOnce: true}); };
-    window.sendName = () => { const v = document.getElementById('name-in').value; if(v) push(ref(db, 'names'), v); };
-    window.triggerRoll = () => set(ref(db, 'dice'), Math.floor(Math.random()*6)+1);
-    window.sendThought = () => { 
-        const v = document.getElementById('thought-in').value; 
-        if(v) { push(ref(db, 'vaults/' + currentDice), v); document.getElementById('thought-in').value=''; }
-    };
-    window.checkRebus = () => {
-        const v = document.getElementById('rebus-in').value.toLowerCase().trim();
-        document.getElementById('rebus-msg').innerText = (v === 'kracht') ? "✅ GOED GEDAAN! (Engel gaf kracht)" : "❌ Nog eens proberen...";
-    };
+        shuffledNames.forEach((k, i) => {
+            const d = document.createElement('div');
+            d.className = 'drag-item'; d.innerText = k.n; d.draggable = true;
+            d.id = 'name-' + i;
+            d.ondragstart = (e) => e.dataTransfer.setData('text', e.target.id);
+            source.appendChild(d);
+        });
 
-    onValue(ref(db, 'currentPhase'), s => {
-        const p = s.val() || 'p1';
-        document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
-        document.getElementById('phase-' + p.replace('p','')).style.display = 'flex';
-        document.querySelectorAll('.r-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('r' + p.replace('p','')).classList.add('active');
-        if(p === 'p2') startTimer(); else clearInterval(timerInterval);
-    });
-
-    onValue(ref(db, 'sV'), s => document.getElementById('story-overlay').style.display = s.val() ? 'flex' : 'none');
-
-    onValue(ref(db, 'dice'), s => {
-        currentDice = s.val() || 1;
-        const titels = ["ANGST", "KEUZES", "ENGELEN", "BIDDEN", "ALLEEN", "HERSTEL"];
-        document.getElementById('dice-result').innerText = "THEMA: " + titels[currentDice-1];
-        document.querySelectorAll('.vault-huge').forEach(v => v.classList.remove('active-vault'));
-        document.getElementById('vault-' + currentDice).classList.add('active-vault');
-    });
-
-    onValue(ref(db, 'vaults'), s => {
-        const data = s.val(); 
-        for(let i=1; i<=6; i++) {
-            const list = document.querySelector(`#vault-${i} .v-list`);
-            list.innerHTML = "";
-            if(data && data[i]) Object.values(data[i]).forEach(t => list.innerHTML += `<div class="pill">${t}</div>`);
-        }
-    });
-
-    function startTimer() {
-        let t = 90;
-        timerInterval = setInterval(() => {
-            let m=Math.floor(t/60), s=t%60;
-            document.getElementById('timer-display').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-            if(t-- <= 0) { clearInterval(timerInterval); document.getElementById('ping-sound').play(); }
-        }, 1000);
+        koppelingen.forEach((k, i) => {
+            const z = document.createElement('div');
+            z.className = 'drop-zone';
+            z.innerHTML = `<i>"${k.g}"</i><br><small style="color:var(--primary); font-weight:bold;">${k.b}</small>`;
+            z.ondragover = (e) => { e.preventDefault(); z.classList.add('hover'); };
+            z.ondragleave = () => z.classList.remove('hover');
+            z.ondrop = (e) => {
+                e.preventDefault();
+                const id = e.dataTransfer.getData('text');
+                const name = document.getElementById(id).innerText;
+                z.innerHTML = `<span class="dropped-name">${name}</span><br><i>"${k.g}"</i><br><small>${k.b}</small>`;
+                z.classList.remove('hover');
+                z.style.borderStyle = 'solid';
+                z.style.borderColor = '#20bf6b';
+            };
+            target.appendChild(z);
+        });
     }
+
+    // ... (Houd de rest van de script logica gelijk) ...
 </script>
-</body>
-</html>
