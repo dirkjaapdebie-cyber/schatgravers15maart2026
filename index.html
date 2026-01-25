@@ -3,38 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Schatgravers V36</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    <title>Schatgravers V39 - Definitief</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root { --primary: #1e3799; --accent: #eb4d4b; --success: #20bf6b; --bg: #0a3d62; --gold: #f1c40f; }
         body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Fredoka', sans-serif; overflow: hidden; background: var(--bg); color: #333; }
-        .bg-fixed { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(10, 61, 98, 0.9), rgba(10, 61, 98, 0.9)), url('schatgravers15maart.jpg'); background-size: cover; z-index: -1; }
+        .bg-fixed { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(10, 61, 98, 0.85), rgba(10, 61, 98, 0.85)), url('schatgravers15maart.jpg'); background-size: cover; z-index: -1; }
         .container { display: none; height: 100vh; padding: 15px; box-sizing: border-box; flex-direction: column; align-items: center; overflow-y: auto; padding-bottom: 110px; }
-        #phase-1 { display: flex; }
-        .navigation-panel { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; z-index: 10000; background: rgba(0,0,0,0.85); padding: 8px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.2); }
+        
+        .story-container { background: #fdfbf7; padding: 25px; border-radius: 12px; width: 90%; max-width: 550px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); border-top: 6px solid var(--gold); }
+        .story-content { font-family: 'Lora', serif; font-size: 1.3rem; line-height: 1.7; color: #2c3e50; }
+        .story-header { font-family: 'Fredoka'; color: var(--primary); font-weight: 600; margin-bottom: 10px; text-transform: uppercase; font-size: 0.9rem; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+
+        .navigation-panel { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; z-index: 10000; background: rgba(0,0,0,0.9); padding: 8px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.2); }
         .nav-btn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid white; background: transparent; color: white; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
-        .nav-btn.active { background: white; color: var(--bg); box-shadow: 0 0 10px white; }
-        .story-box { background: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); text-align: left; }
+        .nav-btn.active { background: white; color: var(--bg); box-shadow: 0 0 15px white; }
+        
+        .vault { background: rgba(255,255,255,0.95); padding: 8px; border-radius: 10px; font-size: 0.7rem; min-height: 60px; border: 3px solid transparent; }
+        .vault.active { border-color: var(--gold); background: white; }
+        .name-tag { background: var(--gold); color: black; padding: 6px 12px; border-radius: 20px; font-weight: bold; margin: 3px; display: inline-block; font-size: 0.8rem; }
         .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; }
         .input-field { width: 100%; max-width: 300px; padding: 12px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 10px; font-family: 'Fredoka'; text-align: center; }
-        .vault { background: rgba(255,255,255,0.9); padding: 8px; border-radius: 12px; font-size: 0.7rem; min-height: 60px; border: 3px solid transparent; width: 100%; box-sizing: border-box; }
-        .vault.active { border-color: var(--gold); background: white; }
-        .name-tag { background: var(--gold); color: #000; padding: 8px 12px; border-radius: 20px; font-weight: bold; margin: 4px; display: inline-block; }
         .prayer-card { background: white; padding: 12px; border-radius: 15px; border: 2px dashed #ccc; width: 100%; margin-bottom: 8px; box-sizing: border-box; }
-        .prayer-card.filled { border: 2px solid var(--success); background: #f0fff4; }
+        .prayer-card.filled { border: 2.5px solid var(--success); background: #f0fff4; }
     </style>
 </head>
 <body>
 
 <div class="bg-fixed"></div>
 
-<div id="phase-1" class="container">
-    <div style="background:white; padding:30px; border-radius:20px; text-align:center; width:90%;">
-        <h2>Schatgravers</h2>
-        <input type="text" id="name-in" placeholder="Jouw naam..." class="input-field">
-        <button onclick="sendName()" class="btn">START</button>
-        <div id="display-names-list" style="margin-top:15px; display:flex; flex-wrap:wrap; justify-content:center;"></div>
+<div id="phase-1" class="container" style="display:flex;">
+    <div style="background:white; padding:30px; border-radius:20px; text-align:center; width:90%; max-width:400px;">
+        <h1>Schatgravers</h1>
+        <input type="text" id="name-in" placeholder="Naam..." class="input-field">
+        <button onclick="sendName()" class="btn">DOE MEE</button>
+        <div id="display-names-list" style="margin-top:20px;"></div>
     </div>
 </div>
 
@@ -43,41 +47,47 @@
     <div style="width:100%; max-width:280px; aspect-ratio:9/16; background:#000; border-radius:15px; overflow:hidden; border:3px solid var(--gold);">
         <iframe src="https://www.youtube.com/embed/7ljG1XWMYjY" style="width:100%; height:100%; border:none;" allowfullscreen></iframe>
     </div>
-    <a href="https://earth.google.com/web/search/Mount+of+Olives" target="_blank" class="btn" style="margin-top:15px; background:var(--accent); text-decoration:none; width:200px; text-align:center;">🌍 GOOGLE EARTH</a>
 </div>
 
 <div id="phase-3" class="container">
-    <div class="story-box">
-        <h2 style="color:var(--primary); margin-top:0;">1. De Olijfberg</h2>
-        
-        <p style="font-size:1.3rem; line-height:1.6;">Jezus vertrok naar de Olijfberg, zoals Hij dat elke dag deed. De leerlingen gingen met Hem mee.</p>
-        <p style="font-size:1.3rem; line-height:1.6;">Toen Hij daar was, zei Hij tegen hen: <strong>"Bid dat je niet in verzoeking komt."</strong></p>
+    <div class="story-container">
+        <div class="story-header">Lukas 22:39-40</div>
+        <img src="schatgravers15maart.jpg" style="width:100%; border-radius:8px; margin-bottom:15px;">
+        <div class="story-content">
+            Jezus vertrok naar de Olijfberg, zoals Hij dat elke dag deed. De leerlingen gingen met Hem mee. <br><br>
+            Toen Hij daar was, zei Hij tegen hen: <br><strong>"Bid dat je niet in verzoeking komt."</strong>
+        </div>
     </div>
 </div>
 
 <div id="phase-4" class="container">
-    <div class="story-box">
-        <h2 style="color:var(--accent); margin-top:0;">2. Het Gebed</h2>
-        <p style="font-size:1.3rem; line-height:1.6;">Hij knielde neer en bad: <em>"Vader, als U wilt, neem deze beker van Mij weg. Maar laat niet wat Ik wil, maar wat U wilt gebeuren."</em></p>
-        <p style="font-size:1.3rem; line-height:1.6;">Toen verscheen er een engel om Hem kracht te geven. Jezus was zo bang dat Zijn zweet als druppels bloed op de grond viel.</p>
+    <div class="story-container">
+        <div class="story-header">Lukas 22:41-42</div>
+        <div class="story-content">
+            Hij liep een klein stukje verder, ongeveer zo ver als je een steen kunt gooien. Daar knielde Hij neer en bad: <br><br>
+            <i>"Vader, als U wilt, neem deze beker van Mij weg. Maar laat niet wat Ik wil, maar wat U wilt gebeuren."</i>
+        </div>
     </div>
 </div>
 
 <div id="phase-5" class="container">
-    <div class="story-box">
-        <h2 style="color:var(--primary); margin-top:0;">3. De Slaap</h2>
-        <p style="font-size:1.3rem; line-height:1.6;">Toen Jezus opstond en bij Zijn leerlingen terugkwam, zag Hij dat ze sliepen. Ze waren uitgeput van verdriet.</p>
-        <p style="font-size:1.3rem; line-height:1.6;">Hij vroeg hen: <strong>"Waarom slapen jullie? Sta op en bid!"</strong></p>
+    <div class="story-container">
+        <div class="story-header">Lukas 22:43-46</div>
+        <div class="story-content">
+            Er verscheen een engel uit de hemel om Hem kracht te geven. Jezus was zo bang dat Zijn zweet als druppels bloed op de grond viel. <br><br>
+            Toen Hij terugkwam bij Zijn leerlingen, zag Hij dat ze sliepen van verdriet. 
+            "Waarom slapen jullie?" vroeg Hij. <br><strong>"Sta op en bid dat je niet in verzoeking komt!"</strong>
+        </div>
     </div>
 </div>
 
 <div id="phase-6" class="container">
-    <div style="background:white; padding:15px; border-radius:15px; text-align:center; width:95%; margin-bottom:10px;">
+    <div style="background:white; padding:15px; border-radius:15px; text-align:center; width:95%; max-width:500px; margin-bottom:10px;">
         <div id="dice-display" style="font-size:3rem;">🎲</div>
-        <p id="stelling-text" style="font-weight:bold; color:var(--primary);"></p>
+        <p id="stelling-text" style="font-weight:bold; color:var(--primary); margin:10px 0;"></p>
         <button onclick="triggerRoll()" class="btn" style="background:var(--gold); color:black;">DOBBELEN</button>
     </div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; width:100%;">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; width:100%; max-width:500px;">
         <div class="vault" id="v-1"><b>1. ANGST</b><div id="l1"></div></div>
         <div class="vault" id="v-2"><b>2. KEUZES</b><div id="l2"></div></div>
         <div class="vault" id="v-3"><b>3. ENGELEN</b><div id="l3"></div></div>
@@ -85,20 +95,20 @@
         <div class="vault" id="v-5"><b>5. ALLEEN</b><div id="l5"></div></div>
         <div class="vault" id="v-6"><b>6. HERSTEL</b><div id="l6"></div></div>
     </div>
-    <input type="text" id="thought-in" placeholder="Antwoord..." class="input-field" style="margin-top:15px;">
+    <input type="text" id="thought-in" placeholder="Jouw gedachte..." class="input-field" style="margin-top:10px;">
     <button onclick="sendThought()" class="btn" style="background:var(--success);">STUUR</button>
 </div>
 
 <div id="phase-7" class="container">
     <h3 style="color:white; text-shadow: 2px 2px 4px black; margin-bottom:10px;">Wie bad wat?</h3>
-    <div id="names-source"></div>
-    <div id="prayer-targets" style="width:100%;"></div>
+    <div id="names-source" style="margin-bottom:10px;"></div>
+    <div id="prayer-targets" style="width:100%; max-width:500px;"></div>
 </div>
 
 <div id="phase-8" class="container">
-    <h1 id="ws-timer" style="color:white; margin:5px;">03:00</h1>
+    <h1 id="ws-timer" style="color:white;">03:00</h1>
     <div id="ws-grid" style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 2px; width: 95vw; max-width: 380px;"></div>
-    <div id="ws-list" style="background:white; display:grid; grid-template-columns:repeat(3,1fr); font-size:0.5rem; padding:8px; margin:10px 0; border-radius:10px; width:95%;"></div>
+    <div id="ws-list" style="background:white; display:grid; grid-template-columns:repeat(3,1fr); font-size:0.55rem; padding:10px; margin:10px 0; border-radius:10px; width:95%; max-width:380px;"></div>
     <input type="text" id="final-sentence" placeholder="De verborgen zin..." class="input-field" oninput="checkSentence(this.value)">
 </div>
 
@@ -111,7 +121,7 @@
     <button class="nav-btn" id="btn-p6" onclick="navTo('p6')">6</button>
     <button class="nav-btn" id="btn-p7" onclick="navTo('p7')">7</button>
     <button class="nav-btn" id="btn-p8" onclick="navTo('p8')">8</button>
-    <button class="nav-btn" style="background:var(--accent); border-color:white;" onclick="fullReset()">R</button>
+    <button class="nav-btn" style="background:var(--accent); border-color:white; margin-left:8px;" onclick="fullReset()">R</button>
 </div>
 
 <script type="module">
@@ -122,14 +132,14 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    let currentDice = 1;
+    let curDice = 1;
     const stellingen = ["1. Ik ben nooit bang.", "2. Soms hoop ik dat een taak niet doorgaat.", "3. Ik sta altijd klaar voor anderen.", "4. Ik bid direct als ik bang ben.", "5. Ik voel me weleens alleen.", "6. Ik doe wat God vraagt."];
 
     window.navTo = (p) => set(ref(db, 'currentPhase'), p);
     window.sendName = () => { const v = document.getElementById('name-in').value; if(v) push(ref(db, 'names'), v); document.getElementById('name-in').value=''; };
     window.triggerRoll = () => set(ref(db, 'dice'), Math.floor(Math.random()*6)+1);
-    window.sendThought = () => { const v = document.getElementById('thought-in').value; if(v) push(ref(db, 'vaults/'+currentDice), v); document.getElementById('thought-in').value=''; };
-    window.fullReset = () => { if(confirm("Alles resetten?")) remove(ref(db)).then(() => location.reload()); };
+    window.sendThought = () => { const v = document.getElementById('thought-in').value; if(v) push(ref(db, 'vaults/'+curDice), v); document.getElementById('thought-in').value=''; };
+    window.fullReset = () => { if(confirm("Alles wissen?")) remove(ref(db)).then(() => location.reload()); };
 
     onValue(ref(db, 'currentPhase'), s => {
         const p = s.val() || 'p1';
@@ -143,22 +153,22 @@
     });
 
     onValue(ref(db, 'dice'), s => {
-        currentDice = s.val() || 1;
-        document.getElementById('dice-display').innerText = ["⚀","⚁","⚂","⚃","⚄","⚅"][currentDice-1];
-        document.getElementById('stelling-text').innerText = stellingen[currentDice-1];
+        curDice = s.val() || 1;
+        document.getElementById('dice-display').innerText = ["⚀","⚁","⚂","⚃","⚄","⚅"][curDice-1];
+        document.getElementById('stelling-text').innerText = stellingen[curDice-1];
         document.querySelectorAll('.vault').forEach(v => v.classList.remove('active'));
-        const vEl = document.getElementById('v-'+currentDice); if(vEl) vEl.classList.add('active');
+        const vEl = document.getElementById('v-'+curDice); if(vEl) vEl.classList.add('active');
     });
 
     onValue(ref(db, 'names'), s => {
         const d = document.getElementById('display-names-list'); d.innerHTML = '';
-        if(s.val()) Object.values(s.val()).forEach(n => d.innerHTML += `<span class="name-tag" style="font-size:0.6rem;">${n}</span>`);
+        if(s.val()) Object.values(s.val()).forEach(n => d.innerHTML += `<span class="name-tag">${n}</span>`);
     });
 
     onValue(ref(db, 'vaults'), s => {
         for(let i=1; i<=6; i++){
             const v = document.getElementById('l'+i); if(v) v.innerHTML = '';
-            if(s.val() && s.val()[i]) Object.values(s.val()[i]).slice(-2).forEach(t => v.innerHTML += `<div style="font-size:0.5rem;">• ${t}</div>`);
+            if(s.val() && s.val()[i]) Object.values(s.val()[i]).slice(-2).forEach(t => v.innerHTML += `<div style="font-size:0.5rem; color:#666;">• ${t}</div>`);
         }
     });
 
@@ -168,13 +178,13 @@
         const mData = [{n:"Abraham", g:"Wilt u de stad sparen?"}, {n:"David", g:"Was mij schoon, witter dan sneeuw."}, {n:"Jezus", g:"Niet mijn wil, maar Uw wil."}, {n:"Salomo", g:"Geef mij een luisterend hart."}, {n:"Hanna", g:"Geef mij een zoon."}];
         let selName = "", selTag = null;
         [...mData].sort(()=>Math.random()-0.5).forEach(item => {
-            const tag = document.createElement('div'); tag.className = 'name-tag'; tag.innerText = item.n;
-            tag.onclick = () => { document.querySelectorAll('.name-tag').forEach(t => t.classList.remove('selected')); tag.style.background = 'var(--accent)'; selName = item.n; selTag = tag; };
+            const tag = document.createElement('div'); tag.className = 'name-tag'; tag.innerText = item.n; tag.style.cursor='pointer';
+            tag.onclick = () => { document.querySelectorAll('.name-tag').forEach(t => t.style.background = 'var(--gold)'); tag.style.background = 'var(--accent)'; selName = item.n; selTag = tag; };
             src.appendChild(tag);
         });
         mData.forEach(item => {
             const card = document.createElement('div'); card.className = 'prayer-card'; card.innerHTML = `<i>"${item.g}"</i>`;
-            card.onclick = () => { if(selName === item.n) { card.innerHTML = `<b>${item.n}</b><br><i>"${item.g}"</i>`; card.classList.add('filled'); selTag.style.display = 'none'; confetti({particleCount:30}); } };
+            card.onclick = () => { if(selName === item.n) { card.innerHTML = `<b>${item.n}</b><br><i>"${item.g}"</i>`; card.classList.add('filled'); selTag.style.display = 'none'; confetti({particleCount:30}); selName=""; } };
             trg.appendChild(card);
         });
     }
@@ -185,6 +195,10 @@
             const l = document.createElement('div'); l.className = 'ws-letter'; l.innerText = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)];
             l.onclick = () => l.classList.toggle('found'); g.appendChild(l);
         }
+        const wl = document.getElementById('ws-list'); wl.innerHTML = '';
+        ["OLIJFBERG", "JUDAS", "GEBED", "PASEN", "KRACHT", "BEKER", "ENGEL", "KUS", "PETRUS", "HAAN", "WAKKER", "TUIN", "BLOED", "ZWEET", "HEER"].forEach(w => {
+            const span = document.createElement('span'); span.innerText = w; span.style.margin='2px'; span.onclick = () => span.style.textDecoration = 'line-through'; wl.appendChild(span);
+        });
     }
     window.checkSentence = (v) => { if(v.toLowerCase().trim() === "van u is het koninkrijk") confetti({particleCount:150}); };
 </script>
