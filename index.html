@@ -16,40 +16,34 @@
             background-size: cover; background-position: center; z-index: -1;
         }
 
-        .container { display: none; height: 100vh; padding: 15px; box-sizing: border-box; flex-direction: column; align-items: center; overflow-y: auto; padding-bottom: 90px; }
+        .container { display: none; height: 100vh; padding: 15px; box-sizing: border-box; flex-direction: column; align-items: center; overflow-y: auto; padding-bottom: 100px; }
 
-        /* NAVIGATIEBALK - GEGARANDEERD ZICHTBAAR */
+        /* NAVIGATIEBALK */
         .navigation-panel { 
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
-            display: flex; gap: 10px; z-index: 10000; 
-            background: rgba(0,0,0,0.7); padding: 12px 20px; border-radius: 40px; 
+            display: flex; gap: 8px; z-index: 10000; 
+            background: rgba(0,0,0,0.8); padding: 10px 15px; border-radius: 40px; 
             backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);
         }
-        .nav-btn { 
-            width: 45px; height: 45px; border-radius: 50%; border: 2px solid white; 
-            background: transparent; color: white; font-weight: bold; cursor: pointer; 
-            display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
-        }
+        .nav-btn { width: 42px; height: 42px; border-radius: 50%; border: 2px solid white; background: transparent; color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .nav-btn.active { background: white; color: var(--bg); box-shadow: 0 0 15px white; }
-        .reset-btn { background: var(--accent) !important; border-color: #ff7675 !important; }
+        .reset-btn { background: var(--accent) !important; }
 
-        /* FASEOVEREIGEN STIJLEN */
-        .video-container { width: 100%; max-width: 280px; aspect-ratio: 9/16; background: #000; border-radius: 15px; overflow: hidden; margin: 10px 0; border: 3px solid var(--gold); }
+        /* KLUIZEN & STIJLEN */
         .vault-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; max-width: 400px; }
-        .vault { background: rgba(255,255,255,0.9); padding: 10px; border-radius: 12px; font-size: 0.75rem; min-height: 80px; border: 3px solid transparent; }
-        .vault.active { border-color: var(--gold); background: white; }
+        .vault { background: rgba(255,255,255,0.9); padding: 10px; border-radius: 12px; font-size: 0.75rem; min-height: 80px; border: 3px solid transparent; transition: 0.3s; }
+        .vault.active { border-color: var(--gold); background: white; transform: scale(1.02); }
         
-        .name-tag { background: var(--gold); color: #000; padding: 10px 15px; border-radius: 20px; font-weight: bold; margin: 5px; cursor: pointer; display: inline-block; }
-        .name-tag.selected { background: var(--accent); color: white; }
-        .prayer-card { background: white; padding: 15px; border-radius: 12px; border: 2px dashed #ccc; width: 100%; max-width: 400px; margin-bottom: 10px; text-align: center; }
+        .name-tag { background: var(--gold); color: #000; padding: 8px 12px; border-radius: 20px; font-weight: bold; margin: 4px; display: inline-block; }
+        .prayer-card { background: white; padding: 12px; border-radius: 12px; border: 2px dashed #ccc; width: 100%; max-width: 400px; margin-bottom: 8px; text-align: center; }
         .prayer-card.filled { border-style: solid; border-color: var(--success); background: #f0fff4; }
 
         #ws-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 3px; background: rgba(255,255,255,0.2); padding: 8px; border-radius: 10px; width: 95vw; max-width: 380px; }
         .ws-letter { aspect-ratio: 1/1; background: white; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; border-radius: 4px; }
         .ws-letter.found { background: var(--gold); }
         
-        .btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 10px; font-weight: bold; text-decoration: none; cursor: pointer; }
-        .input-field { width: 100%; max-width: 300px; padding: 12px; border-radius: 10px; border: 1px solid #ddd; text-align: center; }
+        .btn { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; text-decoration: none; text-align: center; }
+        .input-field { width: 100%; max-width: 300px; padding: 12px; border-radius: 10px; border: 1px solid #ddd; text-align: center; font-family: 'Fredoka'; }
     </style>
 </head>
 <body>
@@ -57,27 +51,27 @@
 <div class="bg-fixed"></div>
 
 <div id="phase-1" class="container">
-    <div style="background:white; padding:30px; border-radius:25px; width:90%; max-width:400px; text-align:center;">
-        <h1 style="color:var(--primary); margin:0;">Schatgravers</h1>
-        <input type="text" id="name-in" placeholder="Typ je naam..." class="input-field" style="margin:20px 0;">
+    <div style="background:white; padding:25px; border-radius:20px; width:90%; max-width:400px; text-align:center;">
+        <h2 style="color:var(--primary); margin:0;">Schatgravers</h2>
+        <input type="text" id="name-in" placeholder="Typ je naam..." class="input-field" style="margin:15px 0;">
         <button onclick="sendName()" class="btn" style="background:var(--success); width:100%;">START</button>
-        <div id="display-names-list" style="margin-top:20px; display:flex; flex-wrap:wrap; justify-content:center;"></div>
+        <div id="display-names-list" style="margin-top:15px; display:flex; flex-wrap:wrap; justify-content:center;"></div>
     </div>
 </div>
 
 <div id="phase-2" class="container">
-    <h1 id="timer-p2" style="color:white; font-size:3rem; margin:10px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">01:30</h1>
-    <div class="video-container">
-        <iframe src="https://www.youtube.com/embed/7ljG1XWMYjY?rel=0&autoplay=0" allowfullscreen></iframe>
+    <h1 id="timer-p2" style="color:white; font-size:2.5rem; margin:10px 0;">01:30</h1>
+    <div style="width:100%; max-width:260px; aspect-ratio:9/16; background:#000; border-radius:15px; overflow:hidden; border:3px solid var(--gold); margin-bottom:10px;">
+        <iframe src="https://www.youtube.com/embed/7ljG1XWMYjY?rel=0" style="width:100%; height:100%; border:none;" allowfullscreen></iframe>
     </div>
-    <a href="https://earth.google.com/web/search/Mount+of+Olives" target="_blank" class="btn" style="background:var(--accent);">🌍 ONTDEK OP GOOGLE EARTH</a>
+    <a href="https://earth.google.com/web/search/Mount+of+Olives" target="_blank" class="btn" style="background:var(--accent);">🌍 GOOGLE EARTH</a>
 </div>
 
 <div id="phase-3" class="container">
-    <div style="background:white; padding:20px; border-radius:20px; width:90%; max-width:400px; text-align:center; margin-bottom:15px;">
-        <div id="dice-display" style="font-size:4rem;">🎲</div>
-        <p id="stelling-text" style="font-weight:600; margin:10px 0;">Klik op dobbelen!</p>
-        <button onclick="triggerRoll()" class="btn" style="background:var(--gold); color:black;">DOBBELEN</button>
+    <div style="background:white; padding:15px; border-radius:15px; width:90%; max-width:400px; text-align:center; margin-bottom:15px;">
+        <div id="dice-display" style="font-size:3.5rem; line-height:1;">🎲</div>
+        <p id="stelling-text" style="font-weight:600; margin:10px 0; color:var(--primary); min-height:3em;">Klik op dobbelen!</p>
+        <button onclick="triggerRoll()" class="btn" style="background:var(--gold); color:black; width:100%;">DOBBELEN</button>
     </div>
     <div class="vault-grid">
         <div class="vault" id="v-1"><b>1. ANGST</b><div id="l1"></div></div>
@@ -87,26 +81,21 @@
         <div class="vault" id="v-5"><b>5. ALLEEN</b><div id="l5"></div></div>
         <div class="vault" id="v-6"><b>6. HERSTEL</b><div id="l6"></div></div>
     </div>
-    <div style="margin-top:15px; width:100%; text-align:center;">
-        <input type="text" id="thought-in" placeholder="Jouw gedachte..." class="input-field">
-        <button onclick="sendThought()" class="btn" style="background:var(--success); margin-top:10px;">VERSTUUR</button>
-    </div>
+    <input type="text" id="thought-in" placeholder="Jouw gedachte..." class="input-field" style="margin-top:15px;">
+    <button onclick="sendThought()" class="btn" style="background:var(--success); margin-top:5px; width:100%; max-width:300px;">VERSTUUR</button>
 </div>
 
 <div id="phase-4" class="container">
-    <h2 style="color:white; text-shadow: 2px 2px 4px black;">Wie bad wat?</h2>
-    <div id="names-source" style="margin-bottom:20px; text-align:center;"></div>
+    <h3 style="color:white; margin:0 0 10px 0;">Wie bad wat?</h3>
+    <div id="names-source" style="margin-bottom:15px; text-align:center;"></div>
     <div id="prayer-targets" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
 </div>
 
 <div id="phase-5" class="container">
-    <h1 id="ws-timer" style="color:white; margin:10px 0;">03:00</h1>
+    <h1 id="ws-timer" style="color:white; margin:5px 0;">03:00</h1>
     <div id="ws-grid"></div>
-    <div id="ws-list" class="ws-list" style="background:white; padding:10px; border-radius:10px; margin:15px 0; display:grid; grid-template-columns: repeat(3, 1fr); font-size:0.7rem; width:90%; gap:5px;"></div>
-    <div style="background:white; padding:15px; border-radius:15px; width:90%; max-width:400px; text-align:center;">
-        <p style="margin:0 0 10px 0; font-weight:bold;">De verborgen zin:</p>
-        <input type="text" id="final-sentence" placeholder="Typ de zin..." class="input-field" oninput="checkSentence(this.value)">
-    </div>
+    <div id="ws-list" style="background:white; padding:10px; border-radius:10px; margin:10px 0; display:grid; grid-template-columns: repeat(3, 1fr); font-size:0.6rem; width:90%; gap:4px;"></div>
+    <input type="text" id="final-sentence" placeholder="Gevonden zin?" class="input-field" oninput="checkSentence(this.value)">
 </div>
 
 <div class="navigation-panel">
@@ -134,13 +123,22 @@
     const db = getDatabase(app);
     let p2Int, wsInt, curDice = 1, selectedName = null, timerStarted = false;
 
-    // NAVIGATIE FUNCTIE
-    window.navTo = (phase) => set(ref(db, 'currentPhase'), phase);
+    // STELLINGEN LIJST
+    const stellingen = [
+        "1. Ik ben nooit bang.",
+        "2. Soms hoop ik dat een moeilijke taak niet doorgaat.",
+        "3. Ik sta altijd klaar om anderen te helpen.",
+        "4. Als ik bang ben, begin ik direct met bidden.",
+        "5. Ik voel me weleens door iedereen in de steek gelaten.",
+        "6. Ik wil graag doen wat God van mij vraagt."
+    ];
 
-    // RESET FUNCTIE
-    window.fullReset = () => { if(confirm("Wil je de hele les wissen?")) { remove(ref(db)); set(ref(db, 'currentPhase'), 'p1'); location.reload(); }};
+    window.navTo = (p) => set(ref(db, 'currentPhase'), p);
+    window.fullReset = () => { if(confirm("Reset les?")) { remove(ref(db)); set(ref(db,'currentPhase'),'p1'); location.reload(); }};
+    window.sendName = () => { const v = document.getElementById('name-in').value; if(v) push(ref(db, 'names'), v); document.getElementById('name-in').value=''; };
+    window.sendThought = () => { const v = document.getElementById('thought-in').value; if(v) push(ref(db, 'vaults/'+curDice), v); document.getElementById('thought-in').value=''; };
+    window.triggerRoll = () => set(ref(db, 'dice'), Math.floor(Math.random()*6)+1);
 
-    // FASE UPDATES ONTVANGEN
     onValue(ref(db, 'currentPhase'), s => {
         const p = s.val() || 'p1';
         document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
@@ -152,36 +150,32 @@
         if(p==='p5') initWS();
     });
 
-    // FASE 1: NAMEN
-    window.sendName = () => { const v = document.getElementById('name-in').value; if(v) push(ref(db, 'names'), v); document.getElementById('name-in').value=''; };
-    onValue(ref(db, 'names'), s => {
-        const d = document.getElementById('display-names-list'); d.innerHTML = '';
-        if(s.val()) Object.values(s.val()).forEach(n => d.innerHTML += `<div class="name-tag">${n}</div>`);
-    });
-
-    // FASE 3: DOBBELSTEEN & KLUIZEN
-    window.triggerRoll = () => set(ref(db, 'dice'), Math.floor(Math.random()*6)+1);
-    window.sendThought = () => { const v = document.getElementById('thought-in').value; if(v) push(ref(db, 'vaults/'+curDice), v); document.getElementById('thought-in').value=''; };
     onValue(ref(db, 'dice'), s => {
         curDice = s.val() || 1;
         document.getElementById('dice-display').innerText = ["⚀","⚁","⚂","⚃","⚄","⚅"][curDice-1];
+        document.getElementById('stelling-text').innerText = stellingen[curDice-1];
         document.querySelectorAll('.vault').forEach(v => v.classList.remove('active'));
         document.getElementById('v-'+curDice).classList.add('active');
     });
+
     onValue(ref(db, 'vaults'), s => {
         for(let i=1; i<=6; i++) {
             const v = document.getElementById('l'+i); v.innerHTML = '';
-            if(s.val() && s.val()[i]) Object.values(s.val()[i]).slice(-2).forEach(t => v.innerHTML += `<div style="font-size:0.6rem; color:#666;">• ${t}</div>`);
+            if(s.val() && s.val()[i]) Object.values(s.val()[i]).slice(-2).forEach(t => v.innerHTML += `<div style="font-size:0.6rem; color:#444;">• ${t}</div>`);
         }
     });
 
-    // FASE 4: MATCHER
+    onValue(ref(db, 'names'), s => {
+        const d = document.getElementById('display-names-list'); d.innerHTML = '';
+        if(s.val()) Object.values(s.val()).forEach(n => d.innerHTML += `<div class="name-tag" style="font-size:0.7rem;">${n}</div>`);
+    });
+
     function setupMatcher() {
         const src = document.getElementById('names-source'); const trg = document.getElementById('prayer-targets');
         src.innerHTML = ''; trg.innerHTML = '';
-        const data = [{n:"Abraham", g:"Wilt u de stad sparen?"}, {n:"David", g:"Was mij schoon van zonde."}, {n:"Jezus", g:"Uw wil geschiede."}, {n:"Salomo", g:"Geef mij wijsheid."}, {n:"Hanna", g:"Heer, geef mij een zoon."}];
+        const data = [{n:"Abraham", g:"Wilt u de stad sparen?"}, {n:"David", g:"Maak mij witter dan sneeuw."}, {n:"Jezus", g:"Niet mijn wil, maar Uw wil."}, {n:"Salomo", g:"Geef mij een luisterend hart."}, {n:"Hanna", g:"Heer, denk aan mij."}];
         data.forEach(item => {
-            const tag = document.createElement('div'); tag.className = 'name-tag'; tag.innerText = item.n;
+            const tag = document.createElement('div'); tag.className = 'name-tag'; tag.innerText = item.n; tag.style.cursor="pointer";
             tag.onclick = () => { document.querySelectorAll('.name-tag').forEach(t => t.classList.remove('selected')); tag.classList.add('selected'); selectedName = item.n; };
             src.appendChild(tag);
             const card = document.createElement('div'); card.className = 'prayer-card'; card.innerHTML = `<i>"${item.g}"</i>`;
@@ -190,22 +184,21 @@
         });
     }
 
-    // FASE 5: WOORDZOEKER
     function initWS() {
-        const grid = document.getElementById('ws-grid'); const list = document.getElementById('ws-list');
-        grid.innerHTML = ''; list.innerHTML = '';
+        const g = document.getElementById('ws-grid'); const l = document.getElementById('ws-list');
+        g.innerHTML = ''; l.innerHTML = '';
         for(let i=0; i<144; i++) {
-            const l = document.createElement('div'); l.className = 'ws-letter'; l.innerText = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)];
-            l.onclick = () => { l.classList.toggle('found'); if(!timerStarted) startWS(); };
-            grid.appendChild(l);
+            const div = document.createElement('div'); div.className = 'ws-letter'; div.innerText = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)];
+            div.onclick = () => { div.classList.toggle('found'); if(!timerStarted) startWS(); };
+            g.appendChild(div);
         }
-        ["OLIJFBERG", "JUDAS", "GEBED", "PASEN", "KRACHT", "BEKER", "ENGEL", "KUS", "PETRUS", "HAAN", "WAKKER", "TUIN"].forEach(w => {
-            const i = document.createElement('div'); i.innerText = w; i.onclick = () => i.style.textDecoration='line-through'; list.appendChild(i);
+        ["OLIJFBERG", "JUDAS", "GEBED", "PASEN", "KRACHT", "BEKER", "ENGEL", "KUS", "PETRUS", "HAAN", "WAKKER", "TUIN", "BLOED", "ZWEET", "HEER"].forEach(w => {
+            const i = document.createElement('div'); i.innerText = w; i.onclick = () => i.style.textDecoration='line-through'; l.appendChild(i);
         });
     }
-    function startWS() { timerStarted = true; let t = 180; wsInt = setInterval(() => { document.getElementById('ws-timer').innerText = `${Math.floor(t/60)}:${(t%60).toString().padStart(2,'0')}`; if(t-- <= 0) clearInterval(wsInt); }, 1000); }
-    window.checkSentence = (val) => { if(val.toLowerCase().trim() === "van u is het koninkrijk") { confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } }); clearInterval(wsInt); }};
 
+    function startWS() { timerStarted = true; let t = 180; wsInt = setInterval(() => { document.getElementById('ws-timer').innerText = `${Math.floor(t/60)}:${(t%60).toString().padStart(2,'0')}`; if(t-- <= 0) clearInterval(wsInt); }, 1000); }
+    window.checkSentence = (val) => { if(val.toLowerCase().trim() === "van u is het koninkrijk") { confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } }); }};
     function startP2() { let t = 90; clearInterval(p2Int); p2Int = setInterval(() => { document.getElementById('timer-p2').innerText = `${Math.floor(t/60)}:${(t%60).toString().padStart(2,'0')}`; if(t-- <= 0) clearInterval(p2Int); }, 1000); }
 </script>
 </body>
