@@ -1,104 +1,3 @@
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Schatgravers V31</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <style>
-        :root { --primary: #1e3799; --accent: #eb4d4b; --success: #20bf6b; --bg: #0a3d62; --gold: #f1c40f; }
-        body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Fredoka', sans-serif; overflow: hidden; background: var(--bg); color: #333; touch-action: manipulation; }
-        .bg-fixed { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(10, 61, 98, 0.9), rgba(10, 61, 98, 0.9)), url('schatgravers15maart.jpg'); background-size: cover; z-index: -1; }
-        .container { display: none; height: 100vh; padding: 15px; box-sizing: border-box; flex-direction: column; align-items: center; overflow-y: auto; padding-bottom: 110px; }
-        .navigation-panel { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 10000; background: rgba(0,0,0,0.8); padding: 8px 12px; border-radius: 40px; }
-        .nav-btn { width: 38px; height: 38px; border-radius: 50%; border: 2px solid white; background: transparent; color: white; font-weight: bold; cursor: pointer; }
-        .nav-btn.active { background: white; color: var(--bg); box-shadow: 0 0 12px white; }
-        .story-box { background: white; padding: 25px; border-radius: 20px; width: 95%; max-width: 600px; }
-        .vault { background: rgba(255,255,255,0.9); padding: 10px; border-radius: 12px; font-size: 0.7rem; min-height: 70px; border: 3px solid transparent; }
-        .vault.active { border-color: var(--gold); background: white; }
-        .name-tag { background: var(--gold); color: #000; padding: 8px 12px; border-radius: 20px; font-weight: bold; margin: 4px; display: inline-block; cursor: pointer; }
-        .name-tag.hidden { display: none; }
-        .prayer-card { background: white; padding: 12px; border-radius: 15px; border: 2px dashed #ccc; width: 100%; text-align: center; margin-bottom: 8px; }
-        .prayer-card.filled { border: 3px solid var(--success); background: #f0fff4; }
-        .btn { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; display: block; text-align: center; width: 100%; }
-        .input-field { width: 100%; max-width: 300px; padding: 12px; border-radius: 10px; border: 1px solid #ddd; text-align: center; font-family: 'Fredoka'; margin-bottom: 10px; }
-        #info-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 20000; align-items: center; justify-content: center; }
-        #ws-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 2px; width: 95vw; max-width: 380px; }
-        .ws-letter { aspect-ratio: 1/1; background: white; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; border-radius: 4px; }
-        .ws-letter.found { background: var(--gold); }
-    </style>
-</head>
-<body>
-
-<div class="bg-fixed"></div>
-
-<div id="info-overlay" onclick="closeInfo()">
-    <div style="background:white; padding:25px; border-radius:20px; width:85%; max-width:350px; text-align:center;">
-        <h2 id="info-title" style="margin:0; color:var(--primary);"></h2>
-        <p id="info-text" style="margin:15px 0;"></p>
-        <button class="btn" style="background:var(--success);">DOORGAAN</button>
-    </div>
-</div>
-
-<div id="phase-1" class="container">
-    <div style="background:white; padding:30px; border-radius:20px; text-align:center; width:90%;">
-        <h2>Schatgravers</h2>
-        <input type="text" id="name-in" placeholder="Naam..." class="input-field">
-        <button onclick="sendName()" class="btn">START</button>
-        <div id="display-names-list" style="margin-top:15px;"></div>
-    </div>
-</div>
-
-<div id="phase-2" class="container">
-    <h1 id="timer-p2" style="color:white; font-size:3rem;">01:30</h1>
-    <div style="width:100%; max-width:280px; aspect-ratio:9/16; background:#000; border-radius:15px; overflow:hidden; border:3px solid var(--gold);">
-        <iframe src="https://www.youtube.com/embed/7ljG1XWMYjY" style="width:100%; height:100%; border:none;" allowfullscreen></iframe>
-    </div>
-    <a href="https://earth.google.com/web/search/Mount+of+Olives" target="_blank" class="btn" style="margin-top:15px; background:var(--accent); text-decoration:none;">🌍 GOOGLE EARTH</a>
-</div>
-
-<div id="phase-3" class="container">
-    <div class="story-box">
-        <img src="schatgravers15maart.jpg" style="width:100%; border-radius:10px; margin-bottom:15px; border:3px solid var(--gold);">
-        <div style="font-size:1.1rem; line-height:1.4;">
-            <strong>Lukas 22:39-46</strong><br><br>
-            Jezus knielde neer en bad: <em>"Vader, laat niet wat Ik wil, maar wat U wilt gebeuren."</em> Een engel gaf Hem kracht. Jezus was zo bang dat Zijn zweet als druppels bloed op de grond viel.
-        </div>
-    </div>
-</div>
-
-<div id="phase-4" class="container">
-    <div style="background:white; padding:15px; border-radius:15px; text-align:center; width:90%; margin-bottom:15px;">
-        <div id="dice-display" style="font-size:3.5rem;">🎲</div>
-        <p id="stelling-text" style="font-weight:bold; color:var(--primary); min-height:1.2em;"></p>
-        <button onclick="triggerRoll()" class="btn" style="background:var(--gold); color:black;">DOBBELEN</button>
-    </div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; width:100%;">
-        <div class="vault" id="v-1"><b>1. ANGST</b><div id="l1"></div></div>
-        <div class="vault" id="v-2"><b>2. KEUZES</b><div id="l2"></div></div>
-        <div class="vault" id="v-3"><b>3. ENGELEN</b><div id="l3"></div></div>
-        <div class="vault" id="v-4"><b>4. BIDDEN</b><div id="l4"></div></div>
-        <div class="vault" id="v-5"><b>5. ALLEEN</b><div id="l5"></div></div>
-        <div class="vault" id="v-6"><b>6. HERSTEL</b><div id="l6"></div></div>
-    </div>
-    <input type="text" id="thought-in" placeholder="Antwoord..." class="input-field" style="margin-top:10px;">
-    <button onclick="sendThought()" class="btn" style="background:var(--success);">STUUR</button>
-</div>
-
-<div id="phase-5" class="container">
-    <h3 style="color:white; text-shadow: 2px 2px 4px black;">Wie bad wat?</h3>
-    <div id="names-source"></div>
-    <div id="prayer-targets" style="width:100%;"></div>
-</div>
-
-<div id="phase-6" class="container">
-    <h1 id="ws-timer" style="color:white;">03:00</h1>
-    <div id="ws-grid"></div>
-    <div id="ws-list" style="background:white; display:grid; grid-template-columns:repeat(3,1fr); font-size:0.5rem; padding:8px; margin:10px 0; border-radius:10px; width:95%;"></div>
-    <input type="text" id="final-sentence" placeholder="De zin?" class="input-field" oninput="checkSentence(this.value)">
-</div>
-
 <div class="navigation-panel">
     <button class="nav-btn" id="btn-p1" onclick="navTo('p1')">1</button>
     <button class="nav-btn" id="btn-p2" onclick="navTo('p2')">2</button>
@@ -106,18 +5,38 @@
     <button class="nav-btn" id="btn-p4" onclick="navTo('p4')">4</button>
     <button class="nav-btn" id="btn-p5" onclick="navTo('p5')">5</button>
     <button class="nav-btn" id="btn-p6" onclick="navTo('p6')">6</button>
+    <button class="nav-btn" style="background:var(--accent); border-color:white; margin-left:5px;" onclick="fullReset()">R</button>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, set, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    const firebaseConfig = { apiKey: "AIzaSyBC3Dzm8PNPXw12VJNimvly5u2I93QeW54", authDomain: "schatgravers15maart2026.firebaseapp.com", databaseURL: "https://schatgravers15maart2026-default-rtdb.europe-west1.firebasedatabase.app", projectId: "schatgravers15maart2026", appId: "1:30561512857:web:fcb7868b87d292d1c97708" };
+    // Firebase configuratie (ongewijzigd)
+    const firebaseConfig = { 
+        apiKey: "AIzaSyBC3Dzm8PNPXw12VJNimvly5u2I93QeW54", 
+        authDomain: "schatgravers15maart2026.firebaseapp.com", 
+        databaseURL: "https://schatgravers15maart2026-default-rtdb.europe-west1.firebasedatabase.app", 
+        projectId: "schatgravers15maart2026", 
+        appId: "1:30561512857:web:fcb7868b87d292d1c97708" 
+    };
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
+    // --- DE RESET FUNCTIE ---
+    window.fullReset = () => {
+        if(confirm("LET OP: Dit wist alle namen, antwoorden en voortgang. Wil je echt resetten?")) {
+            remove(ref(db)).then(() => {
+                set(ref(db, 'currentPhase'), 'p1');
+                location.reload(); // Ververst de pagina voor een schone lei
+            });
+        }
+    };
+
+    // --- DE REST VAN DE LOGICA ---
     let curDice = 1, selNameVal = "", selNameEl = null, p2Int, wsInt, timerStarted = false;
     const stellingen = ["1. Ik ben nooit bang.", "2. Soms hoop ik dat een taak niet doorgaat.", "3. Ik sta altijd klaar voor anderen.", "4. Ik bid direct als ik bang ben.", "5. Ik voel me weleens alleen.", "6. Ik doe wat God vraagt."];
+    
     const matcherData = [
         {n:"Abraham", g:"Wilt u de stad sparen om 10 rechtvaardigen?", u:"Hij onderhandelde met God om Sodom te redden."},
         {n:"David", g:"Was mij schoon, maak mij witter dan sneeuw.", u:"Dit bad David toen hij spijt had van zijn fouten."},
@@ -135,7 +54,8 @@
     onValue(ref(db, 'currentPhase'), s => {
         const p = s.val() || 'p1';
         document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
-        document.getElementById('phase-' + p.replace('p','')).style.display = 'flex';
+        const target = document.getElementById('phase-' + p.replace('p',''));
+        if(target) target.style.display = 'flex';
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         const btn = document.getElementById('btn-'+p); if(btn) btn.classList.add('active');
         if(p==='p2') startP2();
@@ -205,5 +125,3 @@
     window.checkSentence = (v) => { if(v.toLowerCase().trim() === "van u is het koninkrijk") confetti({particleCount:150, spread:70, origin:{y:0.6}}); };
     function startP2() { let t = 90; clearInterval(p2Int); p2Int = setInterval(() => { document.getElementById('timer-p2').innerText = `${Math.floor(t/60)}:${(t%60).toString().padStart(2,'0')}`; if(t-- <= 0) clearInterval(p2Int); }, 1000); }
 </script>
-</body>
-</html>
