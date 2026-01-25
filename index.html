@@ -3,129 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schatgravers Live - Het Grote Avontuur</title>
+    <title>Schatgravers - Regie Versie</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #4834d4; --accent: #eb4d4b; --success: #6ab04c;
-            --white: rgba(255, 255, 255, 0.95); --gold: #f9ca24;
-            --sky: #686de0;
+            --primary: #1e3799; --accent: #eb4d4b; --success: #20bf6b;
+            --white: rgba(255, 255, 255, 0.95); --gold: #f1c40f;
         }
 
-        body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Fredoka', sans-serif; overflow: hidden; background: #130f40; color: #2d3436; }
+        body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Fredoka', sans-serif; overflow: hidden; background: #0a3d62; }
         
-        /* Bewegende achtergrond */
-        .bg-overlay {
+        .bg-main {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('schatgravers15maart.jpg'); background-size: cover; background-position: center;
-            filter: blur(8px) brightness(0.4); z-index: -2; transition: 1s;
+            background: linear-gradient(rgba(10, 61, 98, 0.8), rgba(10, 61, 98, 0.8)), url('schatgravers15maart.jpg');
+            background-size: cover; background-position: center; z-index: -2;
         }
 
-        /* Dynamische Reis-Tracker */
-        .travel-bar {
+        /* TIJDLIJN */
+        .timeline {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            width: 80%; height: 60px; background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px); border-radius: 30px; display: flex; 
-            align-items: center; justify-content: space-between; padding: 0 30px; z-index: 100;
-            border: 2px solid rgba(255,255,255,0.2);
+            width: 60%; height: 4px; background: rgba(255,255,255,0.2);
+            border-radius: 2px; z-index: 100; display: flex; justify-content: space-between;
         }
-        .travel-dot { width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.5s; opacity: 0.4; }
-        .travel-dot.active { opacity: 1; transform: scale(1.3); box-shadow: 0 0 20px var(--gold); background: var(--gold); }
+        .time-node { width: 12px; height: 12px; background: #fff; border-radius: 50%; margin-top: -4px; opacity: 0.3; transition: 0.5s; }
+        .time-node.active { opacity: 1; box-shadow: 0 0 10px #fff; transform: scale(1.5); }
 
-        /* Kaartjes Styling */
-        .card { 
-            background: var(--white); border-radius: 40px; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4); animation: slideIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border-bottom: 8px solid rgba(0,0,0,0.1);
+        .container { display: none; height: 100vh; padding: 60px 20px 20px; box-sizing: border-box; }
+        
+        /* KLUIS LAYOUT */
+        .main-layout { display: flex; gap: 20px; height: 100%; width: 100%; }
+        .sidebar { width: 300px; display: flex; flex-direction: column; gap: 15px; }
+        .vault-grid { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); gap: 15px; }
+        
+        .vault { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 15px; padding: 15px; position: relative; overflow-y: auto; transition: 0.3s; }
+        .vault.active-vault { background: rgba(255,255,255,0.15); border: 2px solid var(--gold); box-shadow: inset 0 0 20px rgba(241, 196, 15, 0.2); }
+        .vault-num { position: absolute; top: 10px; right: 15px; color: var(--gold); font-weight: bold; font-size: 1.5rem; opacity: 0.5; }
+        .vault-title { color: white; font-size: 0.9rem; font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
+
+        .glass { background: var(--white); border-radius: 20px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+
+        /* BIJBEL STORY OVERLAY */
+        #story-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 2000; display: none;
+            justify-content: center; align-items: center; backdrop-filter: blur(5px);
         }
+        .story-card { background: white; width: 85%; max-width: 700px; border-radius: 30px; overflow: hidden; animation: zoomIn 0.3s ease; }
+        .story-img { width: 100%; height: 200px; background: url('schatgravers15maart.jpg') center; background-size: cover; }
+        .story-text { padding: 30px; line-height: 1.6; font-size: 1.1rem; }
 
-        /* FASE 1: SPEELS AANMELDEN */
-        #phase-1 { display: none; height: 100vh; flex-direction: column; align-items: center; justify-content: center; }
-        .welcome-box { padding: 40px; text-align: center; max-width: 500px; }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* FASE 2: STORY-SCROLL */
-        #phase-2 { display: none; height: 100vh; padding: 100px 40px 40px; box-sizing: border-box; }
-        .story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; height: 100%; width: 100%; }
-        .story-text-area { padding: 30px; overflow-y: auto; font-size: 1.2rem; line-height: 1.5; }
-        .map-visual { border-radius: 30px; background: url('https://images.unsplash.com/photo-1549102011-8276f70f6128?q=80&w=1000&auto=format&fit=crop') center; background-size: cover; position: relative; }
-        .ede-marker { position: absolute; top: 20px; left: 20px; background: var(--accent); color: white; padding: 10px 20px; border-radius: 20px; font-weight: bold; transform: rotate(-5deg); }
+        /* DOBBELSTEEN */
+        .scene { width: 60px; height: 60px; perspective: 600px; margin: 10px auto; }
+        .cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: 1.2s; }
+        .face { position: absolute; width: 60px; height: 60px; background: white; border: 2px solid var(--primary); line-height: 60px; font-size: 25px; font-weight: bold; color: var(--primary); border-radius: 8px; text-align: center; }
 
-        /* FASE 3: DOBBELSTEEN */
-        #phase-3 { display: none; padding: 100px 20px 20px; height: 100vh; box-sizing: border-box; }
-        .dice-container { display: flex; gap: 20px; height: 100%; }
+        /* REGIE */
+        .regie { position: fixed; bottom: 15px; right: 15px; display: flex; gap: 8px; z-index: 3000; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 30px; }
+        .r-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #fff; background: none; color: #fff; cursor: pointer; font-weight: bold; }
+        .r-btn.active { background: var(--gold); color: #000; border-color: var(--gold); }
+        .r-btn-story { background: var(--accent) !important; border: none !important; }
 
-        /* Admin knoppen kleiner en subtieler */
-        .admin-nav { position: fixed; bottom: 10px; right: 10px; opacity: 0.3; transition: 0.3s; z-index: 1000; }
-        .admin-nav:hover { opacity: 1; }
-
-        @keyframes slideIn { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .bubble { background: white; padding: 15px 20px; border-radius: 25px 25px 25px 5px; margin: 10px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); font-weight: 600; transition: 0.3s; }
+        .answer-pill { background: white; color: #333; padding: 6px 12px; border-radius: 10px; margin-bottom: 6px; font-size: 0.85rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-<div class="bg-overlay" id="bg"></div>
+<audio id="ping-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+<div class="bg-main"></div>
 
-<div class="travel-bar">
-    <div class="travel-dot" id="dot-p1">🏠</div>
-    <div style="flex:1; border-top: 3px dashed rgba(255,255,255,0.3); margin: 0 15px;"></div>
-    <div class="travel-dot" id="dot-p2">✈️</div>
-    <div style="flex:1; border-top: 3px dashed rgba(255,255,255,0.3); margin: 0 15px;"></div>
-    <div class="travel-dot" id="dot-p3">🌳</div>
+<div class="timeline">
+    <div class="time-node" id="dot-p1"></div><div class="time-node" id="dot-p2"></div><div class="time-node" id="dot-p3"></div>
 </div>
 
-<div id="phase-1">
-    <div class="card welcome-box">
-        <h1 style="color:var(--primary); margin-top:0;">Reis je mee? 🎒</h1>
-        <p>We verzamelen bij de <strong>Proosdijkerk</strong>. Laat weten dat je er bent!</p>
-        <input type="text" id="name-in" placeholder="Je voornaam..." style="width:80%; padding:15px; border-radius:20px; border:2px solid #ddd; margin-bottom:15px; font-size:1.1rem; font-family:'Fredoka';">
-        <button onclick="sendName()" style="width:80%; padding:15px; background:var(--success); color:white; border:none; border-radius:20px; font-weight:bold; cursor:pointer; font-size:1.1rem;">IK DOE MEE! ✨</button>
-        <div id="names-list" style="margin-top:20px; display:flex; gap:8px; flex-wrap:wrap; justify-content:center;"></div>
+<div id="phase-1" class="container" style="display:flex; justify-content:center; align-items:center;">
+    <div class="glass" style="text-align:center; max-width:400px;">
+        <h2 style="margin-top:0;">Schatgravers Live</h2>
+        <p>Vanaf de Proosdijkerk naar de Olijfberg. Meld je aan:</p>
+        <input type="text" id="name-in" placeholder="Naam..." style="width:80%; padding:12px; border-radius:10px; border:1px solid #ddd;">
+        <button onclick="sendName()" style="margin-top:10px; padding:12px 30px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; width:84%;">START</button>
     </div>
 </div>
 
-<div id="phase-2">
-    <div class="story-grid">
-        <div class="card story-text-area">
-            <h2 style="color:var(--accent); margin-top:0;">De Grote Reis 🗺️</h2>
-            <p>Stel je voor: we rijden de parkeerplaats bij de <strong>Proosdijkerk</strong> af. De rotonde over, en dan... nog 4.400 kilometer gaan!</p>
-            <p style="background: #fff9e6; padding: 15px; border-radius: 15px; font-size: 1rem;">
-                Dat is alsof je <strong>11.000 keer</strong> rond het voetbalveld van Ede rent!
-            </p>
-            <p>Eindelijk komen we aan bij de Olijfberg. Het is nacht. De wind waait zachtjes door de oude bomen. Jezus is hier, en Hij heeft onze hulp (en gebeden) nodig.</p>
-            <a href="https://earth.google.com/web/search/Mount+of+Olives,+Jerusalem" target="_blank" style="text-decoration:none; display:block; text-align:center; background:var(--primary); color:white; padding:15px; border-radius:20px; font-weight:bold;">BEKIJK DE BERG IN 3D 🌍</a>
+<div id="phase-2" class="container" style="display:flex; justify-content:center; align-items:center;">
+    <div class="glass" style="text-align:center;">
+        <h1 id="timer-display" style="font-size:4rem; margin:0; color:var(--accent);">01:30</h1>
+        <p>Verken de Olijfberg in Google Earth!</p>
+        <a href="https://earth.google.com/web/search/Mount+of+Olives,+Jerusalem" target="_blank" style="display:inline-block; padding:15px 40px; background:var(--primary); color:white; text-decoration:none; border-radius:50px; font-weight:bold;">VLIEG NU 🌍</a>
+    </div>
+</div>
+
+<div id="phase-3" class="container">
+    <div class="main-layout">
+        <div class="sidebar">
+            <div class="glass" style="text-align:center;">
+                <div class="scene"><div class="cube" id="cube">
+                    <div class="face" style="transform:rotateY(0deg) translateZ(30px)">1</div>
+                    <div class="face" style="transform:rotateY(180deg) translateZ(30px)">2</div>
+                    <div class="face" style="transform:rotateY(-90deg) translateZ(30px)">3</div>
+                    <div class="face" style="transform:rotateY(90deg) translateZ(30px)">4</div>
+                    <div class="face" style="transform:rotateX(-90deg) translateZ(30px)">5</div>
+                    <div class="face" style="transform:rotateX(90deg) translateZ(30px)">6</div>
+                </div></div>
+                <button onclick="triggerRoll()" style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">GOOI 🎲</button>
+                <p id="active-stmt" style="font-size:0.85rem; margin-top:10px; color:#444; min-height:40px; font-weight:600;"></p>
+            </div>
+            <div class="glass">
+                <input type="text" id="thought-in" placeholder="Antwoord..." style="width:100%; padding:10px; box-sizing:border-box; border-radius:8px; border:1px solid #ddd;">
+                <button onclick="sendThought()" style="width:100%; margin-top:8px; padding:10px; background:var(--success); color:white; border:none; border-radius:8px; font-weight:bold;">VERZEND ✨</button>
+            </div>
         </div>
-        <div class="map-visual">
-            <div class="ede-marker">START: EDE 📍</div>
+
+        <div class="vault-grid" id="vaults-container">
+            <div class="vault" id="vault-1"><span class="vault-num">1</span><div class="vault-title">ANGST</div></div>
+            <div class="vault" id="vault-2"><span class="vault-num">2</span><div class="vault-title">KEUZES</div></div>
+            <div class="vault" id="vault-3"><span class="vault-num">3</span><div class="vault-title">ENGELEN</div></div>
+            <div class="vault" id="vault-4"><span class="vault-num">4</span><div class="vault-title">BIDDEN</div></div>
+            <div class="vault" id="vault-5"><span class="vault-num">5</span><div class="vault-title">ALLEEN</div></div>
+            <div class="vault" id="vault-6"><span class="vault-num">6</span><div class="vault-title">HERSTEL</div></div>
         </div>
     </div>
 </div>
 
-<div id="phase-3">
-    <div class="dice-container">
-        <div class="card" style="width:350px; padding:30px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-            <div class="scene"><div class="cube" id="cube" style="width:100px; height:100px; position:relative; transform-style:preserve-3d; transition:1.2s;">
-                <div class="cube__face cube__face--1" style="position:absolute; width:100px; height:100px; background:white; border:4px solid var(--primary); line-height:100px; font-size:40px; text-align:center; transform:rotateY(0deg) translateZ(50px);">1</div>
-                <div class="cube__face cube__face--2" style="position:absolute; width:100px; height:100px; background:white; border:4px solid var(--primary); line-height:100px; font-size:40px; text-align:center; transform:rotateY(180deg) translateZ(50px);">2</div>
-                <div class="cube__face cube__face--3" style="position:absolute; width:100px; height:100px; background:white; border:4px solid var(--primary); line-height:100px; font-size:40px; text-align:center; transform:rotateY(-90deg) translateZ(50px);">3</div>
-                <div class="cube__face cube__face--4" style="position:absolute; width:100px; height:100px; background:white; border:4px solid var(--primary); line-height:100px; font-size:40px; text-align:center; transform:rotateY(90deg) translateZ(50px);">4</div>
-                <div class="cube__face cube__face--5" style="position:absolute; width:100px; height:100px; background:white; border:4px solid var(--primary); line-height:100px; font-size:40px; text-align:center; transform:rotateX(-90deg) translateZ(50px);">5</div>
-                <div class="cube__face cube__face--6" style="position:absolute; width:100px; height:100px; background:white; border:4px solid var(--primary); line-height:100px; font-size:40px; text-align:center; transform:rotateX(90deg) translateZ(50px);">6</div>
-            </div></div>
-            <button onclick="triggerRoll()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:20px; font-weight:bold; cursor:pointer; margin:20px 0;">GOOI DE DOBBELSTEEN 🎲</button>
-            <div id="active-stmt" style="text-align:center; font-weight:bold; color:var(--primary); font-size:1.1rem; min-height:80px;">Druk op de knop!</div>
-            <input type="text" id="thought-in" placeholder="Jouw gedachte..." style="width:100%; padding:12px; border-radius:15px; border:1px solid #ddd; margin-bottom:10px;">
-            <button onclick="sendThought()" style="width:100%; padding:12px; background:var(--success); color:white; border:none; border-radius:15px; font-weight:bold;">DEEL ✨</button>
+<div id="story-overlay">
+    <div class="story-card">
+        <div class="story-img"></div>
+        <div class="story-text">
+            <h2 style="margin-top:0; color:var(--primary);">De Nacht op de Olijfberg</h2>
+            <p>Jezus was met zijn vrienden op de berg. Hij wist dat er iets moeilijks zou gebeuren en voelde zich angstig. Hij vroeg zijn vrienden om wakker te blijven en te bidden, maar zij vielen steeds in slaap.</p>
+            <p>Jezus bad alleen tot God om kracht. Toen kwam er een engel uit de hemel om Hem te helpen en moed te geven. Zo was Hij toch niet helemaal alleen.</p>
         </div>
-        <div id="live-thoughts" style="flex:1; overflow-y:auto; display:flex; flex-wrap:wrap; align-content:start;"></div>
     </div>
 </div>
 
-<div class="admin-nav">
-    <button onclick="updatePhase('p1')">1</button>
-    <button onclick="updatePhase('p2')">2</button>
-    <button onclick="updatePhase('p3')">3</button>
-    <button onclick="hardReset()" style="background:red; color:white;">X</button>
+<div class="regie">
+    <button class="r-btn" id="r1" onclick="updatePhase('p1')">1</button>
+    <button class="r-btn" id="r2" onclick="updatePhase('p2')">2</button>
+    <button class="r-btn" id="r3" onclick="updatePhase('p3')">3</button>
+    <button class="r-btn r-btn-story" id="rStory" onclick="toggleStory()">📖</button>
 </div>
 
 <script type="module">
@@ -137,60 +154,76 @@
         authDomain: "schatgravers15maart2026.firebaseapp.com",
         projectId: "schatgravers15maart2026",
         databaseURL: "https://schatgravers15maart2026-default-rtdb.europe-west1.firebasedatabase.app",
-        storageBucket: "schatgravers15maart2026.firebasestorage.app",
-        messagingSenderId: "30561512857",
         appId: "1:30561512857:web:fcb7868b87d292d1c97708"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    let timerInterval, currentDiceResult = 1, storyOpen = false;
+
     const stellingen = [
-        "ANGST: Wanneer ben jij bang, net als Jezus op de berg?",
-        "KEUZES: Vind je het lastig om het goede te doen als anderen niet kijken?",
-        "ENGELEN: Wie was er voor jou een 'engel' toen je hulp nodig had?",
-        "BIDDEN: Hoe praat jij met God?",
-        "ALLEEN: Voel je je wel eens alleen, zoals Jezus door zijn vrienden?",
-        "HERSTEL: Hoe maak jij iets wat kapot is weer goed?"
+        "ANGST: Wanneer ben jij wel eens bang?", "KEUZES: Doe jij het goede als niemand kijkt?",
+        "ENGELEN: Wie hielp jou op een moeilijk moment?", "BIDDEN: Hoe praat jij met God?",
+        "ALLEEN: Voel jij je wel eens alleen?", "HERSTEL: Hoe maak jij iets weer goed?"
     ];
 
     window.updatePhase = (p) => set(ref(db, 'currentPhase'), p);
-    window.sendName = () => { const v = document.getElementById('name-in').value; if(v) push(ref(db, 'names'), v); document.getElementById('name-in').value=''; };
+    window.toggleStory = () => { storyOpen = !storyOpen; set(ref(db, 'storyVisible'), storyOpen); };
+    window.sendName = () => { const v = document.getElementById('name-in').value; if(v) push(ref(db, 'names'), v); };
     window.triggerRoll = () => set(ref(db, 'gameState'), {r: Math.floor(Math.random()*6)+1, t: Date.now()});
-    window.sendThought = () => { const v = document.getElementById('thought-in').value; if(v) push(ref(db, 'live'), v); document.getElementById('thought-in').value=''; };
-    window.hardReset = () => { if(confirm("Reset?")) remove(ref(db, '/')); };
+    window.sendThought = () => { 
+        const v = document.getElementById('thought-in').value; 
+        if(v) { push(ref(db, 'vaults/' + currentDiceResult), v); document.getElementById('thought-in').value=''; }
+    };
 
     onValue(ref(db, 'currentPhase'), s => {
         const p = s.val() || 'p1';
-        document.getElementById('phase-1').style.display = (p === 'p1') ? 'flex' : 'none';
-        document.getElementById('phase-2').style.display = (p === 'p2') ? 'flex' : 'none';
-        document.getElementById('phase-3').style.display = (p === 'p3') ? 'flex' : 'none';
-        
-        document.querySelectorAll('.travel-dot').forEach(d => d.classList.remove('active'));
+        document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
+        document.getElementById('phase-' + p.replace('p','')).style.display = 'flex';
+        document.querySelectorAll('.time-node, .r-btn').forEach(el => el.classList.remove('active'));
         document.getElementById('dot-' + p).classList.add('active');
-        document.getElementById('bg').style.filter = (p === 'p3') ? 'blur(10px) brightness(0.2)' : 'blur(8px) brightness(0.4)';
+        document.getElementById('r' + p.replace('p','')).classList.add('active');
+        if (p === 'p2') startTimer(); else clearInterval(timerInterval);
     });
 
-    onValue(ref(db, 'names'), s => {
-        const list = document.getElementById('names-list'); list.innerHTML = "";
-        const data = s.val(); if(data) Object.values(data).forEach(n => {
-            list.innerHTML += `<span style="background:var(--sky); color:white; padding:5px 12px; border-radius:15px; font-size:0.9rem;">${n}</span>`;
-        });
+    onValue(ref(db, 'storyVisible'), s => {
+        const visible = s.val();
+        document.getElementById('story-overlay').style.display = visible ? 'flex' : 'none';
+        document.getElementById('rStory').classList.toggle('active', visible);
+        storyOpen = visible;
     });
 
     onValue(ref(db, 'gameState'), s => {
         const d = s.val(); if(d) {
+            currentDiceResult = d.r;
             const rotations = {1:'rotateY(0deg)', 2:'rotateY(180deg)', 3:'rotateY(-90deg)', 4:'rotateY(90deg)', 5:'rotateX(-90deg)', 6:'rotateX(90deg)'};
             document.getElementById('cube').style.transform = rotations[d.r];
             document.getElementById('active-stmt').innerText = stellingen[d.r-1];
+            document.querySelectorAll('.vault').forEach(v => v.classList.remove('active-vault'));
+            document.getElementById('vault-' + d.r).classList.add('active-vault');
         }
     });
 
-    onValue(ref(db, 'live'), s => {
-        const grid = document.getElementById('live-thoughts'); grid.innerHTML = "";
-        const data = s.val(); if(data) Object.values(data).reverse().forEach(t => {
-            grid.innerHTML += `<div class="bubble">${t}</div>`;
-        });
+    onValue(ref(db, 'vaults'), s => {
+        const data = s.val(); 
+        for(let i=1; i<=6; i++) {
+            const v = document.getElementById('vault-' + i);
+            v.innerHTML = `<span class="vault-num">${i}</span><div class="vault-title">${stellingen[i-1].split(':')[0]}</div>`;
+            if(data && data[i]) Object.values(data[i]).forEach(t => {
+                v.innerHTML += `<div class="answer-pill">${t}</div>`;
+            });
+        }
     });
+
+    function startTimer() {
+        let time = 90;
+        timerInterval = setInterval(() => {
+            let m = Math.floor(time/60), s = time%60;
+            document.getElementById('timer-display').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            if(time <= 0) { clearInterval(timerInterval); document.getElementById('ping-sound').play(); }
+            time--;
+        }, 1000);
+    }
 </script>
 </body>
 </html>
