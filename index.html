@@ -3,68 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schatgravers Live - Snel & Dynamisch</title>
+    <title>Schatgravers - Fase 3: De Olijfberg</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #1e3799; 
-            --secondary: #4834d4;
-            --accent: #ff7675;
-            --success: #20bf6b;
-            --danger: #eb4d4b;
-            --white: rgba(255, 255, 255, 0.95);
+            --primary: #1e3799; --accent: #ff7675; --success: #20bf6b;
+            --white: rgba(255, 255, 255, 0.95); --gold: #f1c40f;
         }
 
-        body, html {
-            margin: 0; padding: 0; height: 100vh; width: 100vw;
-            font-family: 'Fredoka', sans-serif;
-            overflow: hidden;
-            background-color: #0a3d62; /* Fallback kleur */
-        }
-
-        /* ACHTERGROND MET AFBEELDING */
+        body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Fredoka', sans-serif; overflow: hidden; background: #0a3d62; }
+        
         .bg-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('schatgravers15maart.jpg');
-            background-size: cover;
-            background-position: center;
-            filter: blur(10px) brightness(0.4); /* Vervaagd en donkerblauw effect */
-            z-index: -1;
-            transform: scale(1.1); /* Voorkomt witte randen bij blur */
+            background-image: url('schatgravers15maart.jpg'); background-size: cover; background-position: center;
+            filter: blur(10px) brightness(0.4); z-index: -2;
         }
 
-        body { display: flex; flex-direction: column; }
-
-        /* HEADER: Namen */
         .names-bar {
             background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
-            padding: 15px 25px; border-bottom: 2px solid rgba(255,255,255,0.2);
-            display: flex; align-items: center; gap: 20px;
+            padding: 15px 25px; display: flex; align-items: center; gap: 20px; border-bottom: 1px solid rgba(255,255,255,0.2);
         }
-        .name-tag {
-            background: var(--white); color: var(--primary); padding: 8px 18px;
-            border-radius: 50px; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            animation: pop 0.3s ease;
-        }
+        .name-tag { background: var(--white); color: var(--primary); padding: 8px 18px; border-radius: 50px; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.3); animation: pop 0.4s ease; }
 
-        /* MIDDEN: Speelveld */
-        .main-stage { display: flex; flex: 1; padding: 20px; gap: 20px; overflow: hidden; }
+        .main-stage { display: flex; flex: 1; padding: 25px; gap: 25px; height: 75vh; }
 
         .dice-zone {
-            width: 320px; background: var(--white); border-radius: 40px;
-            padding: 25px; display: flex; flex-direction: column; align-items: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            width: 350px; background: var(--white); border-radius: 40px;
+            padding: 30px; display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
         }
 
-        /* SNELLE DOBBELSTEEN */
-        .scene { width: 100px; height: 100px; perspective: 600px; margin: 20px; cursor: pointer; }
+        .scene { width: 100px; height: 100px; perspective: 600px; margin: 30px; }
         .cube { 
             width: 100%; height: 100%; position: relative; transform-style: preserve-3d; 
-            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Veel sneller! */
+            transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
         }
         .cube__face { 
             position: absolute; width: 100px; height: 100px; background: white; 
-            border: 4px solid var(--primary); line-height: 100px; font-size: 45px; 
+            border: 4px solid var(--primary); line-height: 100px; font-size: 40px; 
             border-radius: 20px; text-align: center; color: var(--primary); font-weight: bold;
         }
         .cube__face--1 { transform: rotateY(0deg) translateZ(50px); }
@@ -74,32 +50,18 @@
         .cube__face--5 { transform: rotateX(-90deg) translateZ(50px); }
         .cube__face--6 { transform: rotateX(90deg) translateZ(50px); }
 
-        .thought-cloud {
-            flex: 1; background: rgba(255, 255, 255, 0.1); border-radius: 40px;
-            padding: 25px; border: 3px dashed rgba(255,255,255,0.4);
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px; overflow-y: auto; align-content: start;
-        }
+        .pose-selector { display: flex; gap: 10px; margin-bottom: 15px; }
+        .pose-btn { background: #f8f9fa; border: 2px solid #ddd; border-radius: 12px; padding: 8px 12px; cursor: pointer; font-size: 1.4rem; transition: 0.2s; }
+        .pose-btn.active { border-color: var(--gold); background: #fff9e6; transform: scale(1.1); }
 
-        .bubble {
-            background: white; padding: 15px 20px; border-radius: 25px 25px 25px 5px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2); animation: float 4s ease-in-out infinite;
-        }
+        .thought-cloud { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; overflow-y: auto; padding: 10px; }
+        .bubble { background: white; padding: 20px; border-radius: 25px 25px 25px 5px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); position: relative; animation: float 4s ease-in-out infinite; }
+        .pose-icon { position: absolute; top: -10px; right: -10px; background: var(--gold); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
 
-        /* ONDER: 6 Schatkamers */
-        .treasure-vaults {
-            height: 30%; display: grid; grid-template-columns: repeat(6, 1fr);
-            gap: 12px; padding: 15px; background: rgba(0,0,0,0.4); position: relative;
-        }
-        .vault { background: var(--white); border-radius: 20px; padding: 10px; overflow-y: auto; }
-        .vault h4 { margin: 0 0 5px 0; font-size: 0.8rem; color: var(--primary); text-align: center; }
-
-        /* Knoppen */
-        input { width: 100%; padding: 12px; border-radius: 25px; border: 2px solid #ddd; margin-bottom: 10px; outline: none; }
-        .btn { width: 100%; padding: 12px; border-radius: 25px; border: none; color: white; font-weight: bold; cursor: pointer; }
-        .btn-roll { background: var(--primary); box-shadow: 0 4px 0 #0a3d62; margin-bottom: 10px; }
-        .btn-send { background: var(--success); box-shadow: 0 4px 0 #1b8d50; }
-        .btn-reset { position: absolute; bottom: 5px; right: 5px; background: var(--danger); font-size: 0.6rem; padding: 5px 10px; opacity: 0.7; }
+        .btn-main { width: 100%; padding: 15px; border-radius: 30px; border: none; color: white; font-weight: bold; cursor: pointer; margin-bottom: 10px; font-size: 1rem; }
+        .btn-roll { background: var(--primary); box-shadow: 0 5px 0 #0a3d62; }
+        .btn-send { background: var(--success); box-shadow: 0 5px 0 #1b8d50; }
+        .btn-reset { position: fixed; bottom: 10px; right: 10px; background: var(--accent); color: white; border: none; padding: 5px 12px; border-radius: 10px; font-size: 0.7rem; cursor: pointer; opacity: 0.6; }
 
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
         @keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
@@ -111,15 +73,15 @@
 
 <div class="names-bar">
     <div style="display: flex; gap: 10px;">
-        <input type="text" id="name-in" placeholder="Naam..." style="width: 140px; margin:0">
-        <button onclick="sendName()" class="btn" style="width: auto; background: var(--success);">Verstuur</button>
+        <input type="text" id="name-in" placeholder="Naam..." style="border-radius: 20px; border: none; padding: 10px 15px; outline: none;">
+        <button onclick="sendName()" class="btn-send" style="width: auto; padding: 5px 20px; box-shadow: none; border-radius: 20px;">Ik ben er</button>
     </div>
-    <div class="name-container" id="names-display" style="display: flex; gap: 10px; overflow-x: auto; flex-grow: 1;"></div>
+    <div id="names-display" style="display: flex; gap: 10px;"></div>
 </div>
 
 <div class="main-stage">
     <div class="dice-zone">
-        <div class="scene" onclick="triggerRoll()">
+        <div class="scene">
             <div class="cube" id="cube">
                 <div class="cube__face cube__face--1">1</div>
                 <div class="cube__face cube__face--2">2</div>
@@ -129,23 +91,23 @@
                 <div class="cube__face cube__face--6">6</div>
             </div>
         </div>
-        <button class="btn btn-roll" onclick="triggerRoll()">SNEL GOOIEN!</button>
-        <div id="active-statement" style="text-align:center; font-weight:600; color: var(--primary); margin: 10px 0; min-height: 40px;">Klik op de knop!</div>
-        <input type="text" id="thought-in" placeholder="Jouw gedachte...">
-        <button class="btn btn-send" onclick="sendThought()">DEEL ✨</button>
+        <button class="btn-main btn-roll" onclick="triggerRoll()">GOOI DOBBELSTEEN</button>
+        <div id="active-stmt" style="text-align:center; font-weight:600; color: var(--primary); margin-bottom: 15px; min-height: 40px;">Gooi om te beginnen...</div>
+        
+        <div class="pose-selector">
+            <div class="pose-btn" onclick="selectPose('🤲', this)">🤲</div>
+            <div class="pose-btn" onclick="selectPose('🙏', this)">🙏</div>
+            <div class="pose-btn active" onclick="selectPose('🧎', this)">🧎</div>
+        </div>
+        
+        <input type="text" id="thought-in" placeholder="Jouw gedachte..." style="width: 100%; padding: 12px; border-radius: 20px; border: 1px solid #ddd; margin-bottom: 10px; box-sizing: border-box;">
+        <button class="btn-main btn-send" onclick="sendThought()">DEEL JE KRACHT ✨</button>
     </div>
+
     <div class="thought-cloud" id="live-thoughts"></div>
 </div>
 
-<div class="treasure-vaults">
-    <div class="vault" id="v1"><h4>❶ Nooit bang</h4><div id="c1"></div></div>
-    <div class="vault" id="v2"><h4>❷ Spannend</h4><div id="c2"></div></div>
-    <div class="vault" id="v3"><h4>❸ Helpen</h4><div id="c3"></div></div>
-    <div class="vault" id="v4"><h4>❹ Bidden</h4><div id="c4"></div></div>
-    <div class="vault" id="v5"><h4>❺ Kracht</h4><div id="c5"></div></div>
-    <div class="vault" id="v6"><h4>❻ God's Wil</h4><div id="c6"></div></div>
-    <button class="btn btn-reset" onclick="hardReset()">HARDE RESET</button>
-</div>
+<button class="btn-reset" onclick="hardReset()">HARDE RESET (WISSEN)</button>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -163,8 +125,14 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    let currentRollNum = 0;
+    let activePose = '🧎';
     const stellingen = ["Ik ben nooit bang.", "Als ik iets spannend vind, hoop ik dat het niet doorgaat.", "Als iemand het moeilijk heeft, help ik.", "Als ik bang ben, ga ik bidden.", "Ik heb kracht van God gevoeld.", "Ik wil meer weten over wat God wil."];
+
+    window.selectPose = (pose, el) => {
+        activePose = pose;
+        document.querySelectorAll('.pose-btn').forEach(b => b.classList.remove('active'));
+        el.classList.add('active');
+    };
 
     window.sendName = () => {
         const val = document.getElementById('name-in').value;
@@ -172,19 +140,16 @@
     };
 
     window.triggerRoll = () => {
-        if(currentRollNum > 0) {
-            onValue(ref(db, 'live'), snap => {
-                const d = snap.val(); if(d) Object.values(d).forEach(t => push(ref(db, `vault/v${currentRollNum}`), t));
-            }, {onlyOnce: true});
-        }
-        remove(ref(db, 'live'));
         const r = Math.floor(Math.random()*6)+1;
         set(ref(db, 'gameState'), {r, t: Date.now()});
     };
 
     window.sendThought = () => {
         const val = document.getElementById('thought-in').value;
-        if(val && currentRollNum > 0) { push(ref(db, 'live'), val); document.getElementById('thought-in').value = ''; }
+        if(val) { 
+            push(ref(db, 'live'), { text: val, pose: activePose });
+            document.getElementById('thought-in').value = ''; 
+        }
     };
 
     window.hardReset = () => {
@@ -202,29 +167,21 @@
 
     onValue(ref(db, 'gameState'), s => {
         const d = s.val(); if(d) {
-            currentRollNum = d.r;
             const cube = document.getElementById('cube');
             const rotations = {1:'rotateY(0deg)', 2:'rotateY(180deg)', 3:'rotateY(-90deg)', 4:'rotateY(90deg)', 5:'rotateX(-90deg)', 6:'rotateX(90deg)'};
             cube.style.transform = rotations[d.r];
-            document.getElementById('active-statement').innerText = stellingen[d.r-1];
+            document.getElementById('active-stmt').innerText = stellingen[d.r-1];
         }
     });
 
     onValue(ref(db, 'live'), s => {
         const grid = document.getElementById('live-thoughts'); grid.innerHTML = "";
         const data = s.val(); if(data) Object.values(data).forEach(t => {
-            const b = document.createElement('div'); b.className = 'bubble'; b.innerText = t; grid.appendChild(b);
+            const b = document.createElement('div'); b.className = 'bubble';
+            b.innerHTML = `<div class="pose-icon">${t.pose}</div>${t.text}`;
+            grid.appendChild(b);
         });
     });
-
-    for(let i=1; i<=6; i++) {
-        onValue(ref(db, `vault/v${i}`), s => {
-            const cont = document.getElementById(`c${i}`); cont.innerHTML = "";
-            const data = s.val(); if(data) Object.values(data).forEach(t => {
-                const m = document.createElement('div'); m.style = "font-size:0.7rem; background:#f1f2f6; margin:3px; padding:5px; border-radius:10px;"; m.innerText = t; cont.appendChild(m);
-            });
-        });
-    }
 </script>
 </body>
 </html>
