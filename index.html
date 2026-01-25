@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schatgravers - De Olijfberg Live</title>
+    <title>Schatgravers Live - Van Proosdijkerk naar Olijfberg</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -19,33 +19,25 @@
             filter: blur(10px) brightness(0.3); z-index: -2;
         }
 
-        /* SYNC INTRO PANEEL */
-        #intro-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 100; display: none; 
-            justify-content: center; align-items: center; padding: 20px;
-        }
+        /* FASE CONTROLS (Alleen voor jou zichtbaar of onderaan) */
+        .phase-nav { position: fixed; bottom: 10px; left: 10px; z-index: 1000; display: flex; gap: 5px; }
+        .btn-nav { background: var(--gold); border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
 
-        .intro-card {
-            background: white; width: 95%; max-width: 1100px; height: 90vh;
-            border-radius: 40px; display: flex; overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-        }
-
-        .intro-text { flex: 1.2; padding: 40px; overflow-y: auto; line-height: 1.6; color: #2d3436; }
-        .intro-media { flex: 0.8; background: #dfe6e9; display: flex; flex-direction: column; }
+        /* FASE 1: NAMEN */
+        #phase-1 { display: none; height: 100vh; flex-direction: column; align-items: center; justify-content: center; color: white; }
         
-        .olijfberg-img { height: 50%; background-image: url('https://images.unsplash.com/photo-1549102011-8276f70f6128?q=80&w=1000&auto=format&fit=crop'); background-size: cover; background-position: center; }
+        /* FASE 2: VERHAAL & REIS */
+        #phase-2 { display: none; height: 100vh; justify-content: center; align-items: center; padding: 20px; }
+        .story-card { background: white; width: 95%; max-width: 1100px; height: 85vh; border-radius: 40px; display: flex; overflow: hidden; }
+        .story-text { flex: 1.2; padding: 40px; overflow-y: auto; color: #2d3436; }
         
-        .earth-link { 
-            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            background: #1e3799; color: white; text-decoration: none; text-align: center; padding: 20px;
-        }
-
-        /* DASHBOARD */
-        .main-stage { display: flex; flex: 1; padding: 25px; gap: 25px; height: 85vh; margin-top: 10px; }
-        .dice-zone { width: 350px; background: var(--white); border-radius: 40px; padding: 30px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        /* FASE 3: DOBBELSTEEN */
+        #phase-3 { display: none; flex-direction: column; height: 100vh; }
+        .main-stage { display: flex; flex: 1; padding: 20px; gap: 20px; height: 70vh; }
+        .dice-zone { width: 350px; background: var(--white); border-radius: 40px; padding: 25px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
         
-        .scene { width: 100px; height: 100px; perspective: 600px; margin: 30px; }
+        /* 3D DOBBELSTEEN */
+        .scene { width: 100px; height: 100px; perspective: 600px; margin: 20px; }
         .cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .cube__face { position: absolute; width: 100px; height: 100px; background: white; border: 4px solid var(--primary); line-height: 100px; font-size: 40px; border-radius: 20px; text-align: center; color: var(--primary); font-weight: bold; }
         .cube__face--1 { transform: rotateY(0deg) translateZ(50px); }
@@ -55,64 +47,67 @@
         .cube__face--5 { transform: rotateX(-90deg) translateZ(50px); }
         .cube__face--6 { transform: rotateX(90deg) translateZ(50px); }
 
-        .btn-main { width: 100%; padding: 15px; border-radius: 30px; border: none; color: white; font-weight: bold; cursor: pointer; margin-bottom: 10px; font-family: 'Fredoka'; }
-        .btn-roll { background: var(--primary); box-shadow: 0 5px 0 #0a3d62; }
-        .btn-send { background: var(--success); box-shadow: 0 5px 0 #1b8d50; }
-        .btn-reset { position: fixed; bottom: 10px; right: 10px; background: var(--accent); color: white; border: none; padding: 8px 15px; border-radius: 12px; cursor: pointer; z-index: 50; }
-
-        .thought-cloud { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; overflow-y: auto; padding: 10px; align-content: start; }
-        .bubble { background: white; padding: 20px; border-radius: 25px 25px 25px 5px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); animation: float 4s ease-in-out infinite; font-size: 1.1rem; }
+        .thought-cloud { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; overflow-y: auto; padding: 10px; }
+        .bubble { background: white; padding: 15px; border-radius: 20px 20px 20px 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); animation: float 4s ease-in-out infinite; }
         
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
     </style>
 </head>
 <body>
 
-<div id="intro-overlay">
-    <div class="intro-card">
-        <div class="intro-text">
-            <h1 style="color:var(--primary); margin-top:0;">Jezus op de Olijfberg</h1>
-            <p><strong>De Olijfberg:</strong> Jezus ging naar de berg om te bidden. Hij vroeg zijn leerlingen om te waken, maar zij vielen in slaap van verdriet.</p>
-            <p>Jezus was bang en bad om kracht. Een engel kwam Hem helpen. Daarna werd Hij verraden door Judas met een kus. Zelfs in die moeilijke tijd genas Jezus nog een vijand.</p>
-            <hr>
-            <p><em>Klik hieronder om de interactieve verwerking voor de hele klas te starten.</em></p>
-            <button onclick="masterStart()" class="btn-main btn-roll" style="margin-top:20px; font-size:1.2rem;">START VERWERKING VOOR IEDEREEN ✨</button>
-        </div>
-        <div class="intro-media">
-            <div class="olijfberg-img"></div>
-            <a href="https://earth.google.com/web/search/Mount+of+Olives,+Jerusalem/@31.7770,35.2444,800a,815d,35y,0h,0t,0r" target="_blank" class="earth-link">
-                <span style="font-size:3rem">🌍</span>
-                <h3>Bekijk de Olijfberg</h3>
-                <p>Klik voor Google Earth</p>
-            </a>
-        </div>
-    </div>
-</div>
-
 <div class="bg-overlay"></div>
 
-<div class="main-stage">
-    <div class="dice-zone">
-        <div class="scene">
-            <div class="cube" id="cube">
-                <div class="cube__face cube__face--1">1</div>
-                <div class="cube__face cube__face--2">2</div>
-                <div class="cube__face cube__face--3">3</div>
-                <div class="cube__face cube__face--4">4</div>
-                <div class="cube__face cube__face--5">5</div>
-                <div class="cube__face cube__face--6">6</div>
-            </div>
-        </div>
-        <button class="btn-main btn-roll" onclick="triggerRoll()">GOOI DOBBELSTEEN</button>
-        <div id="active-stmt" style="text-align:center; font-weight:600; color: var(--primary); margin-bottom: 20px; min-height: 80px; font-size: 1.1rem; line-height: 1.3;">Wacht op de start van de meester...</div>
-        
-        <input type="text" id="thought-in" placeholder="Jouw antwoord..." style="width: 100%; padding: 15px; border-radius: 20px; border: 1px solid #ddd; margin-bottom: 10px; box-sizing: border-box; font-family: 'Fredoka';">
-        <button class="btn-main btn-send" onclick="sendThought()">DEEL JE GEDACHTE ✨</button>
+<div id="phase-1">
+    <h1>Welkom bij de Proosdijkerk!</h1>
+    <p>Typ je naam om mee te doen aan de reis:</p>
+    <div style="display:flex; gap:10px;">
+        <input type="text" id="name-in" placeholder="Je naam..." style="padding:15px; border-radius:30px; border:none; width:250px;">
+        <button onclick="sendName()" style="padding:15px 30px; border-radius:30px; border:none; background:var(--success); color:white; font-weight:bold; cursor:pointer;">IK BEN ER!</button>
     </div>
-    <div class="thought-cloud" id="live-thoughts"></div>
+    <div id="names-list" style="margin-top:30px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center; max-width:800px;"></div>
 </div>
 
-<button class="btn-reset" onclick="hardReset()">DATABASE RESET</button>
+<div id="phase-2">
+    <div class="story-card">
+        <div class="story-text">
+            <h2 style="color:var(--primary)">📍 Vertrek: Ede, Proosdijkerk</h2>
+            <p>Vanaf de rotonde bij de Veenderweg gaan we op reis. Een tocht van <strong>4.400 kilometer</strong> naar het zuiden, naar Jeruzalem.</p>
+            <hr>
+            <h3>Het verhaal van de Olijfberg</h3>
+            <p>Jezus kwam aan op de berg. Hij wist dat het moeilijk zou worden. Hij vroeg zijn vrienden: "Blijf wakker en bid om kracht." Maar zij vielen in slaap...</p>
+            <p>Jezus bad zo hard dat zijn zweet als bloeddruppels op de grond viel. Toen kwam er een engel om Hem kracht te geven.</p>
+            <div style="background:#f0f2f5; padding:15px; border-radius:20px; margin-top:10px;">
+                <a href="https://earth.google.com/web/search/Mount+of+Olives,+Jerusalem" target="_blank" style="color:var(--primary); font-weight:bold; text-decoration:none;">🌍 VLIEG NAAR DE OLIJFBERG (Google Earth)</a>
+            </div>
+        </div>
+        <div style="flex:0.8; background-image: url('https://images.unsplash.com/photo-1549102011-8276f70f6128?q=80&w=1000&auto=format&fit=crop'); background-size:cover;"></div>
+    </div>
+</div>
+
+<div id="phase-3">
+    <div style="background:rgba(255,255,255,0.1); padding:10px; display:flex; gap:10px; justify-content:center;" id="live-names-bar"></div>
+    <div class="main-stage">
+        <div class="dice-zone">
+            <div class="scene"><div class="cube" id="cube">
+                <div class="cube__face cube__face--1">1</div><div class="cube__face cube__face--2">2</div>
+                <div class="cube__face cube__face--3">3</div><div class="cube__face cube__face--4">4</div>
+                <div class="cube__face cube__face--5">5</div><div class="cube__face cube__face--6">6</div>
+            </div></div>
+            <button class="btn-nav" onclick="triggerRoll()" style="width:100%; height:50px; background:var(--primary); color:white; font-size:1rem; margin-bottom:10px;">GOOI DOBBELSTEEN</button>
+            <div id="active-stmt" style="text-align:center; font-weight:600; color:var(--primary); min-height:80px;">Wacht op de meester...</div>
+            <input type="text" id="thought-in" placeholder="Jouw antwoord..." style="width:100%; padding:10px; border-radius:15px; border:1px solid #ddd; margin-bottom:10px;">
+            <button onclick="sendThought()" style="width:100%; padding:10px; background:var(--success); color:white; border:none; border-radius:15px; font-weight:bold; cursor:pointer;">DEEL ✨</button>
+        </div>
+        <div class="thought-cloud" id="live-thoughts"></div>
+    </div>
+</div>
+
+<div class="phase-nav">
+    <button class="btn-nav" onclick="updatePhase('p1')">1. NAMEN</button>
+    <button class="btn-nav" onclick="updatePhase('p2')">2. VERHAAL</button>
+    <button class="btn-nav" onclick="updatePhase('p3')">3. INTERACTIE</button>
+    <button class="btn-nav" onclick="hardReset()" style="background:var(--accent); color:white;">RESET</button>
+</div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -130,54 +125,52 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-
-    // OLIJFBERG STELLINGEN
     const stellingen = [
-        "ANGST: Wanneer ben jij wel eens heel erg bang (net als Jezus)?",
-        "KEUZES: Vind je het moeilijk om de juiste keuze te maken als anderen iets anders doen?",
-        "ENGELEN: Heb jij wel eens hulp gekregen van iemand op een moment dat je het echt nodig had?",
-        "BIDDEN: Hoe praat jij met God als je het even niet meer weet?",
-        "ALLEEN: Voel je je wel eens alleen gelaten door vrienden, zoals Jezus door de leerlingen?",
-        "HERSTEL: Jezus maakte het oor van zijn vijand beter. Hoe kun jij iets wat kapot is weer goed maken?"
+        "ANGST: Wanneer ben jij bang, net als Jezus op de berg?",
+        "KEUZES: Vind je het lastig om het goede te doen als anderen niet kijken?",
+        "ENGELEN: Wie was er voor jou een 'engel' toen je hulp nodig had?",
+        "BIDDEN: Hoe praat jij met God?",
+        "ALLEEN: Voel je je wel eens alleen, zoals Jezus door zijn vrienden?",
+        "HERSTEL: Hoe maak jij iets wat kapot is weer goed?"
     ];
 
-    window.masterStart = () => set(ref(db, 'phase'), 'started');
+    // SYNC FUNCTIES
+    window.updatePhase = (p) => set(ref(db, 'currentPhase'), p);
+    window.sendName = () => { const v = document.getElementById('name-in').value; if(v) push(ref(db, 'names'), v); document.getElementById('name-in').value=''; };
+    window.triggerRoll = () => set(ref(db, 'gameState'), {r: Math.floor(Math.random()*6)+1, t: Date.now()});
+    window.sendThought = () => { const v = document.getElementById('thought-in').value; if(v) push(ref(db, 'live'), v); document.getElementById('thought-in').value=''; };
+    window.hardReset = () => { if(confirm("Wissen?")) remove(ref(db, '/')); };
 
-    window.triggerRoll = () => {
-        const r = Math.floor(Math.random()*6)+1;
-        set(ref(db, 'gameState'), {r, t: Date.now()});
-    };
+    // REAL-TIME LUISTERAARS
+    onValue(ref(db, 'currentPhase'), s => {
+        const p = s.val() || 'p1';
+        document.getElementById('phase-1').style.display = (p === 'p1') ? 'flex' : 'none';
+        document.getElementById('phase-2').style.display = (p === 'p2') ? 'flex' : 'none';
+        document.getElementById('phase-3').style.display = (p === 'p3') ? 'flex' : 'none';
+    });
 
-    window.sendThought = () => {
-        const val = document.getElementById('thought-in').value;
-        if(val) { push(ref(db, 'live'), val); document.getElementById('thought-in').value = ''; }
-    };
-
-    window.hardReset = () => {
-        if(confirm("Alles wissen?")) {
-            set(ref(db, 'phase'), 'intro');
-            remove(ref(db, 'live'));
-        }
-    };
-
-    // REAL-TIME SYNC
-    onValue(ref(db, 'phase'), s => {
-        document.getElementById('intro-overlay').style.display = (s.val() === 'started') ? 'none' : 'flex';
+    onValue(ref(db, 'names'), s => {
+        const list = document.getElementById('names-list'); 
+        const bar = document.getElementById('live-names-bar');
+        list.innerHTML = ""; bar.innerHTML = "";
+        const data = s.val(); if(data) Object.values(data).forEach(n => {
+            const span = `<span style="background:white; color:var(--primary); padding:5px 15px; border-radius:20px; font-weight:bold;">${n}</span>`;
+            list.innerHTML += span; bar.innerHTML += span;
+        });
     });
 
     onValue(ref(db, 'gameState'), s => {
         const d = s.val(); if(d) {
-            const cube = document.getElementById('cube');
             const rotations = {1:'rotateY(0deg)', 2:'rotateY(180deg)', 3:'rotateY(-90deg)', 4:'rotateY(90deg)', 5:'rotateX(-90deg)', 6:'rotateX(90deg)'};
-            cube.style.transform = rotations[d.r];
+            document.getElementById('cube').style.transform = rotations[d.r];
             document.getElementById('active-stmt').innerText = stellingen[d.r-1];
         }
     });
 
     onValue(ref(db, 'live'), s => {
         const grid = document.getElementById('live-thoughts'); grid.innerHTML = "";
-        const data = s.val(); if(data) Object.values(data).forEach(t => {
-            const b = document.createElement('div'); b.className = 'bubble'; b.innerText = t; grid.appendChild(b);
+        const data = s.val(); if(data) Object.values(data).reverse().forEach(t => {
+            grid.innerHTML += `<div class="bubble">${t}</div>`;
         });
     });
 </script>
