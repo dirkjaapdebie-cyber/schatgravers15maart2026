@@ -3,61 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schatgravers Live - Real-time Reflectie</title>
+    <title>Schatgravers Live</title>
     <style>
-        :root { --primary: #2c3e50; --accent: #3498db; --bg: #f4f7f6; }
-        body { font-family: 'Helvetica Neue', sans-serif; background-color: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        
-        /* Sidebar & 3D Dice */
-        .sidebar { width: 350px; padding: 30px; background: white; box-shadow: 2px 0 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; }
-        .scene { width: 100px; height: 100px; perspective: 600px; margin: 40px auto; }
-        .cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transform: translateZ(-50px); transition: transform 1.5s cubic-bezier(0.2, 0.8, 0.3, 1); }
-        .cube__face { position: absolute; width: 100px; height: 100px; background: white; border: 2px solid #eee; line-height: 100px; font-size: 40px; font-weight: bold; color: #333; text-align: center; border-radius: 12px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05); }
-        
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --bg: #f0f3f7;
+            --white: #ffffff;
+            --accent: #00cec9;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; /* Kindvriendelijk lettertype */
+            background-color: var(--bg);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Bovenkant: De Speelruimte */
+        .top-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Zijbalk */
+        .sidebar {
+            width: 320px;
+            background: var(--white);
+            padding: 25px;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+
+        /* 3D Dobbelsteen */
+        .scene { width: 100px; height: 100px; perspective: 600px; margin: 20px 0; cursor: pointer; }
+        .cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .cube__face { position: absolute; width: 100px; height: 100px; background: white; border: 3px solid var(--primary); line-height: 100px; font-size: 40px; border-radius: 15px; text-align: center; color: var(--primary); }
         .cube__face--1 { transform: rotateY(0deg) translateZ(50px); }
         .cube__face--2 { transform: rotateY(180deg) translateZ(50px); }
         .cube__face--3 { transform: rotateY(-90deg) translateZ(50px); }
         .cube__face--4 { transform: rotateY(90deg) translateZ(50px); }
         .cube__face--5 { transform: rotateX(-90deg) translateZ(50px); }
         .cube__face--6 { transform: rotateX(90deg) translateZ(50px); }
-        .is-rolling { animation: spinFull 0.5s linear infinite; }
-        @keyframes spinFull { from { transform: rotateX(0deg) rotateY(0deg); } to { transform: rotateX(360deg) rotateY(360deg); } }
+        .is-rolling { animation: spin 0.6s linear infinite; }
+        @keyframes spin { from { transform: rotateX(0deg) rotateY(0deg); } to { transform: rotateX(360deg) rotateY(360deg); } }
 
-        .statement-card { background: var(--accent); color: white; padding: 20px; border-radius: 12px; font-size: 1.1rem; margin: 20px 0; min-height: 80px; text-align: center; }
-        
-        /* Thoughts Grid */
-        .main-stage { flex-grow: 1; padding: 40px; display: flex; flex-direction: column; overflow-y: auto; }
-        #thought-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-        .bubble { padding: 20px; border-radius: 18px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center; font-weight: 500; }
-        @keyframes pop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        
-        input, button { width: 100%; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 10px; font-size: 1rem; }
-        button { background: #2ecc71; color: white; border: none; cursor: pointer; font-weight: bold; }
+        .statement-card {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.2rem;
+            box-shadow: 0 8px 0 #4834d4;
+        }
+
+        /* Live Grid */
+        .main-stage {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #thought-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        .bubble {
+            padding: 20px;
+            border-radius: 25px;
+            background: white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            text-align: center;
+            font-size: 1.1rem;
+            border: 2px solid transparent;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+        /* Het "Vaste Veld" (Archief) */
+        .archive-area {
+            height: 180px;
+            background: #dfe6e9;
+            border-top: 4px dashed var(--secondary);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .archive-scroll {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 10px 5px;
+        }
+
+        .archive-bubble {
+            min-width: 140px;
+            background: rgba(255,255,255,0.7);
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 50px;
+            border: 2px solid #ddd;
+            font-size: 1rem;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border-radius: 50px;
+            border: none;
+            background: var(--accent);
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 4px 0 #00b894;
+        }
+
+        button:active { transform: translateY(2px); box-shadow: 0 2px 0 #00b894; }
     </style>
 </head>
 <body>
 
-<div class="sidebar">
-    <div class="scene" onclick="triggerRoll()">
-        <div class="cube" id="cube">
-            <div class="cube__face cube__face--1">⚀</div>
-            <div class="cube__face cube__face--2">⚁</div>
-            <div class="cube__face cube__face--3">⚂</div>
-            <div class="cube__face cube__face--4">⚃</div>
-            <div class="cube__face cube__face--5">⚄</div>
-            <div class="cube__face cube__face--6">⚅</div>
+<div class="top-container">
+    <div class="sidebar">
+        <h2 style="color: var(--primary); margin: 0;">Schatgravers</h2>
+        <div class="scene" onclick="triggerRoll()">
+            <div class="cube" id="cube">
+                <div class="cube__face cube__face--1">1</div>
+                <div class="cube__face cube__face--2">2</div>
+                <div class="cube__face cube__face--3">3</div>
+                <div class="cube__face cube__face--4">4</div>
+                <div class="cube__face cube__face--5">5</div>
+                <div class="cube__face cube__face--6">6</div>
+            </div>
         </div>
+        <button onclick="triggerRoll()" style="background: var(--primary); box-shadow: 0 4px 0 #4834d4;">Gooi!</button>
+        
+        <div class="statement-card" id="active-statement">Klik op Gooi!</div>
+        
+        <input type="text" id="thought-input" placeholder="Jouw gedachte...">
+        <button onclick="sendThought()">Deel met de klas ✨</button>
     </div>
-    <button onclick="triggerRoll()" style="background: var(--primary);">Gooi Dobbelsteen!</button>
-    
-    <div class="statement-card" id="active-statement">Klaar voor de start...</div>
-    
-    <input type="text" id="thought-input" placeholder="Wat denk je?">
-    <button onclick="sendThought()">Deel Gedachte</button>
+
+    <div class="main-stage">
+        <h3 id="current-title">Gedachten van nu</h3>
+        <div id="thought-grid"></div>
+    </div>
 </div>
 
-<div class="main-stage">
-    <div id="thought-grid"></div>
+<div class="archive-area">
+    <strong style="color: var(--primary); margin-left: 10px;">Vastgelegde gedachten (archief):</strong>
+    <div class="archive-scroll" id="archive-list">
+        </div>
 </div>
 
 <script type="module">
@@ -68,7 +190,7 @@
         apiKey: "AIzaSyBC3Dzm8PNPXw12VJNimvly5u2I93QeW54",
         authDomain: "schatgravers15maart2026.firebaseapp.com",
         projectId: "schatgravers15maart2026",
-        databaseURL: "https://schatgravers15maart2026-default-rtdb.europe-west1.firebasedatabase.app", // Let op: check je eigen Firebase URL
+        databaseURL: "https://schatgravers15maart2026-default-rtdb.europe-west1.firebasedatabase.app",
         storageBucket: "schatgravers15maart2026.firebasestorage.app",
         messagingSenderId: "30561512857",
         appId: "1:30561512857:web:fcb7868b87d292d1c97708"
@@ -78,48 +200,44 @@
     const db = getDatabase(app);
     const stellingen = [
         "Ik ben nooit bang.",
-        "Als ik iets heel spannend vind, hoop ik dat het niet doorgaat.",
-        "Als ik zie dat iemand het moeilijk heeft, probeer ik te helpen.",
+        "Als ik iets spannend vind, hoop ik dat het niet doorgaat.",
+        "Als iemand het moeilijk heeft, probeer ik te helpen.",
         "Als ik het moeilijk heb of bang ben, ga ik bidden.",
-        "Ik heb weleens kracht van God gevoeld toen ik het moeilijk had.",
+        "Ik heb weleens kracht van God gevoeld.",
         "Ik zou graag meer willen weten over wat God precies wil."
     ];
-    const colors = ['#FFEBEE', '#E3F2FD', '#F1F8E9', '#FFFDE7', '#F3E5F5', '#E0F7FA'];
+    const colors = ['#ffeaa7', '#fab1a0', '#74b9ff', '#55efc4', '#fd79a8', '#a29bfe'];
 
-    // 1. Gooien (Update Firebase)
     window.triggerRoll = function() {
-        const newRoll = Math.floor(Math.random() * 6) + 1;
-        // Maak eerst de gedachten leeg in de database
+        // Verplaats live naar archief in Firebase
+        onValue(ref(db, 'thoughts'), (snap) => {
+            const data = snap.val();
+            if(data) {
+                Object.values(data).forEach(t => push(ref(db, 'archive'), t));
+            }
+        }, { onlyOnce: true });
+
         remove(ref(db, 'thoughts'));
-        // Update de worp
-        set(ref(db, 'currentRoll'), {
-            val: newRoll,
-            timestamp: Date.now()
-        });
+        const newRoll = Math.floor(Math.random() * 6) + 1;
+        set(ref(db, 'currentRoll'), { val: newRoll, time: Date.now() });
     }
 
-    // 2. Luisteren naar de worp (Voor alle schermen)
     onValue(ref(db, 'currentRoll'), (snapshot) => {
         const data = snapshot.val();
-        if (data) {
-            animateDice(data.val);
-        }
+        if (data) animateDice(data.val);
     });
 
     function animateDice(roll) {
         const cube = document.getElementById('cube');
         cube.classList.add('is-rolling');
-        
         setTimeout(() => {
             cube.classList.remove('is-rolling');
-            const rotations = { 1: '0deg', 2: '180deg', 3: '-90deg', 4: '90deg', 5: '-90deg', 6: '90deg' };
-            const axis = roll <= 4 ? 'rotateY' : 'rotateX';
-            cube.style.transform = `translateZ(-50px) ${axis}(${rotations[roll]})`;
+            const rotations = { 1: 'rotateY(0deg)', 2: 'rotateY(180deg)', 3: 'rotateY(-90deg)', 4: 'rotateY(90deg)', 5: 'rotateX(-90deg)', 6: 'rotateX(90deg)' };
+            cube.style.transform = `translateZ(-50px) ${rotations[roll]}`;
             document.getElementById('active-statement').innerText = stellingen[roll-1];
         }, 1000);
     }
 
-    // 3. Gedachte sturen naar Firebase
     window.sendThought = function() {
         const input = document.getElementById('thought-input');
         if (input.value.trim() !== "") {
@@ -131,7 +249,7 @@
         }
     }
 
-    // 4. Luisteren naar gedachten
+    // Luister naar LIVE gedachten
     onValue(ref(db, 'thoughts'), (snapshot) => {
         const grid = document.getElementById('thought-grid');
         grid.innerHTML = "";
@@ -146,6 +264,22 @@
             });
         }
     });
+
+    // Luister naar ARCHIEF gedachten
+    onValue(ref(db, 'archive'), (snapshot) => {
+        const arch = document.getElementById('archive-list');
+        arch.innerHTML = "";
+        const data = snapshot.val();
+        if (data) {
+            Object.values(data).reverse().forEach(t => {
+                const b = document.createElement('div');
+                b.className = 'archive-bubble';
+                b.innerText = t.text;
+                arch.appendChild(b);
+            });
+        }
+    });
 </script>
+
 </body>
 </html>
