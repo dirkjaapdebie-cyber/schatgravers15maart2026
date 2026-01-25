@@ -3,156 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schatgravers Live</title>
+    <title>Schatgravers - Live Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #6c5ce7;
-            --secondary: #a29bfe;
-            --bg: #f0f3f7;
-            --white: #ffffff;
-            --accent: #00cec9;
+            --primary: #6c5ce7; --secondary: #a29bfe; --accent: #ff7675;
+            --success: #55efc4; --bg: #f0f3f7; --white: #ffffff;
         }
 
         body {
-            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; /* Kindvriendelijk lettertype */
-            background-color: var(--bg);
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
+            font-family: 'Fredoka', sans-serif; /* Super kindvriendelijk en rond */
+            background: radial-gradient(circle at center, #ffffff 0%, #dfe6e9 100%);
+            margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden;
         }
 
-        /* Bovenkant: De Speelruimte */
-        .top-container {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
+        /* FASE 1: Wie zijn er (Header) */
+        .names-bar {
+            background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px);
+            padding: 15px 25px; border-bottom: 4px solid var(--secondary);
+            display: flex; align-items: center; gap: 20px;
         }
 
-        /* Zijbalk */
-        .sidebar {
-            width: 320px;
-            background: var(--white);
-            padding: 25px;
-            box-shadow: 5px 0 15px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 10;
+        .name-tag {
+            background: var(--primary); color: white; padding: 8px 18px;
+            border-radius: 50px; font-weight: 600; box-shadow: 0 4px 0 #4834d4;
+            animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* 3D Dobbelsteen */
-        .scene { width: 100px; height: 100px; perspective: 600px; margin: 20px 0; cursor: pointer; }
-        .cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .cube__face { position: absolute; width: 100px; height: 100px; background: white; border: 3px solid var(--primary); line-height: 100px; font-size: 40px; border-radius: 15px; text-align: center; color: var(--primary); }
-        .cube__face--1 { transform: rotateY(0deg) translateZ(50px); }
-        .cube__face--2 { transform: rotateY(180deg) translateZ(50px); }
-        .cube__face--3 { transform: rotateY(-90deg) translateZ(50px); }
-        .cube__face--4 { transform: rotateY(90deg) translateZ(50px); }
-        .cube__face--5 { transform: rotateX(-90deg) translateZ(50px); }
-        .cube__face--6 { transform: rotateX(90deg) translateZ(50px); }
-        .is-rolling { animation: spin 0.6s linear infinite; }
-        @keyframes spin { from { transform: rotateX(0deg) rotateY(0deg); } to { transform: rotateX(360deg) rotateY(360deg); } }
-
-        .statement-card {
-            background: var(--primary);
-            color: white;
-            padding: 20px;
-            border-radius: 20px;
-            text-align: center;
-            margin: 20px 0;
-            font-size: 1.2rem;
-            box-shadow: 0 8px 0 #4834d4;
-        }
-
-        /* Live Grid */
+        /* FASE 2: Het Speelveld */
         .main-stage {
-            flex: 1;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
+            display: flex; flex: 1; padding: 25px; gap: 25px; overflow: hidden;
         }
 
-        #thought-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 20px;
-            overflow-y: auto;
+        /* De Dobbel-Zone */
+        .dice-zone {
+            width: 380px; background: var(--white); border-radius: 40px;
+            padding: 30px; display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 3px solid var(--secondary);
+        }
+
+        .scene { width: 120px; height: 120px; perspective: 600px; margin: 20px; }
+        .cube { 
+            width: 100%; height: 100%; position: relative; transform-style: preserve-3d; 
+            transition: transform 1.5s cubic-bezier(0.2, 0.8, 0.3, 1.1); 
+        }
+        .cube__face { 
+            position: absolute; width: 120px; height: 120px; background: white; 
+            border: 4px solid var(--primary); line-height: 120px; font-size: 50px; 
+            border-radius: 25px; text-align: center; color: var(--primary); font-weight: bold;
+            box-shadow: inset 0 0 20px rgba(108, 92, 231, 0.1);
+        }
+
+        /* De Live-Gedachten-Wolk */
+        .thought-cloud {
+            flex: 1; background: rgba(255, 255, 255, 0.4); border-radius: 40px;
+            padding: 30px; border: 4px dashed var(--secondary);
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px; overflow-y: auto; align-content: start;
         }
 
         .bubble {
-            padding: 20px;
-            border-radius: 25px;
-            background: white;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            text-align: center;
-            font-size: 1.1rem;
-            border: 2px solid transparent;
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: white; padding: 20px; border-radius: 30px 30px 30px 5px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05); border: 2px solid #eee;
+            animation: float 3s ease-in-out infinite; transition: transform 0.3s;
         }
 
-        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
-
-        /* Het "Vaste Veld" (Archief) */
-        .archive-area {
-            height: 180px;
-            background: #dfe6e9;
-            border-top: 4px dashed var(--secondary);
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
+        /* FASE 3: De 6 Schatkamers (Vaste Velden) */
+        .treasure-vaults {
+            height: 35%; display: grid; grid-template-columns: repeat(6, 1fr);
+            gap: 15px; padding: 20px; background: var(--secondary);
         }
 
-        .archive-scroll {
-            display: flex;
-            gap: 15px;
-            overflow-x: auto;
-            padding: 10px 5px;
+        .vault {
+            background: rgba(255, 255, 255, 0.9); border-radius: 25px; padding: 12px;
+            display: flex; flex-direction: column; box-shadow: 0 8px 0 rgba(0,0,0,0.1);
+            transition: 0.3s; overflow-y: auto;
         }
 
-        .archive-bubble {
-            min-width: 140px;
-            background: rgba(255,255,255,0.7);
-            padding: 10px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            border-left: 4px solid var(--primary);
-        }
+        .vault h4 { margin: 0 0 10px 0; font-size: 0.9rem; color: var(--primary); text-align: center; border-bottom: 2px solid #eee; }
 
-        input {
-            width: 100%;
-            padding: 15px;
-            border-radius: 50px;
-            border: 2px solid #ddd;
-            font-size: 1rem;
-            outline: none;
-            box-sizing: border-box;
+        /* Interactie-stijlen */
+        input { 
+            width: 100%; padding: 15px 25px; border-radius: 30px; border: 2px solid #eee; 
+            font-family: inherit; font-size: 1rem; margin-bottom: 10px; outline: none;
+            transition: 0.3s;
         }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(108, 92, 231, 0.2); }
 
-        button {
-            width: 100%;
-            padding: 15px;
-            border-radius: 50px;
-            border: none;
-            background: var(--accent);
-            color: white;
-            font-weight: bold;
-            font-size: 1.1rem;
-            cursor: pointer;
-            margin-top: 10px;
-            box-shadow: 0 4px 0 #00b894;
+        .btn {
+            width: 100%; padding: 15px; border-radius: 30px; border: none; 
+            color: white; font-weight: bold; font-family: inherit; cursor: pointer;
+            font-size: 1.1rem; transition: 0.3s; transform: scale(1);
         }
+        .btn:active { transform: scale(0.95); }
+        .btn-roll { background: var(--primary); box-shadow: 0 6px 0 #4834d4; margin-bottom: 15px; }
+        .btn-send { background: var(--success); box-shadow: 0 6px 0 #00b894; }
 
-        button:active { transform: translateY(2px); box-shadow: 0 2px 0 #00b894; }
+        /* Animaties */
+        @keyframes bounceIn { 0% { transform: scale(0); } 70% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        @keyframes float { 
+            0%, 100% { transform: translateY(0px) rotate(0deg); } 
+            50% { transform: translateY(-10px) rotate(1deg); } 
+        }
+        .is-rolling { animation: roll-shake 0.1s infinite; }
+        @keyframes roll-shake { 0% { transform: translate(2px, 2px); } 50% { transform: translate(-2px, -2px); } }
     </style>
 </head>
 <body>
 
-<div class="top-container">
-    <div class="sidebar">
-        <h2 style="color: var(--primary); margin: 0;">Schatgravers</h2>
-        <div class="scene" onclick="triggerRoll()">
+<div class="names-bar">
+    <div style="display: flex; gap: 10px;">
+        <input type="text" id="name-in" placeholder="Wie ben je?" style="width: 180px; margin:0">
+        <button onclick="sendName()" class="btn" style="width: auto; background: var(--success); padding: 10px 20px; box-shadow: 0 4px 0 #00b894;">Ik ben er!</button>
+    </div>
+    <div class="name-container" id="names-display" style="display: flex; gap: 10px; overflow-x: auto;"></div>
+</div>
+
+<div class="main-stage">
+    <div class="dice-zone">
+        <div class="scene" id="dice-scene" onclick="triggerRoll()">
             <div class="cube" id="cube">
                 <div class="cube__face cube__face--1">1</div>
                 <div class="cube__face cube__face--2">2</div>
@@ -162,24 +131,22 @@
                 <div class="cube__face cube__face--6">6</div>
             </div>
         </div>
-        <button onclick="triggerRoll()" style="background: var(--primary); box-shadow: 0 4px 0 #4834d4;">Gooi!</button>
-        
-        <div class="statement-card" id="active-statement">Klik op Gooi!</div>
-        
-        <input type="text" id="thought-input" placeholder="Jouw gedachte...">
-        <button onclick="sendThought()">Deel met de klas ✨</button>
+        <button class="btn btn-roll" onclick="triggerRoll()">DOBBELEN!</button>
+        <div id="active-statement" style="text-align:center; font-weight:600; font-size: 1.2rem; color: var(--primary); margin: 15px 0;">Klaar voor de start?</div>
+        <input type="text" id="thought-in" placeholder="Wat denk jij?">
+        <button class="btn btn-send" onclick="sendThought()">DEEL JE SCHAT ✨</button>
     </div>
 
-    <div class="main-stage">
-        <h3 id="current-title">Gedachten van nu</h3>
-        <div id="thought-grid"></div>
-    </div>
+    <div class="thought-cloud" id="live-thoughts"></div>
 </div>
 
-<div class="archive-area">
-    <strong style="color: var(--primary); margin-left: 10px;">Vastgelegde gedachten (archief):</strong>
-    <div class="archive-scroll" id="archive-list">
-        </div>
+<div class="treasure-vaults">
+    <div class="vault" id="v1"><h4>❶ Bang</h4><div id="c1"></div></div>
+    <div class="vault" id="v2"><h4>❷ Spannend</h4><div id="c2"></div></div>
+    <div class="vault" id="v3"><h4>❸ Helpen</h4><div id="c3"></div></div>
+    <div class="vault" id="v4"><h4>❹ Bidden</h4><div id="c4"></div></div>
+    <div class="vault" id="v5"><h4>❺ Kracht</h4><div id="c5"></div></div>
+    <div class="vault" id="v6"><h4>❻ God's Wil</h4><div id="c6"></div></div>
 </div>
 
 <script type="module">
@@ -198,88 +165,68 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const stellingen = [
-        "Ik ben nooit bang.",
-        "Als ik iets spannend vind, hoop ik dat het niet doorgaat.",
-        "Als iemand het moeilijk heeft, probeer ik te helpen.",
-        "Als ik het moeilijk heb of bang ben, ga ik bidden.",
-        "Ik heb weleens kracht van God gevoeld.",
-        "Ik zou graag meer willen weten over wat God precies wil."
-    ];
-    const colors = ['#ffeaa7', '#fab1a0', '#74b9ff', '#55efc4', '#fd79a8', '#a29bfe'];
+    let currentRollNum = 0;
+    const stellingen = ["Ik ben nooit bang.", "Als ik iets spannend vind, hoop ik dat het niet doorgaat.", "Als iemand het moeilijk heeft, help ik.", "Als ik bang ben, ga ik bidden.", "Ik heb kracht van God gevoeld.", "Ik wil meer weten over wat God wil."];
 
-    window.triggerRoll = function() {
-        // Verplaats live naar archief in Firebase
-        onValue(ref(db, 'thoughts'), (snap) => {
-            const data = snap.val();
-            if(data) {
-                Object.values(data).forEach(t => push(ref(db, 'archive'), t));
-            }
-        }, { onlyOnce: true });
+    // FUNCTIES
+    window.sendName = () => {
+        const val = document.getElementById('name-in').value;
+        if(val) { push(ref(db, 'names'), val); document.getElementById('name-in').value = ''; }
+    };
 
-        remove(ref(db, 'thoughts'));
-        const newRoll = Math.floor(Math.random() * 6) + 1;
-        set(ref(db, 'currentRoll'), { val: newRoll, time: Date.now() });
-    }
+    window.triggerRoll = () => {
+        if(currentRollNum > 0) {
+            onValue(ref(db, 'live'), snap => {
+                const d = snap.val(); if(d) Object.values(d).forEach(t => push(ref(db, `vault/v${currentRollNum}`), t));
+            }, {onlyOnce: true});
+        }
+        remove(ref(db, 'live'));
+        const r = Math.floor(Math.random()*6)+1;
+        set(ref(db, 'gameState'), {r, t: Date.now()});
+    };
 
-    onValue(ref(db, 'currentRoll'), (snapshot) => {
-        const data = snapshot.val();
-        if (data) animateDice(data.val);
+    window.sendThought = () => {
+        const val = document.getElementById('thought-in').value;
+        if(val && currentRollNum > 0) { push(ref(db, 'live'), val); document.getElementById('thought-in').value = ''; }
+    };
+
+    // SYNC
+    onValue(ref(db, 'names'), s => {
+        const div = document.getElementById('names-display'); div.innerHTML = "";
+        const data = s.val(); if(data) Object.values(data).forEach(n => {
+            const span = document.createElement('span'); span.className = 'name-tag'; span.innerText = n; div.appendChild(span);
+        });
     });
 
-    function animateDice(roll) {
-        const cube = document.getElementById('cube');
-        cube.classList.add('is-rolling');
-        setTimeout(() => {
-            cube.classList.remove('is-rolling');
-            const rotations = { 1: 'rotateY(0deg)', 2: 'rotateY(180deg)', 3: 'rotateY(-90deg)', 4: 'rotateY(90deg)', 5: 'rotateX(-90deg)', 6: 'rotateX(90deg)' };
-            cube.style.transform = `translateZ(-50px) ${rotations[roll]}`;
-            document.getElementById('active-statement').innerText = stellingen[roll-1];
-        }, 1000);
-    }
-
-    window.sendThought = function() {
-        const input = document.getElementById('thought-input');
-        if (input.value.trim() !== "") {
-            push(ref(db, 'thoughts'), {
-                text: input.value,
-                color: colors[Math.floor(Math.random() * colors.length)]
-            });
-            input.value = "";
-        }
-    }
-
-    // Luister naar LIVE gedachten
-    onValue(ref(db, 'thoughts'), (snapshot) => {
-        const grid = document.getElementById('thought-grid');
-        grid.innerHTML = "";
-        const data = snapshot.val();
-        if (data) {
-            Object.values(data).forEach(t => {
-                const b = document.createElement('div');
-                b.className = 'bubble';
-                b.style.backgroundColor = t.color;
-                b.innerText = t.text;
-                grid.appendChild(b);
-            });
+    onValue(ref(db, 'gameState'), s => {
+        const d = s.val(); if(d) {
+            currentRollNum = d.r;
+            const cube = document.getElementById('cube');
+            document.getElementById('dice-scene').classList.add('is-rolling');
+            setTimeout(() => {
+                document.getElementById('dice-scene').classList.remove('is-rolling');
+                const rots = {1:'rotateY(0deg)', 2:'rotateY(180deg)', 3:'rotateY(-90deg)', 4:'rotateY(90deg)', 5:'rotateX(-90deg)', 6:'rotateX(90deg)'};
+                cube.style.transform = rots[d.r];
+                document.getElementById('active-statement').innerText = stellingen[d.r-1];
+            }, 800);
         }
     });
 
-    // Luister naar ARCHIEF gedachten
-    onValue(ref(db, 'archive'), (snapshot) => {
-        const arch = document.getElementById('archive-list');
-        arch.innerHTML = "";
-        const data = snapshot.val();
-        if (data) {
-            Object.values(data).reverse().forEach(t => {
-                const b = document.createElement('div');
-                b.className = 'archive-bubble';
-                b.innerText = t.text;
-                arch.appendChild(b);
-            });
-        }
+    onValue(ref(db, 'live'), s => {
+        const grid = document.getElementById('live-thoughts'); grid.innerHTML = "";
+        const data = s.val(); if(data) Object.values(data).forEach(t => {
+            const b = document.createElement('div'); b.className = 'bubble'; b.innerText = t; grid.appendChild(b);
+        });
     });
+
+    for(let i=1; i<=6; i++) {
+        onValue(ref(db, `vault/v${i}`), s => {
+            const cont = document.getElementById(`c${i}`); cont.innerHTML = "";
+            const data = s.val(); if(data) Object.values(data).forEach(t => {
+                const m = document.createElement('div'); m.style = "font-size:0.7rem; background:#f1f2f6; margin:3px; padding:5px; border-radius:10px;"; m.innerText = t; cont.appendChild(m);
+            });
+        });
+    }
 </script>
-
 </body>
 </html>
