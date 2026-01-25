@@ -1,92 +1,151 @@
-<style>
-    /* De 3D Dobbelsteen Container */
-    .scene {
-        width: 100px;
-        height: 100px;
-        perspective: 600px;
-        margin: 40px auto;
-    }
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schatgravers Live - Real-time Reflectie</title>
+    <style>
+        :root { --primary: #2c3e50; --accent: #3498db; --bg: #f4f7f6; }
+        body { font-family: 'Helvetica Neue', sans-serif; background-color: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar & 3D Dice */
+        .sidebar { width: 350px; padding: 30px; background: white; box-shadow: 2px 0 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; }
+        .scene { width: 100px; height: 100px; perspective: 600px; margin: 40px auto; }
+        .cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transform: translateZ(-50px); transition: transform 1.5s cubic-bezier(0.2, 0.8, 0.3, 1); }
+        .cube__face { position: absolute; width: 100px; height: 100px; background: white; border: 2px solid #eee; line-height: 100px; font-size: 40px; font-weight: bold; color: #333; text-align: center; border-radius: 12px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05); }
+        
+        .cube__face--1 { transform: rotateY(0deg) translateZ(50px); }
+        .cube__face--2 { transform: rotateY(180deg) translateZ(50px); }
+        .cube__face--3 { transform: rotateY(-90deg) translateZ(50px); }
+        .cube__face--4 { transform: rotateY(90deg) translateZ(50px); }
+        .cube__face--5 { transform: rotateX(-90deg) translateZ(50px); }
+        .cube__face--6 { transform: rotateX(90deg) translateZ(50px); }
+        .is-rolling { animation: spinFull 0.5s linear infinite; }
+        @keyframes spinFull { from { transform: rotateX(0deg) rotateY(0deg); } to { transform: rotateX(360deg) rotateY(360deg); } }
 
-    .cube {
-        width: 100%;
-        height: 100%;
-        position: relative;
-        transform-style: preserve-3d;
-        transform: translateZ(-50px);
-        transition: transform 1.5s cubic-bezier(0.2, 0.8, 0.3, 1);
-    }
+        .statement-card { background: var(--accent); color: white; padding: 20px; border-radius: 12px; font-size: 1.1rem; margin: 20px 0; min-height: 80px; text-align: center; }
+        
+        /* Thoughts Grid */
+        .main-stage { flex-grow: 1; padding: 40px; display: flex; flex-direction: column; overflow-y: auto; }
+        #thought-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .bubble { padding: 20px; border-radius: 18px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center; font-weight: 500; }
+        @keyframes pop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        input, button { width: 100%; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 10px; font-size: 1rem; }
+        button { background: #2ecc71; color: white; border: none; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
 
-    .cube__face {
-        position: absolute;
-        width: 100px;
-        height: 100px;
-        background: white;
-        border: 2px solid #ccc;
-        line-height: 100px;
-        font-size: 40px;
-        font-weight: bold;
-        color: #333;
-        text-align: center;
-        border-radius: 10px;
-        box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
-    }
-
-    /* Posities van de vlakken */
-    .cube__face--1 { transform: rotateY(  0deg) translateZ(50px); }
-    .cube__face--2 { transform: rotateY(180deg) translateZ(50px); }
-    .cube__face--3 { transform: rotateY( 90deg) translateZ(50px); }
-    .cube__face--4 { transform: rotateY(-90deg) translateZ(50px); }
-    .cube__face--5 { transform: rotateX( 90deg) translateZ(50px); }
-    .cube__face--6 { transform: rotateX(-90deg) translateZ(50px); }
-
-    /* De animatie bij het rollen */
-    .is-rolling {
-        animation: spinFull 0.5s linear infinite;
-    }
-
-    @keyframes spinFull {
-        from { transform: rotateX(0deg) rotateY(0deg); }
-        to { transform: rotateX(360deg) rotateY(360deg); }
-    }
-</style>
-
-<div class="scene">
-    <div class="cube" id="cube">
-        <div class="cube__face cube__face--1">⚀</div>
-        <div class="cube__face cube__face--2">⚁</div>
-        <div class="cube__face cube__face--3">⚂</div>
-        <div class="cube__face cube__face--4">⚃</div>
-        <div class="cube__face cube__face--5">⚄</div>
-        <div class="cube__face cube__face--6">⚅</div>
+<div class="sidebar">
+    <div class="scene" onclick="triggerRoll()">
+        <div class="cube" id="cube">
+            <div class="cube__face cube__face--1">⚀</div>
+            <div class="cube__face cube__face--2">⚁</div>
+            <div class="cube__face cube__face--3">⚂</div>
+            <div class="cube__face cube__face--4">⚃</div>
+            <div class="cube__face cube__face--5">⚄</div>
+            <div class="cube__face cube__face--6">⚅</div>
+        </div>
     </div>
+    <button onclick="triggerRoll()" style="background: var(--primary);">Gooi Dobbelsteen!</button>
+    
+    <div class="statement-card" id="active-statement">Klaar voor de start...</div>
+    
+    <input type="text" id="thought-input" placeholder="Wat denk je?">
+    <button onclick="sendThought()">Deel Gedachte</button>
 </div>
 
-<script>
-function rollDice() {
-    const cube = document.getElementById('cube');
-    const roll = Math.floor(Math.random() * 6) + 1;
-    
-    // Voeg de snelle spin-animatie toe
-    cube.classList.add('is-rolling');
+<div class="main-stage">
+    <div id="thought-grid"></div>
+</div>
 
-    setTimeout(() => {
-        cube.classList.remove('is-rolling');
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, set, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBC3Dzm8PNPXw12VJNimvly5u2I93QeW54",
+        authDomain: "schatgravers15maart2026.firebaseapp.com",
+        projectId: "schatgravers15maart2026",
+        databaseURL: "https://schatgravers15maart2026-default-rtdb.europe-west1.firebasedatabase.app", // Let op: check je eigen Firebase URL
+        storageBucket: "schatgravers15maart2026.firebasestorage.app",
+        messagingSenderId: "30561512857",
+        appId: "1:30561512857:web:fcb7868b87d292d1c97708"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const stellingen = [
+        "Ik ben nooit bang.",
+        "Als ik iets heel spannend vind, hoop ik dat het niet doorgaat.",
+        "Als ik zie dat iemand het moeilijk heeft, probeer ik te helpen.",
+        "Als ik het moeilijk heb of bang ben, ga ik bidden.",
+        "Ik heb weleens kracht van God gevoeld toen ik het moeilijk had.",
+        "Ik zou graag meer willen weten over wat God precies wil."
+    ];
+    const colors = ['#FFEBEE', '#E3F2FD', '#F1F8E9', '#FFFDE7', '#F3E5F5', '#E0F7FA'];
+
+    // 1. Gooien (Update Firebase)
+    window.triggerRoll = function() {
+        const newRoll = Math.floor(Math.random() * 6) + 1;
+        // Maak eerst de gedachten leeg in de database
+        remove(ref(db, 'thoughts'));
+        // Update de worp
+        set(ref(db, 'currentRoll'), {
+            val: newRoll,
+            timestamp: Date.now()
+        });
+    }
+
+    // 2. Luisteren naar de worp (Voor alle schermen)
+    onValue(ref(db, 'currentRoll'), (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            animateDice(data.val);
+        }
+    });
+
+    function animateDice(roll) {
+        const cube = document.getElementById('cube');
+        cube.classList.add('is-rolling');
         
-        // Bepaal de rotatie op basis van de worp
-        const rotations = {
-            1: 'rotateY(0deg)',
-            2: 'rotateY(180deg)',
-            3: 'rotateY(-90deg)',
-            4: 'rotateY(90deg)',
-            5: 'rotateX(-90deg)',
-            6: 'rotateX(90deg)'
-        };
-        
-        cube.style.transform = `translateZ(-50px) ${rotations[roll]}`;
-        
-        // Update stelling na het stoppen van de animatie
-        document.getElementById('active-statement').innerText = stellingen[roll-1];
-        clearGrid(); // Je functie om het veld leeg te maken
-    }, 1000);
-}
+        setTimeout(() => {
+            cube.classList.remove('is-rolling');
+            const rotations = { 1: '0deg', 2: '180deg', 3: '-90deg', 4: '90deg', 5: '-90deg', 6: '90deg' };
+            const axis = roll <= 4 ? 'rotateY' : 'rotateX';
+            cube.style.transform = `translateZ(-50px) ${axis}(${rotations[roll]})`;
+            document.getElementById('active-statement').innerText = stellingen[roll-1];
+        }, 1000);
+    }
+
+    // 3. Gedachte sturen naar Firebase
+    window.sendThought = function() {
+        const input = document.getElementById('thought-input');
+        if (input.value.trim() !== "") {
+            push(ref(db, 'thoughts'), {
+                text: input.value,
+                color: colors[Math.floor(Math.random() * colors.length)]
+            });
+            input.value = "";
+        }
+    }
+
+    // 4. Luisteren naar gedachten
+    onValue(ref(db, 'thoughts'), (snapshot) => {
+        const grid = document.getElementById('thought-grid');
+        grid.innerHTML = "";
+        const data = snapshot.val();
+        if (data) {
+            Object.values(data).forEach(t => {
+                const b = document.createElement('div');
+                b.className = 'bubble';
+                b.style.backgroundColor = t.color;
+                b.innerText = t.text;
+                grid.appendChild(b);
+            });
+        }
+    });
 </script>
+</body>
+</html>
