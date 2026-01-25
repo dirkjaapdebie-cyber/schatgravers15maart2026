@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root { --primary: #1e3799; --accent: #eb4d4b; --success: #20bf6b; --bg: #0a3d62; --gold: #f1c40f; }
-        body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Fredoka', sans-serif; overflow: hidden; background: var(--bg); color: #333; touch-action: manipulation; }
+        body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Fredoka', sans-serif; overflow: hidden; background: var(--bg); color: #333; }
         
         .bg-fixed {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -18,157 +18,100 @@
 
         .container { display: none; height: 100vh; padding: 15px; box-sizing: border-box; flex-direction: column; align-items: center; overflow-y: auto; }
 
-        /* WOORDZOEKER GRID */
-        #ws-grid { 
-            display: grid; 
-            grid-template-columns: repeat(12, 1fr); 
-            gap: 3px; 
-            background: rgba(255,255,255,0.2); 
-            padding: 8px; 
-            border-radius: 12px; 
-            width: 95vw; 
-            max-width: 400px; 
-        }
-        .ws-letter { 
-            aspect-ratio: 1/1; 
-            background: white; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 0.9rem; 
-            font-weight: bold; 
-            color: #000; 
-            border-radius: 5px; 
-            user-select: none;
-        }
-        .ws-letter.found { background: var(--gold); transform: scale(0.95); transition: 0.2s; }
+        /* FASE 2: VIDEO EN GOOGLE EARTH */
+        .video-container { width: 100%; max-width: 315px; aspect-ratio: 9/16; background: #000; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.4); margin-bottom: 20px; }
+        .video-container iframe { width: 100%; height: 100%; border: none; }
 
-        /* WOORDENLIJST */
-        .ws-list { 
-            background: white; 
-            padding: 12px; 
-            border-radius: 15px; 
-            width: 90%; 
-            max-width: 400px; 
-            margin: 15px 0;
-            display: grid; 
-            grid-template-columns: 1fr 1fr 1fr; 
-            font-size: 0.75rem;
-            gap: 5px;
-        }
-        .word-item { cursor: pointer; padding: 2px; }
-        .word-item.crossed { text-decoration: line-through; color: #ccc; }
-
-        /* FINALE INPUT */
-        .finale-box {
-            background: rgba(255,255,255,0.95);
-            padding: 20px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-        .input-field { 
-            width: 100%; 
-            padding: 12px; 
-            border-radius: 10px; 
-            border: 2px solid #ddd; 
-            text-align: center; 
-            font-family: 'Fredoka';
-            font-size: 1.1rem;
-            margin-top: 10px;
-        }
+        /* FASE 5: WOORDZOEKER */
+        #ws-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 3px; background: rgba(255,255,255,0.2); padding: 8px; border-radius: 12px; width: 95vw; max-width: 400px; }
+        .ws-letter { aspect-ratio: 1/1; background: white; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: bold; color: #000; border-radius: 5px; cursor: pointer; }
+        .ws-letter.found { background: var(--gold); }
+        .ws-list { background: white; padding: 12px; border-radius: 15px; width: 90%; max-width: 400px; margin: 15px 0; display: grid; grid-template-columns: 1fr 1fr 1fr; font-size: 0.75rem; gap: 5px; }
 
         /* NAVIGATIE */
         .navigation-panel { position: fixed; bottom: 15px; right: 15px; display: flex; gap: 8px; z-index: 1000; }
         .nav-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid white; background: rgba(0,0,0,0.6); color: white; font-weight: bold; cursor: pointer; }
         .nav-btn.active { background: white; color: var(--bg); }
+
+        .btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; }
     </style>
 </head>
 <body>
 
 <div class="bg-fixed"></div>
 
-<div id="phase-5" class="container" style="display:flex;">
-    <h1 id="ws-timer" style="color:white; margin: 10px 0;">03:00</h1>
+<div id="phase-2" class="container" style="display:flex;">
+    <h1 id="timer-p2" style="color:var(--accent); font-size: 3rem; margin: 10px 0;">01:30</h1>
     
+    <div class="video-container">
+        <iframe src="https://www.youtube.com/embed/7ljG1XWMYjY?autoplay=0&rel=0" allowfullscreen></iframe>
+    </div>
+
+    <a href="https://earth.google.com/web/search/Mount+of+Olives" target="_blank" class="btn">🌍 GA NAAR GOOGLE EARTH</a>
+</div>
+
+<div id="phase-5" class="container">
+    <h1 id="ws-timer" style="color:white;">03:00</h1>
     <div id="ws-grid"></div>
-
-    <div class="ws-list">
-        </div>
-
-    <div class="finale-box">
-        <h3 style="margin:0; color:var(--primary);">Gevonden zin?</h3>
-        <input type="text" id="final-sentence" placeholder="Typ hier de zin..." class="input-field" oninput="checkSentence(this.value)">
+    <div class="ws-list" id="ws-list"></div>
+    <div style="background:white; padding:15px; border-radius:15px; width:90%; max-width:400px;">
+        <input type="text" id="final-sentence" placeholder="Welke zin heb je gevonden?" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; text-align:center;" oninput="checkSentence(this.value)">
     </div>
 </div>
 
 <div class="navigation-panel">
-    <button class="nav-btn" onclick="location.reload()">R</button>
-    <button class="nav-btn active">5</button>
+    <button class="nav-btn" onclick="showPhase(2)">2</button>
+    <button class="nav-btn" onclick="showPhase(5)">5</button>
 </div>
 
 <script>
-    let timerStarted = false;
-    let wsInt;
-    const woorden15 = [
-        "OLIJFBERG", "JUDAS", "GEBED", "PASEN", "KRACHT", 
-        "BEKER", "ENGEL", "VERRAAD", "KUS", "SOLDATEN", 
-        "PETRUS", "HAAN", "WAKKER", "BIDDEN", "TUIN"
-    ].sort();
+    let p2Int, timerStarted = false;
 
-    // Initialiseer Woordzoeker
-    const grid = document.getElementById('ws-grid');
-    const list = document.querySelector('.ws-list');
-
-    // Maak rooster (12x12 voor betere mobiele fit)
-    for(let i=0; i<144; i++) {
-        const letter = document.createElement('div');
-        letter.className = 'ws-letter';
-        letter.innerText = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)];
-        letter.onpointerdown = () => {
-            letter.classList.toggle('found');
-            if(!timerStarted) startTimer();
-        };
-        grid.appendChild(letter);
+    function showPhase(num) {
+        document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
+        document.getElementById('phase-' + num).style.display = 'flex';
+        if(num === 2) startP2Timer();
+        if(num === 5) initWS();
     }
 
-    // Maak woordenlijst
-    woorden15.forEach(w => {
-        const div = document.createElement('div');
-        div.className = 'word-item';
-        div.innerText = w;
-        div.onclick = () => div.classList.toggle('crossed');
-        list.appendChild(div);
-    });
-
-    function startTimer() {
-        timerStarted = true;
-        let t = 180;
-        wsInt = setInterval(() => {
-            const m = Math.floor(t/60);
-            const s = (t%60).toString().padStart(2,'0');
-            document.getElementById('ws-timer').innerText = `${m}:${s}`;
-            if(t-- <= 0) clearInterval(wsInt);
+    function startP2Timer() {
+        let t = 90; clearInterval(p2Int);
+        p2Int = setInterval(() => {
+            document.getElementById('timer-p2').innerText = `${Math.floor(t/60)}:${(t%60).toString().padStart(2,'0')}`;
+            if(t-- <= 0) clearInterval(p2Int);
         }, 1000);
+    }
+
+    // Woordzoeker Logica
+    const woorden15 = ["OLIJFBERG", "JUDAS", "GEBED", "PASEN", "KRACHT", "BEKER", "ENGEL", "VERRAAD", "KUS", "SOLDATEN", "PETRUS", "HAAN", "WAKKER", "BIDDEN", "TUIN"].sort();
+
+    function initWS() {
+        const grid = document.getElementById('ws-grid');
+        const list = document.getElementById('ws-list');
+        grid.innerHTML = ''; list.innerHTML = '';
+        for(let i=0; i<144; i++) {
+            const letter = document.createElement('div');
+            letter.className = 'ws-letter';
+            letter.innerText = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)];
+            letter.onclick = () => letter.classList.toggle('found');
+            grid.appendChild(letter);
+        }
+        woorden15.forEach(w => {
+            const item = document.createElement('div');
+            item.innerText = w;
+            item.onclick = () => item.style.textDecoration = 'line-through';
+            list.appendChild(item);
+        });
     }
 
     function checkSentence(val) {
         if(val.toLowerCase().trim() === "van u is het koninkrijk") {
-            confetti({
-                particleCount: 200,
-                spread: 90,
-                origin: { y: 0.7 },
-                colors: ['#f1c40f', '#20bf6b', '#eb4d4b', '#ffffff']
-            });
-            const input = document.getElementById('final-sentence');
-            input.style.background = 'var(--success)';
-            input.style.color = 'white';
-            input.disabled = true;
-            clearInterval(wsInt);
+            confetti({ particleCount: 200, spread: 70, origin: { y: 0.6 } });
         }
     }
+
+    // Start bij fase 2 voor test
+    showPhase(2);
 </script>
 </body>
 </html>
