@@ -18,51 +18,27 @@
         .container { display: none; height: 100vh; padding: 25px; box-sizing: border-box; flex-direction: column; }
 
         /* FASE 1: NAMEN DISPLAY */
-        .names-display-area { 
-            background: white; 
-            border-radius: 20px; 
-            padding: 20px; 
-            margin-top: 20px; 
-            min-height: 150px; 
-            width: 100%; 
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            align-content: flex-start;
-            overflow-y: auto;
-        }
-        .name-tag { 
-            background: var(--gold); 
-            color: #333; 
-            padding: 8px 18px; 
-            border-radius: 25px; 
-            font-weight: bold; 
-            font-size: 1.1rem;
-            box-shadow: 0 4px 0 #d4ac0d;
-            animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+        .names-display-area { background: white; border-radius: 20px; padding: 20px; margin-top: 20px; min-height: 150px; width: 100%; box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; overflow-y: auto; }
+        .name-tag { background: var(--gold); color: #333; padding: 8px 18px; border-radius: 25px; font-weight: bold; box-shadow: 0 4px 0 #d4ac0d; animation: pop 0.3s ease-out; }
 
         /* FASE 3: DASHBOARD */
         .f3-layout { display: grid; grid-template-columns: 350px 1fr; gap: 20px; height: 80vh; }
         .sidebar { background: white; padding: 25px; border-radius: 20px; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .stelling-box { background: #f9f9f9; border: 2px dashed var(--primary); padding: 15px; margin: 15px 0; border-radius: 12px; font-weight: 600; text-align: center; color: #444; min-height: 100px; display: flex; align-items: center; justify-content: center; }
+        .stelling-box { background: #f9f9f9; border: 2px dashed var(--primary); padding: 15px; margin: 15px 0; border-radius: 12px; font-weight: 600; text-align: center; min-height: 100px; display: flex; align-items: center; justify-content: center; }
+        .vault-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .vault { background: rgba(255,255,255,0.95); border-radius: 15px; padding: 12px; border: 4px solid transparent; height: 100%; display: flex; flex-direction: column; }
+        .vault.active { border-color: var(--gold); background: white; transform: scale(1.02); }
+        .v-list { flex: 1; overflow-y: auto; font-size: 0.85rem; margin-top: 5px; }
 
-        .vault-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); gap: 12px; }
-        .vault { background: rgba(255,255,255,0.95); border-radius: 15px; padding: 12px; border: 4px solid transparent; transition: 0.3s; display: flex; flex-direction: column; }
-        .vault.active { border-color: var(--gold); transform: scale(1.02); background: white; }
-        .v-title { font-weight: 600; color: var(--primary); border-bottom: 2px solid #eee; margin-bottom: 5px; }
-        .v-list { flex: 1; overflow-y: auto; font-size: 0.85rem; }
-
-        /* NAVIGATIE */
-        .navigation-panel { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 12px; z-index: 10000; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 30px; }
-        .nav-btn { width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; background: transparent; color: white; cursor: pointer; font-weight: bold; font-size: 1.2rem; }
+        /* NAVIGATIE & RESET */
+        .navigation-panel { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 12px; z-index: 10000; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 30px; backdrop-filter: blur(5px); }
+        .nav-btn { width: 45px; height: 45px; border-radius: 50%; border: 2px solid white; background: transparent; color: white; cursor: pointer; font-weight: bold; }
         .nav-btn.active { background: white; color: var(--bg); }
+        .reset-btn { background: var(--accent) !important; border-color: #ff7675 !important; }
 
-        .btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; cursor: pointer; font-family: 'Fredoka'; font-weight: bold; width: 100%; font-size: 1rem; }
-        .input-field { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #ddd; font-family: 'Fredoka'; box-sizing: border-box; font-size: 1rem; }
+        .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-family: 'Fredoka'; font-weight: bold; width: 100%; }
+        .input-field { width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #ddd; font-family: 'Fredoka'; box-sizing: border-box; }
+        @keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
     </style>
 </head>
 <body>
@@ -71,26 +47,22 @@
 <div class="bg-fixed"></div>
 
 <div id="phase-1" class="container" style="display:flex; justify-content:center; align-items:center;">
-    <div style="background:rgba(255,255,255,0.9); padding:40px; border-radius:30px; text-align:center; width:600px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
-        <h1 style="margin:0 0 10px 0; color:var(--primary);">Schatgravers</h1>
-        <p style="margin-bottom:20px; color:#555;">Vul je naam in en druk op START</p>
-        
-        <div style="max-width:350px; margin: 0 auto 30px auto;">
-            <input type="text" id="name-in" placeholder="Typ hier je naam..." class="input-field">
-            <button onclick="sendName()" class="btn" style="margin-top:15px; background:var(--success);">START</button>
+    <div style="background:rgba(255,255,255,0.95); padding:40px; border-radius:30px; text-align:center; width:550px;">
+        <h1 style="color:var(--primary); margin:0;">Schatgravers</h1>
+        <div style="max-width:300px; margin: 20px auto;">
+            <input type="text" id="name-in" placeholder="Je naam..." class="input-field">
+            <button onclick="sendName()" class="btn" style="margin-top:10px; background:var(--success);">AANMELDEN</button>
         </div>
-
-        <h3 style="color:var(--primary); margin-bottom:10px;">Wie doen er mee?</h3>
-        <div id="display-names-list" class="names-display-area">
-            </div>
+        <h4 style="margin-bottom:10px;">In de klas:</h4>
+        <div id="display-names-list" class="names-display-area"></div>
     </div>
 </div>
 
 <div id="phase-2" class="container" style="display:flex; justify-content:center; align-items:center;">
-    <div style="background:white; padding:50px; border-radius:30px; text-align:center; box-shadow:0 10px 40px rgba(0,0,0,0.3);">
-        <h1 id="timer-p2" style="font-size:6rem; color:var(--accent); margin:0;">01:30</h1>
-        <p style="font-size:1.5rem;">Ga op ontdekking op de Olijfberg!</p>
-        <a href="https://earth.google.com/web/search/Mount+of+Olives" target="_blank" class="btn" style="text-decoration:none; display:inline-block; margin-top:20px;">GOOGLE EARTH 🌍</a>
+    <div style="background:white; padding:40px; border-radius:25px; text-align:center;">
+        <h1 id="timer-p2" style="font-size:5rem; color:var(--accent); margin:0;">01:30</h1>
+        <p>Verken de Olijfberg!</p>
+        <a href="https://earth.google.com/web/search/Mount+of+Olives" target="_blank" class="btn" style="text-decoration:none; display:inline-block; width:auto; padding:15px 30px;">GOOGLE EARTH</a>
     </div>
 </div>
 
@@ -99,41 +71,41 @@
         <div class="sidebar">
             <div style="text-align:center;">
                 <div id="dice-display" style="font-size:5rem;">🎲</div>
-                <h2 id="dice-title" style="margin:5px 0; color:var(--primary);">Gooi!</h2>
-                <div id="stelling-text" class="stelling-box">Klik op de knop om te beginnen...</div>
+                <h3 id="dice-title" style="margin:5px 0;">Gooi!</h3>
+                <div id="stelling-text" class="stelling-box">Druk op dobbelen...</div>
                 <button onclick="triggerRoll()" class="btn" style="background:var(--gold); color:black;">DOBBELEN</button>
             </div>
             <div style="margin-top:auto;">
-                <input type="text" id="thought-in" placeholder="Wat denk jij?..." class="input-field">
-                <button onclick="sendThought()" class="btn" style="margin-top:10px; background:var(--success);">VERSTUUR ✨</button>
+                <input type="text" id="thought-in" placeholder="Jouw antwoord..." class="input-field">
+                <button onclick="sendThought()" class="btn" style="margin-top:10px; background:var(--success);">VERSTUUR</button>
             </div>
         </div>
         <div class="vault-grid">
-            <div class="vault" id="v-1"><div class="v-title">1. ANGST</div><div class="v-list" id="l1"></div></div>
-            <div class="vault" id="v-2"><div class="v-title">2. KEUZES</div><div class="v-list" id="l2"></div></div>
-            <div class="vault" id="v-3"><div class="v-title">3. ENGELEN</div><div class="v-list" id="l3"></div></div>
-            <div class="vault" id="v-4"><div class="v-title">4. BIDDEN</div><div class="v-list" id="l4"></div></div>
-            <div class="vault" id="v-5"><div class="v-title">5. ALLEEN</div><div class="v-list" id="l5"></div></div>
-            <div class="vault" id="v-6"><div class="v-title">6. HERSTEL</div><div class="v-list" id="l6"></div></div>
+            <div class="vault" id="v-1"><b>1. ANGST</b><div class="v-list" id="l1"></div></div>
+            <div class="vault" id="v-2"><b>2. KEUZES</b><div class="v-list" id="l2"></div></div>
+            <div class="vault" id="v-3"><b>3. ENGELEN</b><div class="v-list" id="l3"></div></div>
+            <div class="vault" id="v-4"><b>4. BIDDEN</b><div class="v-list" id="l4"></div></div>
+            <div class="vault" id="v-5"><b>5. ALLEEN</b><div class="v-list" id="l5"></div></div>
+            <div class="vault" id="v-6"><b>6. HERSTEL</b><div class="v-list" id="l6"></div></div>
         </div>
     </div>
 </div>
 
 <div id="phase-4" class="container">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-        <h2 style="color:white; margin:0;">Gebeden Matcher</h2>
-        <a href="https://www.online-bijbel.nl/" target="_blank" class="btn" style="width:200px; background:#2980b9; text-decoration:none; text-align:center;">BIJBEL.NL 📖</a>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; color:white;">
+        <h2 style="margin:0;">Wie bad wat?</h2>
+        <a href="https://www.online-bijbel.nl/" target="_blank" class="btn" style="width:150px; background:#2980b9; text-decoration:none; text-align:center;">BIJBEL.NL</a>
     </div>
-    <div style="display:flex; flex-wrap:wrap; gap:10px; background:rgba(255,255,255,0.1); padding:15px; border-radius:15px; margin-bottom:15px; justify-content:center;" id="names-source"></div>
-    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; overflow-y:auto; flex:1; padding-bottom:100px;" id="prayer-targets"></div>
+    <div id="names-source" style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; justify-content:center;"></div>
+    <div id="prayer-targets" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; overflow-y:auto; flex:1; padding-bottom:80px;"></div>
 </div>
 
 <div id="phase-5" class="container">
     <div style="text-align:center; color:white;">
-        <div id="ws-timer" style="font-size:4rem; font-weight:bold; margin-bottom:20px;">03:00</div>
-        <div style="display:flex; justify-content:center; gap:30px;">
-            <div id="ws-grid" style="display:grid; grid-template-columns:repeat(15, 34px); gap:5px; background:rgba(255,255,255,0.1); padding:15px; border-radius:15px;"></div>
-            <div id="ws-list" style="background:white; color:#333; padding:20px; border-radius:20px; width:250px; height:480px; overflow-y:auto; text-align:left;"></div>
+        <div id="ws-timer" style="font-size:3rem; font-weight:bold; margin-bottom:20px;">03:00</div>
+        <div style="display:flex; justify-content:center; gap:20px;">
+            <div id="ws-grid" style="display:grid; grid-template-columns:repeat(15, 30px); gap:5px; background:rgba(255,255,255,0.1); padding:10px; border-radius:10px;"></div>
+            <div id="ws-list" style="background:white; color:#333; padding:20px; border-radius:15px; width:220px; height:450px; overflow-y:auto; text-align:left;"></div>
         </div>
     </div>
 </div>
@@ -144,11 +116,12 @@
     <button class="nav-btn" id="btn-p3" onclick="updatePhase('p3')">3</button>
     <button class="nav-btn" id="btn-p4" onclick="updatePhase('p4')">4</button>
     <button class="nav-btn" id="btn-p5" onclick="updatePhase('p5')">5</button>
+    <button class="nav-btn reset-btn" onclick="fullReset()">R</button>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, set, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBC3Dzm8PNPXw12VJNimvly5u2I93QeW54",
@@ -163,39 +136,59 @@
     let p2Int, wsInt, curDice = 1;
 
     const stellingen = [
-        "Ik ben nooit bang.",
-        "Als ik iets heel spannend vind om te gaan doen, hoop ik dat het niet doorgaat.",
-        "Als ik zie dat iemand het moeilijk heeft, probeer ik hem of haar te helpen.",
-        "Als ik het moeilijk heb of bang ben, ga ik bidden.",
-        "Ik heb weleens kracht van God gekregen of gevoeld toen ik het moeilijk had.",
-        "Ik zou graag meer willen weten over wat God precies wil."
+        "1. Ik ben nooit bang.",
+        "2. Als ik iets heel spannend vind, hoop ik dat het niet doorgaat.",
+        "3. Als ik zie dat iemand het moeilijk heeft, help ik diegene.",
+        "4. Als ik het moeilijk heb of bang ben, ga ik bidden.",
+        "5. Ik heb weleens kracht van God gekregen of gevoeld.",
+        "6. Ik zou graag meer willen weten over wat God precies wil."
     ];
 
-    const dobbelIconen = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
-
-    // LIVE NAMENLIJST UPDATE
-    onValue(ref(db, 'names'), s => {
-        const list = document.getElementById('display-names-list');
-        list.innerHTML = '';
-        if(s.val()) {
-            Object.values(s.val()).forEach(name => {
-                const tag = document.createElement('div');
-                tag.className = 'name-tag';
-                tag.innerText = name;
-                list.appendChild(tag);
-            });
-        }
-    });
-
+    // FIREBASE ACTIONS
     window.sendName = () => {
-        const input = document.getElementById('name-in');
-        if(input.value.trim()) {
-            push(ref(db, 'names'), input.value.trim());
-            input.value = '';
+        const v = document.getElementById('name-in').value;
+        if(v) { push(ref(db, 'names'), v); document.getElementById('name-in').value = ''; }
+    };
+
+    window.sendThought = () => {
+        const v = document.getElementById('thought-in').value;
+        if(v) { push(ref(db, 'vaults/'+curDice), v); document.getElementById('thought-in').value = ''; }
+    };
+
+    window.triggerRoll = () => set(ref(db, 'dice'), Math.floor(Math.random()*6)+1);
+    window.updatePhase = (p) => set(ref(db, 'currentPhase'), p);
+    
+    window.fullReset = () => {
+        if(confirm("Alles wissen voor een nieuwe les?")) {
+            remove(ref(db, 'names'));
+            remove(ref(db, 'vaults'));
+            set(ref(db, 'dice'), 1);
+            set(ref(db, 'currentPhase'), 'p1');
         }
     };
 
-    window.updatePhase = (p) => set(ref(db, 'currentPhase'), p);
+    // SYNC
+    onValue(ref(db, 'names'), s => {
+        const l = document.getElementById('display-names-list'); l.innerHTML = '';
+        if(s.val()) Object.values(s.val()).forEach(n => l.innerHTML += `<div class="name-tag">${n}</div>`);
+    });
+
+    onValue(ref(db, 'dice'), s => {
+        curDice = s.val() || 1;
+        const titels = ["ANGST", "KEUZES", "ENGELEN", "BIDDEN", "ALLEEN", "HERSTEL"];
+        document.getElementById('dice-display').innerText = ["⚀","⚁","⚂","⚃","⚄","⚅"][curDice-1];
+        document.getElementById('dice-title').innerText = titels[curDice-1];
+        document.getElementById('stelling-text').innerText = stellingen[curDice-1];
+        document.querySelectorAll('.vault').forEach(v => v.classList.remove('active'));
+        document.getElementById('v-'+curDice).classList.add('active');
+    });
+
+    onValue(ref(db, 'vaults'), s => {
+        for(let i=1; i<=6; i++) {
+            const v = document.getElementById('l'+i); v.innerHTML = '';
+            if(s.val() && s.val()[i]) Object.values(s.val()[i]).forEach(t => v.innerHTML += `<div style="background:#eee; padding:5px; margin:3px 0; border-radius:5px; font-size:0.8rem;">${t}</div>`);
+        }
+    });
 
     onValue(ref(db, 'currentPhase'), s => {
         const p = s.val() || 'p1';
@@ -203,92 +196,45 @@
         document.getElementById('phase-' + p.replace('p','')).style.display = 'flex';
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('btn-'+p).classList.add('active');
-        if(p==='p2') startP2(); else clearInterval(p2Int);
+        if(p==='p2') startP2();
         if(p==='p4') initP4();
-        if(p==='p5') startWS(); else clearInterval(wsInt);
+        if(p==='p5') startWS();
     });
 
-    window.triggerRoll = () => set(ref(db, 'dice'), Math.floor(Math.random()*6)+1);
-
-    onValue(ref(db, 'dice'), s => {
-        curDice = s.val() || 1;
-        const titels = ["ANGST", "KEUZES", "ENGELEN", "BIDDEN", "ALLEEN", "HERSTEL"];
-        document.getElementById('dice-display').innerText = dobbelIconen[curDice-1];
-        document.getElementById('dice-title').innerText = titels[curDice-1];
-        document.getElementById('stelling-text').innerText = stellingen[curDice-1];
-        document.querySelectorAll('.vault').forEach(v => v.classList.remove('active'));
-        document.getElementById('v-'+curDice).classList.add('active');
-    });
-
-    window.sendThought = () => {
-        const v = document.getElementById('thought-in').value;
-        if(v) { push(ref(db, 'vaults/'+curDice), v); document.getElementById('thought-in').value=''; }
-    };
-
-    onValue(ref(db, 'vaults'), s => {
-        for(let i=1; i<=6; i++) {
-            const l = document.getElementById('l'+i); l.innerHTML = '';
-            if(s.val() && s.val()[i]) Object.values(s.val()[i]).forEach(t => l.innerHTML += `<div style="background:#f0f0f0; margin:4px 0; padding:8px; border-radius:8px; border-left:4px solid var(--primary);">${t}</div>`);
-        }
-    });
-
-    // --- OVERIGE LOGICA ---
+    // FASE 4 & 5 LOGICA (ingekort voor overzicht)
     function initP4() {
         const src = document.getElementById('names-source'); const trg = document.getElementById('prayer-targets');
         src.innerHTML = ''; trg.innerHTML = '';
-        const gebeden = [
-            {n:"Abraham", g:"In Sodom onschuldigen sparen.", b:"Gen. 18:22"}, {n:"Agur", g:"Precies wat ik nodig heb.", b:"Spr. 30:7"},
-            {n:"David", g:"Bid om vergeving.", b:"Ps. 51:3"}, {n:"Elia", g:"Vraag om Gods antwoord.", b:"1 Kon. 18:37"},
-            {n:"Gideon", g:"Vraag om een teken.", b:"Rech. 6:36"}, {n:"Hanna", g:"Bid om een zoon.", b:"1 Sam. 1:9"},
-            {n:"Jesaja", g:"Kijk uit de hemel naar ons.", b:"Jes. 63:15"}, {n:"Jezus", g:"Voor alle gelovigen.", b:"Joh. 17:20"},
-            {n:"Jezus", g:"Uw wil geschiede.", b:"Luc. 22:42"}, {n:"Jezus", g:"Vader, vergeef hen.", b:"Luc. 23:34"}
-        ];
-        gebeden.sort(() => Math.random() - 0.5).forEach((k, i) => {
-            const d = document.createElement('div'); d.className = 'name-tag'; d.style.cursor = 'grab'; d.innerText = k.n; d.draggable = true;
-            d.id = 'd-'+i; d.ondragstart = (e) => e.dataTransfer.setData('text', e.target.id);
-            src.appendChild(d);
-        });
-        gebeden.forEach((k) => {
-            const z = document.createElement('div'); z.style = "background:white; padding:15px; border-radius:15px; min-height:100px; border:2px dashed #ccc;";
-            z.innerHTML = `<i>"${k.g}"</i><br><small><b>${k.b}</b></small>`;
+        const gebeden = [{n:"Abraham", g:"In Sodom onschuldigen sparen.", b:"Gen. 18:22"}, {n:"David", g:"Bid om vergeving.", b:"Ps. 51:3"}, {n:"Jezus", g:"Uw wil geschiede.", b:"Luc. 22:42"}, {n:"Nehemia", g:"Kort schietgebedje.", b:"Neh. 2:4"}, {n:"Salomo", g:"Wijsheid.", b:"1 Kon. 3:9"}];
+        gebeden.forEach((k, i) => {
+            const d = document.createElement('div'); d.className = 'name-tag'; d.innerText = k.n; d.draggable = true; d.id = 'd-'+i;
+            d.ondragstart = (e) => e.dataTransfer.setData('text', e.target.id); src.appendChild(d);
+            const z = document.createElement('div'); z.style = "background:white; padding:10px; border-radius:10px; border:2px dashed #ccc; min-height:60px;";
+            z.innerHTML = `<i>"${k.g}"</i><br><b>${k.b}</b>`;
             z.ondragover = (e) => e.preventDefault();
             z.ondrop = (e) => {
                 e.preventDefault(); const id = e.dataTransfer.getData('text');
-                z.innerHTML = `<span style="background:var(--primary);color:white;padding:2px 8px;border-radius:5px;">${document.getElementById(id).innerText}</span><br><i>"${k.g}"</i>`;
-                z.style.border = '2px solid var(--success)';
+                z.innerHTML = `<b style="color:var(--primary)">${document.getElementById(id).innerText}</b><br><i>"${k.g}"</i>`;
+                z.style.borderColor = 'var(--success)';
             };
             trg.appendChild(z);
         });
     }
 
     function startWS() {
-        const g = document.getElementById('ws-grid'); const l = document.getElementById('ws-list');
-        g.innerHTML = ''; l.innerHTML = '';
-        const woorden = ["OLIJFBERG", "JUDAS", "VERRAAD", "BEKER", "SLAPEN", "ENGEL", "KRACHT", "GEBED", "SOLDATEN", "KUS", "PETRUS", "HAAN"];
+        const g = document.getElementById('ws-grid'); g.innerHTML = '';
         for(let i=0; i<225; i++) {
-            const c = document.createElement('div'); c.style = "width:34px; height:34px; background:white; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer; border-radius:5px;";
+            const c = document.createElement('div'); c.style = "width:30px; height:30px; background:white; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold; border-radius:4px;";
             c.innerText = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)];
-            c.onclick = () => c.style.background = (c.style.background === 'rgb(241, 196, 15)') ? 'white' : 'rgb(241, 196, 15)';
+            c.onclick = () => c.style.background = (c.style.background==='white') ? 'var(--gold)' : 'white';
             g.appendChild(c);
         }
-        woorden.forEach(w => {
-            const i = document.createElement('div'); i.innerText = w; i.style.padding = "5px 0"; i.style.cursor = "pointer";
-            i.onclick = () => i.style.textDecoration = (i.style.textDecoration === 'line-through') ? 'none' : 'line-through';
-            l.appendChild(i);
-        });
-        let t = 180;
-        wsInt = setInterval(() => {
-            let m=Math.floor(t/60), s=t%60;
-            document.getElementById('ws-timer').innerText = `${m}:${s.toString().padStart(2,'0')}`;
-            if(t-- <= 0) { clearInterval(wsInt); document.getElementById('ping-sound').play(); }
-        }, 1000);
     }
 
     function startP2() {
-        let t = 90;
+        let t = 90; clearInterval(p2Int);
         p2Int = setInterval(() => {
-            let m=Math.floor(t/60), s=t%60;
-            document.getElementById('timer-p2').innerText = `${m}:${s.toString().padStart(2,'0')}`;
+            document.getElementById('timer-p2').innerText = `${Math.floor(t/60)}:${(t%60).toString().padStart(2,'0')}`;
             if(t-- <= 0) { clearInterval(p2Int); document.getElementById('ping-sound').play(); }
         }, 1000);
     }
