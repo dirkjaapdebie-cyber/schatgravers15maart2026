@@ -3,74 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Schatgravers - De Race</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    <title>Schatgravers V40 - De Olijfberg Race</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #1e3799; --accent: #eb4d4b; --gold: #f1c40f; --bg: #0a3d62; }
-        body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; overflow: hidden; }
-        .container { display: none; height: 100vh; padding: 10px; box-sizing: border-box; flex-direction: column; align-items: center; }
+        :root { --primary: #1e3799; --accent: #eb4d4b; --success: #20bf6b; --bg: #0a3d62; --gold: #f1c40f; }
+        body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Fredoka', sans-serif; overflow: hidden; background: var(--bg); color: #333; }
+        .bg-fixed { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(10, 61, 98, 0.85), rgba(10, 61, 98, 0.85)), url('schatgravers15maart.jpg'); background-size: cover; z-index: -1; }
+        .container { display: none; height: 100vh; padding: 10px; box-sizing: border-box; flex-direction: column; align-items: center; overflow-y: auto; padding-bottom: 80px; }
         
-        /* MAZE AUTO-SCALE */
-        #maze-wrap { width: 100%; max-width: 500px; aspect-ratio: 1/1; position: relative; margin: 10px 0; }
-        #maze-grid { display: grid; grid-template-columns: repeat(15, 1fr); width: 100%; height: 100%; background: #2d5a27; border: 3px solid var(--gold); }
-        .cell { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 3vw; font-weight: bold; position: relative; }
+        /* STORY STYLE */
+        .story-container { background: #fdfbf7; padding: 15px; border-radius: 12px; width: 90%; max-width: 500px; border-top: 6px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-height: 60vh; display: flex; flex-direction: column; }
+        .story-scroll-area { overflow-y: auto; text-align: left; padding-right: 5px; }
+        .story-content { font-family: 'Lora', serif; font-size: 1rem; line-height: 1.5; color: #2c3e50; }
+
+        /* MAZE - NO SCROLL AUTO-FIT */
+        #maze-wrap { 
+            width: 95vw; 
+            height: 95vw; 
+            max-width: 380px; 
+            max-height: 380px; 
+            position: relative; 
+            background: #2d5a27; 
+            border: 3px solid var(--gold); 
+            display: grid; 
+            grid-template-columns: repeat(15, 1fr); 
+            grid-template-rows: repeat(13, 1fr);
+        }
+        .cell { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; }
         .wall { background: #1a3a16; }
-        .path { background: #4a7c44; opacity: 0.3; }
+        .path { background: #4a7c44; opacity: 0.2; }
         .letter-cell { color: white; text-shadow: 1px 1px 2px black; z-index: 5; opacity: 1; }
-        
-        #player { position: absolute; width: 6.66%; height: 6.66%; transition: all 0.1s; z-index: 10; background-image: url('judas.png'); background-size: cover; border-radius: 50%; }
-        .target-img { width: 80%; height: 80%; }
+        #player { position: absolute; width: 6.66%; height: 7.69%; transition: all 0.1s; z-index: 10; background-image: url('judas.png'); background-size: contain; background-repeat: no-repeat; background-position: center; }
+        .target-img { width: 80%; height: 80%; object-fit: contain; }
 
-        /* LEADERBOARD */
-        #leaderboard { background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; width: 100%; max-width: 400px; margin-top: 10px; font-size: 0.8rem; }
-        .leader-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
-
-        .navigation-panel { position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 100; }
-        .nav-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid white; background: transparent; color: white; font-weight: bold; }
+        /* UI */
+        .navigation-panel { position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 1000; background: rgba(0,0,0,0.8); padding: 8px; border-radius: 40px; }
+        .nav-btn { width: 42px; height: 42px; border-radius: 50%; border: 2px solid white; background: transparent; color: white; font-weight: bold; cursor: pointer; }
         .nav-btn.active { background: white; color: var(--bg); }
-        
-        .controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 60px; }
-        .control-btn { width: 60px; height: 60px; background: white; border: none; border-radius: 15px; font-size: 1.5rem; color: var(--bg); }
-        .btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; font-weight: bold; }
+        .vault { background: white; padding: 5px; border-radius: 8px; font-size: 0.6rem; min-height: 40px; border: 1px solid #ddd; }
+        .vault.active { border: 3px solid var(--gold); background: #fffdf0; }
+        .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; width: 100%; cursor: pointer; }
+        .controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+        .control-btn { width: 50px; height: 50px; background: white; border: none; border-radius: 12px; font-size: 1.5rem; color: var(--bg); font-weight: bold; }
+        #leaderboard { background: rgba(255,255,255,0.15); border-radius: 10px; padding: 10px; width: 90%; max-width: 400px; margin-top: 10px; color: white; font-size: 0.8rem; }
+        .leader-row { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.2); padding: 2px 0; }
     </style>
 </head>
 <body>
 
+<div class="bg-fixed"></div>
+
 <div id="phase-1" class="container" style="display:flex;">
-    <h1>Schatgravers</h1>
-    <input type="text" id="name-in" placeholder="Vul je naam in..." style="padding:15px; width:80%; border-radius:10px; border:none;">
-    <button onclick="saveUser()" class="btn" style="margin-top:10px;">START GAME</button>
+    <div style="background:white; padding:25px; border-radius:20px; text-align:center; width:85%; max-width:350px;">
+        <h2 style="margin-top:0;">Schatgravers</h2>
+        <input type="text" id="name-in" placeholder="Je naam..." style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd; box-sizing: border-box;">
+        <button onclick="saveUser()" class="btn">DOE MEE</button>
+        <div id="display-names-list" style="margin-top:15px; font-size:0.8rem;"></div>
+    </div>
+</div>
+
+<div id="phase-3" class="container">
+    <div class="story-container">
+        <h3 style="color:var(--primary); margin:5px; text-align:center;">Lukas 22:39-53</h3>
+        <div class="story-scroll-area">
+            <div class="story-content">
+                <p><strong>Jezus bidt op de Olijfberg</strong><br>
+                Jezus ging de stad uit naar de Olijfberg. Hij zei: ‘Bid God om kracht.’ Hij knielde en bad: ‘Vader, niet wat ik wil, maar wat U wilt.’ Een engel gaf Hem kracht. Jezus was bang, zijn zweet leek op bloed.</p>
+                <p><strong>Het verraad</strong><br>
+                Judas kwam met een groep mannen. Hij groette Jezus met een kus. Jezus zei: ‘Judas, verraad je Mij met een kus?’ De leerlingen wilden vechten, maar Jezus genas het oor van een vijand. Hij zei: ‘Nu laat de duisternis haar macht zien.’</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="phase-6" class="container">
+    <div style="background:white; padding:15px; border-radius:15px; text-align:center; width:90%; max-width:400px; margin-bottom:10px;">
+        <div id="dice-display" style="font-size:3rem; margin:0;">🎲</div>
+        <p id="stelling-text" style="font-weight:bold; color:var(--primary); font-size:0.9rem; margin:5px 0;"></p>
+        <button onclick="triggerRoll()" class="btn" style="background:var(--gold); color:black; padding:8px;">DOBBELEN</button>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; width:95%; max-width:400px;">
+        <div class="vault" id="v-1"><b>1. ANGST</b><div id="l1"></div></div>
+        <div class="vault" id="v-2"><b>2. KEUZES</b><div id="l2"></div></div>
+        <div class="vault" id="v-3"><b>3. ENGELEN</b><div id="l3"></div></div>
+        <div class="vault" id="v-4"><b>4. BIDDEN</b><div id="l4"></div></div>
+        <div class="vault" id="v-5"><b>5. ALLEEN</b><div id="l5"></div></div>
+        <div class="vault" id="v-6"><b>6. HERSTEL</b><div id="l6"></div></div>
+    </div>
+    <input type="text" id="thought-in" placeholder="Typ je gedachte..." style="width:90%; padding:10px; margin-top:10px; border-radius:10px; border:none;">
+    <button onclick="sendThought()" class="btn" style="background:var(--success); margin-top:5px; width:90%;">STUUR NAAR KLUIS</button>
 </div>
 
 <div id="phase-9" class="container">
-    <div style="display:flex; justify-content: space-between; width: 100%; max-width: 400px;">
-        <div id="timer-display">Tijd: 0.0s</div>
-        <div id="word-display" style="color:var(--gold); letter-spacing: 2px;">_______</div>
+    <div style="display:flex; justify-content:space-between; width:95%; max-width:380px; color:white; font-weight:bold;">
+        <span id="timer-display">Tijd: 0.0s</span>
+        <span id="word-display" style="color:var(--gold)">_______</span>
     </div>
-    
     <div id="maze-wrap">
         <div id="player"></div>
         <div id="maze-grid"></div>
     </div>
-
     <div class="controls">
         <div></div><button class="control-btn" onclick="movePlayer(0,-1)">↑</button><div></div>
         <button class="control-btn" onclick="movePlayer(-1,0)">←</button>
         <button class="control-btn" onclick="movePlayer(0,1)">↓</button>
         <button class="control-btn" onclick="movePlayer(1,0)">→</button>
     </div>
-
     <div id="leaderboard">
         <strong style="color:var(--gold)">🏆 SNELSTE TIJDEN</strong>
         <div id="leader-list"></div>
     </div>
-    
-    <button onclick="resetNames()" style="background:var(--accent); color:white; border:none; padding:5px; border-radius:5px; margin-top:10px; font-size:10px;">RESET DATABASE</button>
+    <button onclick="resetData()" style="background:none; border:1px solid gray; color:gray; font-size:8px; margin-top:10px;">RESET DATABASE</button>
 </div>
 
 <div class="navigation-panel">
-    <button class="nav-btn" onclick="navTo('p1')">1</button>
-    <button class="nav-btn" onclick="navTo('p9')">9</button>
+    <button class="nav-btn" id="btn-p1" onclick="navTo('p1')">1</button>
+    <button class="nav-btn" id="btn-p3" onclick="navTo('p3')">3</button>
+    <button class="nav-btn" id="btn-p6" onclick="navTo('p6')">6</button>
+    <button class="nav-btn" id="btn-p9" onclick="navTo('p9')">9</button>
 </div>
 
 <script type="module">
@@ -81,36 +131,52 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    let userName = "";
-    let startTime = null;
-    let timerInterval = null;
-    let gameActive = false;
+    let userName = localStorage.getItem('sgName') || "";
+    let startTime, timerInterval, gameActive = false;
+    let coll = "";
+    const goal = "VERRAAD";
+    let pPos = { x: 1, y: 11 };
 
     window.saveUser = () => {
-        userName = document.getElementById('name-in').value;
-        if(userName) navTo('p9');
+        const n = document.getElementById('name-in').value;
+        if(n) { userName = n; localStorage.setItem('sgName', n); push(ref(db, 'names'), n); navTo('p3'); }
     };
 
     window.navTo = (p) => set(ref(db, 'currentPhase'), p);
-    window.resetNames = () => { if(confirm("Alles wissen?")) remove(ref(db, 'names')); remove(ref(db, 'leaderboard')); };
+    window.triggerRoll = () => set(ref(db, 'dice'), Math.floor(Math.random()*6)+1);
+    window.sendThought = () => {
+        const v = document.getElementById('thought-in').value;
+        const d = document.getElementById('dice-display').innerText;
+        const diceNum = ["⚀","⚁","⚂","⚃","⚄","⚅"].indexOf(d) + 1;
+        if(v) push(ref(db, 'vaults/'+diceNum), v);
+        document.getElementById('thought-in').value = '';
+    };
+    window.resetData = () => { if(confirm("Wis alle data?")) { remove(ref(db, 'leaderboard')); remove(ref(db, 'names')); remove(ref(db, 'vaults')); } };
 
+    // SYNC FASES
     onValue(ref(db, 'currentPhase'), s => {
         const p = s.val() || 'p1';
         document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
         document.getElementById('phase-' + p.replace('p','')).style.display = 'flex';
-        if(p === 'p9') startGame();
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-'+p).classList.add('active');
+        if(p === 'p9') startRace(); else stopRace();
     });
 
-    // Leaderboard ophalen (Top 5)
+    onValue(ref(db, 'dice'), s => {
+        const d = s.val() || 1;
+        document.getElementById('dice-display').innerText = ["⚀","⚁","⚂","⚃","⚄","⚅"][d-1];
+        document.getElementById('stelling-text').innerText = ["1. Ben je weleens bang?","2. Maak je weleens foute keuzes?","3. Heb je weleens hulp gekregen?","4. Bid jij om kracht?","5. Voel je je weleens alleen?","6. Kun jij iemand vergeven?"][d-1];
+        document.querySelectorAll('.vault').forEach(v => v.classList.remove('active'));
+        document.getElementById('v-'+d).classList.add('active');
+    });
+
     onValue(query(ref(db, 'leaderboard'), orderByChild('score'), limitToFirst(5)), s => {
-        const list = document.getElementById('leader-list');
-        list.innerHTML = "";
-        s.forEach(child => {
-            const data = child.val();
-            list.innerHTML += `<div class="leader-row"><span>${data.name}</span><span>${data.score}s</span></div>`;
-        });
+        const l = document.getElementById('leader-list'); l.innerHTML = "";
+        s.forEach(c => { l.innerHTML += `<div class="leader-row"><span>${c.val().name}</span><span>${c.val().score}s</span></div>`; });
     });
 
+    // RACE LOGICA
     const mazeData = [
         [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
         [1,0,0,0,"Z",0,1,0,0,0,0,"B",0,0,1],
@@ -127,40 +193,30 @@
         [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
     ];
 
-    let pPos = { x: 1, y: 11 };
-    let coll = "";
-    const goal = "VERRAAD";
-
-    function startGame() {
+    function startRace() {
         initMaze();
+        gameActive = true; coll = ""; pPos = {x:1, y:11}; updateP();
         startTime = Date.now();
-        gameActive = true;
-        coll = "";
-        pPos = { x: 1, y: 11 };
-        updateP();
-        if(timerInterval) clearInterval(timerInterval);
         timerInterval = setInterval(() => {
-            const diff = (Date.now() - startTime) / 1000;
-            document.getElementById('timer-display').innerText = `Tijd: ${diff.toFixed(1)}s`;
+            document.getElementById('timer-display').innerText = `Tijd: ${((Date.now()-startTime)/1000).toFixed(1)}s`;
         }, 100);
     }
+    function stopRace() { gameActive = false; clearInterval(timerInterval); }
 
     function initMaze() {
         const g = document.getElementById('maze-grid'); g.innerHTML = '';
-        mazeData.forEach((row) => {
-            row.forEach((cell) => {
-                const cDiv = document.createElement('div');
-                cDiv.className = 'cell ' + (cell === 1 ? 'wall' : 'path');
-                if(cell === "✝️") cDiv.innerHTML = `<img src="jezus.png" class="target-img">`;
-                else if(typeof cell === 'string' && cell !== "0") { cDiv.innerText = cell; cDiv.classList.add('letter-cell'); }
-                g.appendChild(cDiv);
-            });
+        mazeData.flat().forEach(cell => {
+            const d = document.createElement('div');
+            d.className = 'cell ' + (cell===1?'wall':'path');
+            if(cell==="✝️") d.innerHTML=`<img src="jezus.png" class="target-img">`;
+            else if(typeof cell==='string' && cell!=='0') { d.innerText=cell; d.className+=' letter-cell'; }
+            g.appendChild(d);
         });
     }
 
     window.movePlayer = (dx, dy) => {
         if(!gameActive) return;
-        const nx = pPos.x + dx; const ny = pPos.y + dy;
+        const nx = pPos.x + dx, ny = pPos.y + dy;
         if(mazeData[ny] && mazeData[ny][nx] !== 1) {
             pPos.x = nx; pPos.y = ny;
             const val = mazeData[ny][nx];
@@ -172,14 +228,11 @@
             }
             if(val === "✝️") {
                 if(coll === goal) {
-                    gameActive = false;
-                    clearInterval(timerInterval);
-                    const finalTime = ((Date.now() - startTime) / 1000).toFixed(1);
-                    alert(`GEWONNEN! Tijd: ${finalTime}s`);
-                    push(ref(db, 'leaderboard'), { name: userName, score: parseFloat(finalTime) });
-                } else {
-                    alert("Verzamel eerst alle letters van VERRAAD!");
-                }
+                    stopRace();
+                    const score = ((Date.now()-startTime)/1000).toFixed(1);
+                    push(ref(db, 'leaderboard'), { name: userName || "Anoniem", score: parseFloat(score) });
+                    alert("GEWONNEN! Tijd: " + score + "s");
+                } else alert("Verzamel eerst V-E-R-R-A-A-D!");
             }
             updateP();
         }
@@ -187,8 +240,8 @@
 
     function updateP() {
         const p = document.getElementById('player');
-        p.style.left = (pPos.x * 6.66) + '%';
-        p.style.top = (pPos.y * 6.66) + '%';
+        p.style.left = (pPos.x * (100/15)) + '%';
+        p.style.top = (pPos.y * (100/13)) + '%';
     }
 </script>
 </body>
