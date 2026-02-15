@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schatgravers 2026 | Master Build</title>
+    <title>Schatgravers 2026 | Master Control</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Black+Ops+One&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -11,160 +11,168 @@
         :root { --primary: #1e3799; --accent: #eb4d4b; --bg: #0a3d62; --gold: #f1c40f; --neon: #00d2ff; }
         body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; margin: 0; padding: 10px; overflow-x: hidden; }
         
-        /* ADMIN CONTROLS */
+        /* ADMIN PANEEL (Regie) */
         #admin-panel { display: none; background: #000; padding: 15px; border: 3px solid var(--gold); border-radius: 15px; margin-bottom: 20px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 0 20px var(--gold); }
         .admin-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
-        .btn-nav { background: #333; color: white; padding: 8px 2px; border-radius: 5px; border: 1px solid #555; cursor: pointer; font-size: 0.65rem; font-weight: bold; text-transform: uppercase; transition: 0.3s; }
-        .btn-nav.active-nav { background: var(--gold); color: black; transform: scale(1.05); }
+        .btn-nav { background: #333; color: white; padding: 8px 2px; border-radius: 5px; border: 1px solid #555; cursor: pointer; font-size: 0.6rem; font-weight: bold; text-transform: uppercase; }
+        .btn-nav.active-nav { background: var(--gold); color: black; box-shadow: 0 0 10px var(--gold); }
 
-        /* SCREENS */
+        /* SCHERMEN CONFIG */
         .screen { display: none; width: 100%; max-width: 500px; margin: 0 auto; text-align: center; }
         .screen.active { display: block; animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .card { background: white; color: #333; padding: 20px; border-radius: 20px; margin: 15px 0; box-shadow: 0 10px 25px rgba(0,0,0,0.5); position: relative; }
+        .card { background: white; color: #333; padding: 20px; border-radius: 20px; margin: 15px 0; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         
-        /* THE WHEEL & FEED */
-        .spinning { animation: bounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes bounce { 0% { transform: scale(0.6); } 100% { transform: scale(1); } }
-        #live-feed { height: 250px; overflow-y: auto; text-align: left; background: #f9f9f9; padding: 10px; border-radius: 10px; display: flex; flex-direction: column; }
-        .chat-msg { background: white; padding: 8px; margin-bottom: 5px; border-radius: 8px; border-left: 4px solid var(--neon); font-size: 0.85rem; }
+        /* SPECIFIEKE COMPONENTEN */
+        #lobby-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 15px; }
+        .badge { background: var(--neon); color: black; padding: 6px 12px; border-radius: 15px; font-weight: bold; font-size: 0.8rem; animation: pop 0.3s ease; }
+        @keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+        
+        .story-scroll { height: 350px; overflow-y: auto; text-align: left; padding-right: 10px; line-height: 1.6; }
+        
+        #live-feed { height: 200px; overflow-y: auto; background: #f4f4f4; border-radius: 10px; padding: 10px; margin-top: 10px; text-align: left; display: flex; flex-direction: column-reverse; }
+        .feed-item { background: white; padding: 8px; border-radius: 8px; margin-bottom: 5px; border-left: 4px solid var(--primary); font-size: 0.85rem; }
 
-        /* PUZZLE & MAZE */
-        #ws-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; background: #111; padding: 8px; border-radius: 12px; }
-        .ws-letter { background: white; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-weight: 900; cursor: pointer; color: var(--primary); border-radius: 4px; font-size: 1rem; }
+        #ws-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; background: #222; padding: 8px; border-radius: 10px; }
+        .ws-letter { background: white; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-weight: 900; cursor: pointer; color: var(--primary); border-radius: 4px; }
         .ws-letter.selected { background: var(--accent); color: white; border-radius: 50%; }
-        #maze-container { position: relative; width: 300px; height: 300px; background: #000; border: 4px solid var(--neon); margin: 0 auto; border-radius: 10px; overflow: hidden; }
-        #player { position: absolute; width: 25px; height: 25px; background: var(--gold); border-radius: 50%; z-index: 10; display: flex; align-items: center; justify-content: center; font-size: 14px; }
-        #guard { position: absolute; width: 35px; height: 35px; background: red; border-radius: 50%; z-index: 5; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        .wall { position: absolute; background: #444; border: 1px solid #666; }
 
-        /* UTILS */
-        .btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; }
-        input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 10px; box-sizing: border-box; }
-        .badge { background: var(--neon); color: black; padding: 5px 12px; border-radius: 15px; margin: 3px; font-size: 0.8rem; font-weight: bold; display: inline-block; }
-        .drop-zone { border: 2px dashed #ccc; padding: 20px; margin: 10px 0; border-radius: 15px; min-height: 40px; }
+        #maze-container { position: relative; width: 300px; height: 300px; background: #000; border: 4px solid var(--neon); margin: 0 auto; border-radius: 10px; overflow: hidden; }
+        #player { position: absolute; width: 25px; height: 25px; background: var(--gold); border-radius: 50%; z-index: 10; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+        #guard { position: absolute; width: 35px; height: 35px; background: red; border-radius: 50%; z-index: 5; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .wall { position: absolute; background: #444; }
+
+        /* ALGEMENE KNOPPEN/INPUT */
+        .btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; font-size: 1rem; }
+        input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 10px; box-sizing: border-box; font-family: 'Fredoka'; }
+        .drop-zone { border: 2px dashed #bbb; padding: 20px; margin: 10px 0; border-radius: 15px; min-height: 40px; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div id="admin-panel">
         <div class="admin-grid">
-            <button class="btn-nav" id="nav1" onclick="syncStep(1)">1. Lobby</button>
-            <button class="btn-nav" id="nav2" onclick="syncStep(2)">2. Kaart</button>
-            <button class="btn-nav" id="nav3" onclick="syncStep(3)">3. Story</button>
-            <button class="btn-nav" id="nav4" onclick="syncStep(4)">4. Wheel</button>
-            <button class="btn-nav" id="nav5" onclick="syncStep(5)">5. Gebed</button>
-            <button class="btn-nav" id="nav6" onclick="syncStep(6)">6. Puzzel</button>
-            <button class="btn-nav" id="nav7" onclick="syncStep(7)">7. Maze</button>
-            <button class="btn-nav" style="background:red" onclick="resetAll()">RESET</button>
+            <button class="btn-nav" id="nav1" onclick="setStep(1)">1. Lobby</button>
+            <button class="btn-nav" id="nav2" onclick="setStep(2)">2. Kaart</button>
+            <button class="btn-nav" id="nav3" onclick="setStep(3)">3. Story</button>
+            <button class="btn-nav" id="nav4" onclick="setStep(4)">4. Wheel</button>
+            <button class="btn-nav" id="nav5" onclick="setStep(5)">5. Gebed</button>
+            <button class="btn-nav" id="nav6" onclick="setStep(6)">6. Puzzel</button>
+            <button class="btn-nav" id="nav7" onclick="setStep(7)">7. Maze</button>
+            <button class="btn-nav" style="background:red" onclick="resetGame()">RESET</button>
         </div>
-        <button class="btn-nav" style="width:100%; margin-top:8px; background:var(--gold); color:black" onclick="spinWheel()">DRAAI AAN HET WIEL</button>
+        <button class="btn-nav" style="width:100%; margin-top:8px; background:var(--gold); color:black" onclick="spinWheel()">DRAAI HET WIEL</button>
     </div>
 
     <div id="screen-1" class="screen active">
-        <h1 style="font-family:'Black Ops One'; font-size:3.5rem; color:var(--gold); margin-bottom:5px;">SQUAD</h1>
-        <div id="login-form" class="card">
-            <input type="text" id="name-in" placeholder="JE NAAM...">
-            <button onclick="join()" class="btn">MELD JE AAN</button>
+        <h1 style="font-family:'Black Ops One'; font-size:3.5rem; color:var(--gold); margin-bottom:0;">SQUAD</h1>
+        <div id="join-area" class="card">
+            <input type="text" id="name-in" placeholder="HOE HEET JE?">
+            <button onclick="join()" class="btn">MISSIE STARTEN</button>
         </div>
-        <div class="card" style="background: rgba(255,255,255,0.1); border: 1px solid var(--neon);">
-            <p style="color:var(--neon); font-size:0.8rem; margin:0 0 10px 0;">LIVE AANWEZIG:</p>
+        <div class="card" style="background: rgba(255,255,255,0.1); border: 2px dashed var(--neon);">
+            <p style="color:var(--neon); font-weight:bold; margin-top:0;">BIJ DE POORT:</p>
             <div id="lobby-list"></div>
         </div>
     </div>
 
     <div id="screen-2" class="screen">
-        <h2 style="color:var(--gold)">DE LOCATIE</h2>
+        <h2 style="color:var(--gold)">LOCATIE: OLIJFBERG</h2>
         <div class="card" style="padding:0; height:450px; border:4px solid white; overflow:hidden;">
-            <iframe width="100%" height="100%" frameborder="0" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3392.441467431358!2d35.23789431515478!3d31.781204981285032!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x150329eb05054c2d%3A0x633783a54b35e390!2sGarden%20of%20Gethsemane!5e0!3m2!1snl!2snl!4v1646830000000!5m2!1snl!2snl"></iframe>
+            <iframe width="100%" height="100%" frameborder="0" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3392.2132338779!2d35.2423!3d31.7781!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x150329ebc63177f1%3A0x6b1cc46168537b0b!2sGethsemane!5e0!3m2!1snl!2snl!4v1700000000000"></iframe>
         </div>
     </div>
 
     <div id="screen-3" class="screen">
-        <div class="card" style="text-align:left; height:480px; overflow-y:auto; line-height:1.6;">
-            <h3 style="color:var(--primary); margin-top:0;">Nacht in de Tuin</h3>
-            <p>Jezus liep naar de Olijfberg, naar de tuin die Gethsemane heette. Hij was doodsbang. "Vader," bad Hij, "als het kan, neem deze beker van Mij weg. Maar niet wat Ik wil, maar wat U wilt."</p>
-            <p>Hij vroeg Zijn vrienden om te waken, maar ze vielen steeds in slaap. "Konden jullie niet één uur met Mij waken?"</p>
-            <p>Toen zag Hij de fakkels. Judas kwam eraan met een groep soldaten. Met een kus — een teken van vriendschap — werd Hij verraden...</p>
+        <div class="card">
+            <div class="story-scroll">
+                <h3 style="color:var(--primary); margin-top:0;">De Nacht van Gethsemane</h3>
+                <p>Jezus liep naar de Olijfberg. Hij wist dat dit Zijn laatste uren waren. In de tuin Gethsemane viel Hij op Zijn knieën. De angst was zo groot dat Zijn zweet als druppels bloed op de grond viel.</p>
+                <p>"Vader," bad Hij, "als het kan, neem deze lijdensbeker van Mij weg. Maar niet wat Ik wil, maar wat Ú wilt."</p>
+                <p>Terwijl Jezus worstelde, sliepen Zijn vrienden. "Konden jullie niet één uur met Mij waken?" vroeg Hij bedroefd. Toen zag Hij de fakkels. Judas kwam eraan met een bende soldaten...</p>
+            </div>
         </div>
     </div>
 
     <div id="screen-4" class="screen">
-        <div id="stelling-box" class="card" style="font-weight:bold; font-size:1.2rem; border:4px solid var(--neon); min-height:60px;">Wachten op Dirkjaap...</div>
+        <div id="wheel-card" class="card" style="font-size:1.3rem; font-weight:bold; border:4px solid var(--neon); min-height:80px; display:flex; align-items:center; justify-content:center;">
+            Wachten op Dirkjaap...
+        </div>
         <div class="card" style="padding:10px;">
             <div style="display:flex; gap:5px;">
                 <input type="text" id="msg-in" placeholder="Jouw mening..." style="margin:0;">
                 <button onclick="sendMsg()" class="btn" style="width:70px;">OK</button>
             </div>
+            <div id="live-feed"></div>
         </div>
-        <div id="live-feed" class="card"></div>
     </div>
 
     <div id="screen-5" class="screen">
-        <h2 style="color:var(--gold)">WIE ZEI WAT?</h2>
-        <div id="drag-items" style="margin-bottom:20px;">
-            <div class="badge" draggable="true" id="p-jezus" style="padding:12px; cursor:move;">JEZUS</div>
-            <div class="badge" draggable="true" id="p-petrus" style="padding:12px; cursor:move;">PETRUS</div>
+        <h2 style="color:var(--gold)">WIE ZEI DIT?</h2>
+        <div id="drag-container" style="margin-bottom:20px;">
+            <div class="badge" draggable="true" id="ans-jezus" style="padding:15px; cursor:move; font-size:1rem;">JEZUS</div>
+            <div class="badge" draggable="true" id="ans-petrus" style="padding:15px; cursor:move; font-size:1rem;">PETRUS</div>
         </div>
         <div class="card">
-            <div class="drop-zone" data-ans="p-jezus">"Vader, Uw wil geschiede."</div>
-            <div class="drop-zone" data-ans="p-petrus">"Ik ken die man niet!"</div>
+            <p>Sleep de juiste naam naar de zin:</p>
+            <div class="drop-zone" data-target="ans-jezus">"Vader, Uw wil geschiede."</div>
+            <div class="drop-zone" data-target="ans-petrus">"Al zou iedereen U verlaten, ik nooit!"</div>
         </div>
     </div>
 
     <div id="screen-6" class="screen">
-        <h2 style="color:var(--gold)">ZOEK DE TERMEN</h2>
+        <h2 style="color:var(--gold)">KRAAK DE CODE</h2>
         <div id="ws-grid"></div>
-        <div id="ws-words" style="margin:10px 0; font-size:0.7rem; font-weight:bold; color:var(--neon);"></div>
+        <div id="ws-words" style="margin:10px 0; font-size:0.75rem; color:var(--neon); font-weight:bold"></div>
         <div class="card">
-            <input type="text" id="code-in" placeholder="DE OPLOSSING...">
+            <input type="text" id="code-in" placeholder="GEHEIME OPLOSSING...">
             <button onclick="checkCode()" class="btn">CHECK CODE</button>
         </div>
     </div>
 
     <div id="screen-7" class="screen">
-        <h2 style="color:var(--gold)">SNEAK LANGS DE WACHT</h2>
+        <h2 style="color:var(--gold)">ONTWIJK DE SOLDATEN</h2>
         <div id="maze-container">
-            <div class="wall" style="top:60px; left:0; width:220px; height:10px;"></div>
-            <div class="wall" style="top:150px; left:80px; width:220px; height:10px;"></div>
-            <div class="wall" style="top:230px; left:0; width:180px; height:10px;"></div>
-            <div id="guard">👹</div>
-            <div id="player" style="top:10px; left:10px;">🙏</div>
+            <div class="wall" style="top:70px; left:0; width:220px; height:10px;"></div>
+            <div class="wall" style="top:160px; left:80px; width:220px; height:10px;"></div>
+            <div class="wall" style="top:240px; left:0; width:180px; height:10px;"></div>
+            <div id="guard">👺</div>
+            <div id="player" style="top:12px; left:12px;">🙏</div>
         </div>
-        <div style="display:grid; grid-template-columns:repeat(3,1fr); width:150px; margin:20px auto; gap:10px;">
-            <button class="btn" style="grid-column:2" onclick="move(0,-25)">↑</button>
-            <button class="btn" onclick="move(-25,0)">←</button>
-            <button class="btn" onclick="move(0,25)">↓</button>
-            <button class="btn" onclick="move(25,0)">→</button>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); width:180px; margin:20px auto; gap:10px;">
+            <button class="btn" style="grid-column:2" onclick="move(0,-30)">↑</button>
+            <button class="btn" onclick="move(-30,0)">←</button>
+            <button class="btn" onclick="move(0,30)">↓</button>
+            <button class="btn" onclick="move(30,0)">→</button>
         </div>
     </div>
 
     <script>
-        // CONFIG
+        // --- INITIALISATIE ---
         const firebaseConfig = { apiKey: "AIzaSyBC3Dzm8PNPXw12VJNimvly5u2I93QeW54", databaseURL: "https://schatgravers15maart2026-default-rtdb.europe-west1.firebasedatabase.app", projectId: "schatgravers15maart2026" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        let myName = "", isAdmin = false, pX=10, pY=10, guardInterval;
+        let myName = "", isAdmin = false, pX=12, pY=12, guardInterval;
 
-        // MASTER SYNC LOGIC
+        // --- MASTER NAVIGATIE ---
         db.ref('currentStep').on('value', snap => {
             const step = snap.val() || 1;
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('screen-'+step).classList.add('active');
+            document.getElementById('screen-' + step).classList.add('active');
             document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active-nav'));
             if(isAdmin && document.getElementById('nav'+step)) document.getElementById('nav'+step).classList.add('active-nav');
             if(step === 6) initWS();
             if(step === 7) initGuard(); else clearInterval(guardInterval);
         });
 
-        function syncStep(n) { if(isAdmin) db.ref('currentStep').set(n); }
+        function setStep(n) { if(isAdmin) db.ref('currentStep').set(n); }
 
-        // LOBBY
+        // --- LOBBY ---
         function join() {
             const n = document.getElementById('name-in').value.trim();
             if(n) {
                 myName = n; db.ref('players').push(n);
-                document.getElementById('login-form').style.display = 'none';
+                document.getElementById('join-area').style.display = 'none';
                 if(n.toLowerCase() === 'dirkjaap') { isAdmin=true; document.getElementById('admin-panel').style.display='block'; }
             }
         }
@@ -173,24 +181,24 @@
             if(snap.exists()) Object.values(snap.val()).forEach(v => list.innerHTML += `<span class="badge">${v}</span>`);
         });
 
-        // WHEEL & FEED
-        const stellingen = ["Had jij je zwaard getrokken net als Petrus?", "Zou jij Jezus hebben durven kussen voor geld?", "Is in slaap vallen een vorm van verraad?", "Had Jezus moeten vluchten?", "Is vergeving altijd mogelijk?", "Wat is moeilijker: Bidden of Doen?"];
+        // --- THE WHEEL & FEED ---
+        const stellingen = ["Zou jij je zwaard trekken voor Jezus?", "Kun je iemand vergeven die je voor geld verraadt?", "Waarom sliepen de vrienden op het moeilijkste moment?", "Had Jezus moeten vluchten toen Hij de fakkels zag?", "Is 'Uw wil geschiede' een teken van kracht of zwakte?", "Zou jij in de tuin zijn gebleven of weggerend?"];
         function spinWheel() { db.ref('activeStelling').set(stellingen[Math.floor(Math.random()*stellingen.length)]); }
         db.ref('activeStelling').on('value', snap => {
-            const box = document.getElementById('stelling-box');
-            box.innerText = snap.val() || "Klaar voor de start?";
-            box.classList.remove('spinning'); void box.offsetWidth; box.classList.add('spinning');
+            const card = document.getElementById('wheel-card');
+            card.innerText = snap.val() || "Klaar voor de start?";
+            card.style.animation = 'none'; void card.offsetWidth; card.style.animation = 'fadeIn 0.5s';
         });
         function sendMsg() {
             const t = document.getElementById('msg-in').value.trim();
-            if(t) { db.ref('feed').push({n: myName || "Anoniem", t: t}); document.getElementById('msg-in').value = ""; }
+            if(t) { db.ref('chat').push({n: myName || "Anoniem", t: t}); document.getElementById('msg-in').value = ""; }
         }
-        db.ref('feed').limitToLast(10).on('value', snap => {
+        db.ref('chat').limitToLast(10).on('value', snap => {
             const f = document.getElementById('live-feed'); f.innerHTML = "";
-            snap.forEach(c => f.innerHTML = `<div class="chat-msg"><b>${c.val().n}:</b> ${c.val().t}</div>` + f.innerHTML);
+            snap.forEach(c => f.innerHTML += `<div class="feed-item"><b>${c.val().n}:</b> ${c.val().t}</div>`);
         });
 
-        // WOORDZOEKER
+        // --- WOORDZOEKER ---
         function initWS() {
             const g = document.getElementById('ws-grid'), w = document.getElementById('ws-words');
             if(g.children.length > 0) return;
@@ -199,9 +207,9 @@
             const place = (word, start, step) => { for(let i=0; i<word.length; i++) grid[start + (i*step)] = word[i]; };
             place("GETHSEMANE", 0, 1); place("OLIJFBERG", 10, 1); place("ZWAARD", 30, 1); place("JUDAS", 41, 1); 
             place("GENADE", 52, 1); place("VERRAAD", 63, 1); place("ENGEL", 70, 1); place("SLAAP", 81, 1); place("KUS", 92, 1); place("BLOED", 96, 1);
-            const solution = "GODGEEFTKRACHT".split(''); let sIdx = 0;
+            const sol = "GODGEEFTKRACHT".split(''); let sIdx = 0;
             for(let i=0; i<100; i++) {
-                if(grid[i]==='' && sIdx<solution.length) { grid[i]=solution[sIdx]; sIdx++; }
+                if(grid[i]==='' && sIdx < sol.length) { grid[i]=sol[sIdx]; sIdx++; }
                 else if(grid[i]==='') grid[i]="ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)];
             }
             w.innerHTML = terms.join(" • ");
@@ -210,34 +218,33 @@
                 d.onclick = function() { this.classList.toggle('selected'); }; g.appendChild(d);
             });
         }
-        function checkCode() { if(document.getElementById('code-in').value.toUpperCase().replace(/\s/g,'') === "GODGEEFTKRACHT") alert("CODE GEKRAAKT!"); }
+        function checkCode() { if(document.getElementById('code-in').value.toUpperCase().replace(/\s/g,'') === "GODGEEFTKRACHT") alert("KORREKT! JE HEBT DE CODE GEKRAAKT."); }
 
-        // MAZE
+        // --- MAZE ---
         let gx = 0, gd = 1;
         function initGuard() {
             guardInterval = setInterval(() => {
                 const g = document.getElementById('guard'); if(!g) return;
-                gx += (8 * gd); if(gx > 260 || gx < 0) gd *= -1;
+                gx += (10 * gd); if(gx > 260 || gx < 0) gd *= -1;
                 g.style.left = gx + 'px';
                 const gr = g.getBoundingClientRect(), pr = document.getElementById('player').getBoundingClientRect();
-                if(pr.left < gr.right && pr.right > gr.left && pr.top < gr.bottom && pr.bottom > gr.top) { pX=10; pY=10; updateP(); }
+                if(pr.left < gr.right && pr.right > gr.left && pr.top < gr.bottom && pr.bottom > gr.top) { pX=12; pY=12; updateP(); }
             }, 50);
         }
         function move(dx,dy) {
             pX+=dx; pY+=dy; pX=Math.max(0, Math.min(275, pX)); pY=Math.max(0, Math.min(275, pY));
-            updateP(); if(pX > 250 && pY > 250) alert("ONTSNAPT!");
+            updateP(); if(pX > 250 && pY > 250) alert("JE BENT ONTSNAPT!");
         }
         function updateP() { document.getElementById('player').style.left=pX+'px'; document.getElementById('player').style.top=pY+'px'; }
 
-        function resetAll() { if(confirm("RESET?")) { db.ref('/').set({currentStep:1}); location.reload(); } }
-
-        // DRAG DROP
+        // --- UTILS ---
+        function resetGame() { if(confirm("RESETTEN?")) { db.ref('/').set({currentStep:1}); location.reload(); } }
         document.addEventListener('dragstart', e => { if(e.target.draggable) e.dataTransfer.setData('text', e.target.id); });
         document.addEventListener('dragover', e => e.preventDefault());
         document.addEventListener('drop', e => {
             const z = e.target.closest('.drop-zone');
             const id = e.dataTransfer.getData('text');
-            if(z && z.dataset.ans === id) { z.style.background = "#d4edda"; z.appendChild(document.getElementById(id)); }
+            if(z && z.dataset.target === id) { z.style.background = "#d4edda"; z.appendChild(document.getElementById(id)); }
         });
     </script>
 </body>
