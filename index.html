@@ -9,44 +9,42 @@
         :root { --primary: #1e3799; --accent: #eb4d4b; --success: #20bf6b; --bg: #0a3d62; --gold: #f1c40f; }
         body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Fredoka', sans-serif; overflow: hidden; background: var(--bg); color: #333; }
         .bg-fixed { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(10, 61, 98, 0.85), rgba(10, 61, 98, 0.85)), url('schatgravers15maart.jpg'); background-size: cover; z-index: -1; }
-        .container { display: none; height: 100vh; padding: 10px; box-sizing: border-box; flex-direction: column; align-items: center; overflow-y: auto; padding-bottom: 80px; }
+        
+        .container { display: none; height: 100vh; padding: 10px; box-sizing: border-box; flex-direction: column; align-items: center; overflow-y: auto; padding-bottom: 90px; }
         
         /* STORY STYLE */
         .story-container { background: #fdfbf7; padding: 15px; border-radius: 12px; width: 90%; max-width: 500px; border-top: 6px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-height: 60vh; display: flex; flex-direction: column; }
         .story-scroll-area { overflow-y: auto; text-align: left; padding-right: 5px; }
         .story-content { font-family: 'Lora', serif; font-size: 1rem; line-height: 1.5; color: #2c3e50; }
 
-        /* MAZE - NO SCROLL AUTO-FIT */
-        #maze-wrap { 
-            width: 95vw; 
-            height: 95vw; 
-            max-width: 380px; 
-            max-height: 380px; 
-            position: relative; 
-            background: #2d5a27; 
-            border: 3px solid var(--gold); 
-            display: grid; 
-            grid-template-columns: repeat(15, 1fr); 
-            grid-template-rows: repeat(13, 1fr);
-        }
+        /* MAZE & WOORDZOEKER */
+        #maze-wrap { width: 95vw; height: 95vw; max-width: 380px; max-height: 380px; position: relative; background: #2d5a27; border: 3px solid var(--gold); display: grid; grid-template-columns: repeat(15, 1fr); grid-template-rows: repeat(13, 1fr); }
         .cell { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; }
         .wall { background: #1a3a16; }
         .path { background: #4a7c44; opacity: 0.2; }
         .letter-cell { color: white; text-shadow: 1px 1px 2px black; z-index: 5; opacity: 1; }
-        #player { position: absolute; width: 6.66%; height: 7.69%; transition: all 0.1s; z-index: 10; background-image: url('judas.png'); background-size: contain; background-repeat: no-repeat; background-position: center; }
-        .target-img { width: 80%; height: 80%; object-fit: contain; }
+        #player { position: absolute; width: 6.66%; height: 7.69%; transition: all 0.1s; z-index: 10; background: var(--accent); border-radius: 50%; border: 2px solid white; box-sizing: border-box; }
 
-        /* UI */
-        .navigation-panel { position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 1000; background: rgba(0,0,0,0.8); padding: 8px; border-radius: 40px; }
-        .nav-btn { width: 42px; height: 42px; border-radius: 50%; border: 2px solid white; background: transparent; color: white; font-weight: bold; cursor: pointer; }
-        .nav-btn.active { background: white; color: var(--bg); }
-        .vault { background: white; padding: 5px; border-radius: 8px; font-size: 0.6rem; min-height: 40px; border: 1px solid #ddd; }
-        .vault.active { border: 3px solid var(--gold); background: #fffdf0; }
-        .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; width: 100%; cursor: pointer; }
+        /* LIVE FEED KLUIS */
+        .vault { background: white; padding: 5px; border-radius: 8px; font-size: 0.7rem; height: 100px; border: 1px solid #ddd; overflow-y: auto; box-shadow: inset 0 0 5px rgba(0,0,0,0.1); }
+        .vault b { display: block; border-bottom: 1px solid #eee; margin-bottom: 3px; color: var(--primary); font-size: 0.75rem; }
+        .vault.active { border: 3px solid var(--gold); background: #fffdf0; transform: scale(1.02); }
+        .ans-item { background: #f0f0f0; margin-bottom: 3px; padding: 3px 5px; border-radius: 4px; font-size: 0.65rem; text-align: left; border-left: 3px solid var(--primary); }
+
+        /* UI NAVIGATION */
+        .navigation-panel { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; z-index: 1000; background: rgba(0,0,0,0.85); padding: 10px 20px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.2); }
+        .nav-btn { width: 45px; height: 45px; border-radius: 50%; border: 2px solid white; background: transparent; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .nav-btn.active { background: var(--gold); color: black; border-color: var(--gold); transform: scale(1.1); }
+        
+        /* BUTTONS & INPUTS */
+        .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; width: 100%; cursor: pointer; font-family: 'Fredoka'; }
         .controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
-        .control-btn { width: 50px; height: 50px; background: white; border: none; border-radius: 12px; font-size: 1.5rem; color: var(--bg); font-weight: bold; }
-        #leaderboard { background: rgba(255,255,255,0.15); border-radius: 10px; padding: 10px; width: 90%; max-width: 400px; margin-top: 10px; color: white; font-size: 0.8rem; }
-        .leader-row { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.2); padding: 2px 0; }
+        .control-btn { width: 55px; height: 55px; background: white; border: none; border-radius: 15px; font-size: 1.5rem; color: var(--bg); font-weight: bold; box-shadow: 0 4px 0 #ccc; }
+        .control-btn:active { transform: translateY(3px); box-shadow: none; }
+        
+        #leaderboard { background: rgba(255,255,255,0.15); border-radius: 10px; padding: 10px; width: 95%; max-width: 400px; margin-top: 10px; color: white; font-size: 0.8rem; }
+        .leader-row { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.2); padding: 4px 0; }
+        #live-names-box { color: white; font-size: 0.8rem; margin-top: 15px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px; width: 100%; }
     </style>
 </head>
 <body>
@@ -55,10 +53,14 @@
 
 <div id="phase-1" class="container" style="display:flex;">
     <div style="background:white; padding:25px; border-radius:20px; text-align:center; width:85%; max-width:350px;">
-        <h2 style="margin-top:0;">Schatgravers</h2>
-        <input type="text" id="name-in" placeholder="Je naam..." style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd; box-sizing: border-box;">
+        <h2 style="margin-top:0; color: var(--primary);">Schatgravers</h2>
+        <p>Voer je naam in om te starten:</p>
+        <input type="text" id="name-in" placeholder="Je naam..." style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd; box-sizing: border-box; font-size: 1rem;">
         <button onclick="saveUser()" class="btn">DOE MEE</button>
-        <div id="display-names-list" style="margin-top:15px; font-size:0.8rem;"></div>
+        <div id="live-names-box">
+            <b>Nu online:</b><br>
+            <span id="names-list">Wachten op spelers...</span>
+        </div>
     </div>
 </div>
 
@@ -74,15 +76,17 @@
             </div>
         </div>
     </div>
+    <p style="color:white; text-align:center; margin-top:20px;">Lees de tekst rustig door.<br>De leider schakelt dadelijk door.</p>
 </div>
 
 <div id="phase-6" class="container">
     <div style="background:white; padding:15px; border-radius:15px; text-align:center; width:90%; max-width:400px; margin-bottom:10px;">
-        <div id="dice-display" style="font-size:3rem; margin:0;">🎲</div>
-        <p id="stelling-text" style="font-weight:bold; color:var(--primary); font-size:0.9rem; margin:5px 0;"></p>
+        <div id="dice-display" style="font-size:3.5rem; margin:0;">🎲</div>
+        <p id="stelling-text" style="font-weight:bold; color:var(--primary); font-size:1rem; margin:5px 0;">Gooi de dobbelsteen...</p>
         <button onclick="triggerRoll()" class="btn" style="background:var(--gold); color:black; padding:8px;">DOBBELEN</button>
     </div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; width:95%; max-width:400px;">
+    
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; width:95%; max-width:400px;">
         <div class="vault" id="v-1"><b>1. ANGST</b><div id="l1"></div></div>
         <div class="vault" id="v-2"><b>2. KEUZES</b><div id="l2"></div></div>
         <div class="vault" id="v-3"><b>3. ENGELEN</b><div id="l3"></div></div>
@@ -90,18 +94,21 @@
         <div class="vault" id="v-5"><b>5. ALLEEN</b><div id="l5"></div></div>
         <div class="vault" id="v-6"><b>6. HERSTEL</b><div id="l6"></div></div>
     </div>
-    <input type="text" id="thought-in" placeholder="Typ je gedachte..." style="width:90%; padding:10px; margin-top:10px; border-radius:10px; border:none;">
-    <button onclick="sendThought()" class="btn" style="background:var(--success); margin-top:5px; width:90%;">STUUR NAAR KLUIS</button>
+    
+    <div style="width: 90%; max-width: 400px; margin-top: 10px;">
+        <input type="text" id="thought-in" placeholder="Typ je antwoord..." style="width:100%; padding:12px; border-radius:10px; border:none; box-sizing: border-box;">
+        <button onclick="sendThought()" class="btn" style="background:var(--success); margin-top:8px;">DEEL MET DE GROEP</button>
+    </div>
 </div>
 
 <div id="phase-9" class="container">
-    <div style="display:flex; justify-content:space-between; width:95%; max-width:380px; color:white; font-weight:bold;">
+    <div style="display:flex; justify-content:space-between; width:95%; max-width:380px; color:white; font-weight:bold; margin-bottom: 5px;">
         <span id="timer-display">Tijd: 0.0s</span>
-        <span id="word-display" style="color:var(--gold)">_______</span>
+        <span id="word-display" style="color:var(--gold); letter-spacing: 2px;">_______</span>
     </div>
     <div id="maze-wrap">
         <div id="player"></div>
-        <div id="maze-grid"></div>
+        <div id="maze-grid" style="display: contents;"></div>
     </div>
     <div class="controls">
         <div></div><button class="control-btn" onclick="movePlayer(0,-1)">↑</button><div></div>
@@ -110,10 +117,10 @@
         <button class="control-btn" onclick="movePlayer(1,0)">→</button>
     </div>
     <div id="leaderboard">
-        <strong style="color:var(--gold)">🏆 SNELSTE TIJDEN</strong>
+        <strong style="color:var(--gold)">🏆 TOPTIJDEN (V-E-R-R-A-A-D)</strong>
         <div id="leader-list"></div>
     </div>
-    <button onclick="resetData()" style="background:none; border:1px solid gray; color:gray; font-size:8px; margin-top:10px;">RESET DATABASE</button>
+    <button onclick="resetData()" style="background:none; border:1px solid gray; color:gray; font-size:9px; margin-top:15px; cursor: pointer;">RESET GAME</button>
 </div>
 
 <div class="navigation-panel">
@@ -127,57 +134,98 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, set, onValue, push, remove, query, orderByChild, limitToFirst } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    const firebaseConfig = { apiKey: "AIzaSyBC3Dzm8PNPXw12VJNimvly5u2I93QeW54", authDomain: "schatgravers15maart2026.firebaseapp.com", databaseURL: "https://schatgravers15maart2026-default-rtdb.europe-west1.firebasedatabase.app", projectId: "schatgravers15maart2026", appId: "1:30561512857:web:fcb7868b87d292d1c97708" };
+    const firebaseConfig = { 
+        apiKey: "AIzaSyBC3Dzm8PNPXw12VJNimvly5u2I93QeW54", 
+        authDomain: "schatgravers15maart2026.firebaseapp.com", 
+        databaseURL: "https://schatgravers15maart2026-default-rtdb.europe-west1.firebasedatabase.app", 
+        projectId: "schatgravers15maart2026", 
+        appId: "1:30561512857:web:fcb7868b87d292d1c97708" 
+    };
+    
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
     let userName = localStorage.getItem('sgName') || "";
     let startTime, timerInterval, gameActive = false;
-    let coll = "";
+    let currentDice = 1;
+    let collectedWord = "";
     const goal = "VERRAAD";
     let pPos = { x: 1, y: 11 };
 
+    // --- 1. USER & NAMES ---
     window.saveUser = () => {
-        const n = document.getElementById('name-in').value;
-        if(n) { userName = n; localStorage.setItem('sgName', n); push(ref(db, 'names'), n); navTo('p3'); }
+        const val = document.getElementById('name-in').value.trim();
+        if(val) {
+            userName = val;
+            localStorage.setItem('sgName', val);
+            push(ref(db, 'names'), val);
+            navTo('p3');
+        }
     };
 
-    window.navTo = (p) => set(ref(db, 'currentPhase'), p);
-    window.triggerRoll = () => set(ref(db, 'dice'), Math.floor(Math.random()*6)+1);
-    window.sendThought = () => {
-        const v = document.getElementById('thought-in').value;
-        const d = document.getElementById('dice-display').innerText;
-        const diceNum = ["⚀","⚁","⚂","⚃","⚄","⚅"].indexOf(d) + 1;
-        if(v) push(ref(db, 'vaults/'+diceNum), v);
-        document.getElementById('thought-in').value = '';
-    };
-    window.resetData = () => { if(confirm("Wis alle data?")) { remove(ref(db, 'leaderboard')); remove(ref(db, 'names')); remove(ref(db, 'vaults')); } };
-
-    // SYNC FASES
-    onValue(ref(db, 'currentPhase'), s => {
-        const p = s.val() || 'p1';
-        document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
-        document.getElementById('phase-' + p.replace('p','')).style.display = 'flex';
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-'+p).classList.add('active');
-        if(p === 'p9') startRace(); else stopRace();
+    onValue(ref(db, 'names'), s => {
+        const list = s.val();
+        if(list) {
+            document.getElementById('names-list').innerText = Object.values(list).join(", ");
+        }
     });
+
+    // --- 2. PHASE SYNC ---
+    window.navTo = (p) => set(ref(db, 'currentPhase'), p);
+
+    onValue(ref(db, 'currentPhase'), s => {
+        const phase = s.val() || 'p1';
+        document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
+        document.getElementById('phase-' + phase.replace('p','')).style.display = 'flex';
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-' + phase).classList.add('active');
+        
+        if(phase === 'p9') startRace(); else stopRace();
+    });
+
+    // --- 3. DICE & LIVE FEED ANSWERS ---
+    window.triggerRoll = () => set(ref(db, 'dice'), Math.floor(Math.random()*6)+1);
 
     onValue(ref(db, 'dice'), s => {
-        const d = s.val() || 1;
-        document.getElementById('dice-display').innerText = ["⚀","⚁","⚂","⚃","⚄","⚅"][d-1];
-        document.getElementById('stelling-text').innerText = ["1. Ben je weleens bang?","2. Maak je weleens foute keuzes?","3. Heb je weleens hulp gekregen?","4. Bid jij om kracht?","5. Voel je je weleens alleen?","6. Kun jij iemand vergeven?"][d-1];
+        currentDice = s.val() || 1;
+        const icons = ["⚀","⚁","⚂","⚃","⚄","⚅"];
+        const texts = [
+            "1. Ben je weleens bang?",
+            "2. Maak je weleens foute keuzes?",
+            "3. Heb je weleens hulp gekregen?",
+            "4. Bid jij om kracht?",
+            "5. Voel je je weleens alleen?",
+            "6. Kun jij iemand vergeven?"
+        ];
+        document.getElementById('dice-display').innerText = icons[currentDice-1];
+        document.getElementById('stelling-text').innerText = texts[currentDice-1];
         document.querySelectorAll('.vault').forEach(v => v.classList.remove('active'));
-        document.getElementById('v-'+d).classList.add('active');
+        document.getElementById('v-'+currentDice).classList.add('active');
     });
 
-    onValue(query(ref(db, 'leaderboard'), orderByChild('score'), limitToFirst(5)), s => {
-        const l = document.getElementById('leader-list'); l.innerHTML = "";
-        s.forEach(c => { l.innerHTML += `<div class="leader-row"><span>${c.val().name}</span><span>${c.val().score}s</span></div>`; });
-    });
+    window.sendThought = () => {
+        const msg = document.getElementById('thought-in').value.trim();
+        if(msg && userName) {
+            push(ref(db, 'vaults/' + currentDice), { user: userName, text: msg });
+            document.getElementById('thought-in').value = "";
+        }
+    };
 
-    // RACE LOGICA
-    const mazeData = [
+    for(let i=1; i<=6; i++) {
+        onValue(ref(db, 'vaults/' + i), s => {
+            const container = document.getElementById('l' + i);
+            container.innerHTML = "";
+            if(s.exists()) {
+                Object.values(s.val()).forEach(data => {
+                    container.innerHTML += `<div class="ans-item"><b>${data.user}:</b> ${data.text}</div>`;
+                });
+                container.scrollTop = container.scrollHeight;
+            }
+        });
+    }
+
+    // --- 4. MAZE RACE LOGIC ---
+    const mazeMap = [
         [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
         [1,0,0,0,"Z",0,1,0,0,0,0,"B",0,0,1],
         [1,0,1,1,1,0,1,0,1,1,1,1,1,0,1],
@@ -194,45 +242,55 @@
     ];
 
     function startRace() {
-        initMaze();
-        gameActive = true; coll = ""; pPos = {x:1, y:11}; updateP();
+        const grid = document.getElementById('maze-grid');
+        grid.innerHTML = "";
+        mazeMap.flat().forEach(cell => {
+            const div = document.createElement('div');
+            div.className = 'cell ' + (cell === 1 ? 'wall' : 'path');
+            if(cell === "✝️") div.innerHTML = "✝️";
+            else if(typeof cell === 'string' && cell !== "0") {
+                div.innerText = cell;
+                div.className += ' letter-cell';
+            }
+            grid.appendChild(div);
+        });
+        
+        gameActive = true;
+        collectedWord = "";
+        pPos = { x: 1, y: 11 };
+        updateP();
+        document.getElementById('word-display').innerText = "_______";
         startTime = Date.now();
         timerInterval = setInterval(() => {
             document.getElementById('timer-display').innerText = `Tijd: ${((Date.now()-startTime)/1000).toFixed(1)}s`;
         }, 100);
     }
-    function stopRace() { gameActive = false; clearInterval(timerInterval); }
 
-    function initMaze() {
-        const g = document.getElementById('maze-grid'); g.innerHTML = '';
-        mazeData.flat().forEach(cell => {
-            const d = document.createElement('div');
-            d.className = 'cell ' + (cell===1?'wall':'path');
-            if(cell==="✝️") d.innerHTML=`<img src="jezus.png" class="target-img">`;
-            else if(typeof cell==='string' && cell!=='0') { d.innerText=cell; d.className+=' letter-cell'; }
-            g.appendChild(d);
-        });
-    }
+    function stopRace() { gameActive = false; clearInterval(timerInterval); }
 
     window.movePlayer = (dx, dy) => {
         if(!gameActive) return;
         const nx = pPos.x + dx, ny = pPos.y + dy;
-        if(mazeData[ny] && mazeData[ny][nx] !== 1) {
+        if(mazeMap[ny] && mazeMap[ny][nx] !== 1) {
             pPos.x = nx; pPos.y = ny;
-            const val = mazeData[ny][nx];
-            if(typeof val === 'string' && val !== "✝️" && val !== "0") {
-                if(val === goal[coll.length]) {
-                    coll += val;
-                    document.getElementById('word-display').innerText = coll.padEnd(7, "_");
+            const tile = mazeMap[ny][nx];
+            
+            if(typeof tile === 'string' && tile !== "✝️" && tile !== "0") {
+                if(tile === goal[collectedWord.length]) {
+                    collectedWord += tile;
+                    document.getElementById('word-display').innerText = collectedWord.padEnd(7, "_");
                 }
             }
-            if(val === "✝️") {
-                if(coll === goal) {
+            
+            if(tile === "✝️") {
+                if(collectedWord === goal) {
                     stopRace();
-                    const score = ((Date.now()-startTime)/1000).toFixed(1);
-                    push(ref(db, 'leaderboard'), { name: userName || "Anoniem", score: parseFloat(score) });
-                    alert("GEWONNEN! Tijd: " + score + "s");
-                } else alert("Verzamel eerst V-E-R-R-A-A-D!");
+                    const finalTime = ((Date.now()-startTime)/1000).toFixed(1);
+                    push(ref(db, 'leaderboard'), { name: userName || "Anoniem", score: parseFloat(finalTime) });
+                    alert("GEWONNEN! Tijd: " + finalTime + "s");
+                } else {
+                    alert("Verzamel eerst alle letters van V-E-R-R-A-A-D!");
+                }
             }
             updateP();
         }
@@ -243,6 +301,24 @@
         p.style.left = (pPos.x * (100/15)) + '%';
         p.style.top = (pPos.y * (100/13)) + '%';
     }
+
+    onValue(query(ref(db, 'leaderboard'), orderByChild('score'), limitToFirst(5)), s => {
+        const board = document.getElementById('leader-list');
+        board.innerHTML = "";
+        s.forEach(snap => {
+            const d = snap.val();
+            board.innerHTML += `<div class="leader-row"><span>${d.name}</span><span>${d.score}s</span></div>`;
+        });
+    });
+
+    window.resetData = () => {
+        if(confirm("Alle groepsgegevens wissen?")) {
+            remove(ref(db, 'leaderboard'));
+            remove(ref(db, 'names'));
+            remove(ref(db, 'vaults'));
+            location.reload();
+        }
+    };
 </script>
 </body>
 </html>
