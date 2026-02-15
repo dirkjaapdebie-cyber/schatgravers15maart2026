@@ -18,7 +18,7 @@
         .nav-btn { width: 42px; height: 42px; border-radius: 50%; border: 1px solid white; background: transparent; color: white; font-weight: bold; cursor: pointer; }
         .nav-btn.active { background: var(--gold); color: black; border-color: var(--gold); transform: scale(1.1); }
 
-        /* WOORDZOEKER STYLE (CONTRAST) */
+        /* WOORDZOEKER */
         .wordsearch-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; background: var(--dark); padding: 10px; border-radius: 10px; border: 3px solid var(--gold); margin-top: 10px; }
         .ws-cell { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: #222; color: var(--gold); font-weight: bold; border-radius: 4px; cursor: pointer; font-size: 1.1rem; user-select: none; }
         .ws-cell.found { background: var(--success); color: white; }
@@ -26,7 +26,7 @@
         .word-item { padding: 5px 10px; background: rgba(255,255,255,0.2); color: white; border-radius: 20px; font-size: 0.8rem; }
         .word-item.done { text-decoration: line-through; opacity: 0.5; background: var(--success); }
 
-        /* KLUIS & MAZE STYLES (ZOALS VOORHEEN) */
+        /* KLUIS & MAZE */
         .vault-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; max-width: 400px; }
         .vault { background: white; padding: 8px; border-radius: 8px; height: 100px; overflow-y: auto; font-size: 0.7rem; border: 2px solid transparent; }
         .vault.active { border-color: var(--gold); background: #fffdf0; }
@@ -50,18 +50,17 @@
         <h2 style="margin:0; color:var(--primary)">Schatgravers</h2>
         <input type="text" id="name-in" placeholder="Je naam..." style="width:100%; padding:15px; margin:15px 0; border-radius:10px; border:1px solid #ddd; box-sizing:border-box;">
         <button onclick="saveUser()" class="btn">DOE MEE</button>
-        <div id="names-list" style="margin-top:15px; font-size:0.8rem; color:#666;"></div>
     </div>
 </div>
 
-<div id="phase-3" class="container">
-    <div style="background:#fdfbf7; padding:15px; border-radius:12px; border-top:6px solid var(--gold); max-width:500px;">
+<div id="phase-2" class="container">
+    <div style="background:#fdfbf7; padding:15px; border-radius:12px; border-top:6px solid var(--gold); max-width:500px; margin-top:20px;">
         <h3 style="text-align:center; color:var(--primary)">Lukas 22:39-53</h3>
         <p style="font-family:'Lora'; line-height:1.5;">Jezus bad op de Olijfberg. Hij was bang, maar zei: "Niet mijn wil, maar Uw wil geschiede." Judas verraadde Hem met een kus. Jezus genas nog het oor van een vijand voordat Hij werd meegenomen.</p>
     </div>
 </div>
 
-<div id="phase-6" class="container">
+<div id="phase-3" class="container">
     <div style="background:white; padding:10px; border-radius:15px; text-align:center; width:100%; max-width:400px; margin-bottom:10px;">
         <div id="dice-display" style="font-size:3rem;">🎲</div>
         <button onclick="triggerRoll()" class="btn" style="background:var(--gold); color:black; width:auto; padding:5px 20px;">GOOI</button>
@@ -80,14 +79,14 @@
     </div>
 </div>
 
-<div id="phase-7" class="container">
-    <h3 style="color:white; margin:0;">Zoek de woorden</h3>
+<div id="phase-4" class="container">
+    <h3 style="color:white; margin:10px 0;">Zoek de woorden</h3>
     <div id="ws-grid" class="wordsearch-grid"></div>
     <div id="ws-words" class="word-list"></div>
 </div>
 
-<div id="phase-9" class="container">
-    <div style="display:flex; justify-content:space-between; width:100%; max-width:350px; color:white; font-weight:bold;">
+<div id="phase-5" class="container">
+    <div style="display:flex; justify-content:space-between; width:100%; max-width:350px; color:white; font-weight:bold; margin-bottom:5px;">
         <span id="timer">0.0s</span>
         <span id="word-display" style="color:var(--gold)">_______</span>
     </div>
@@ -104,16 +103,16 @@
 </div>
 
 <div class="navigation-panel">
-    <button class="nav-btn" id="btn-p1" onclick="navTo('p1')">1</button>
-    <button class="nav-btn" id="btn-p3" onclick="navTo('p3')">3</button>
-    <button class="nav-btn" id="btn-p6" onclick="navTo('p6')">6</button>
-    <button class="nav-btn" id="btn-p7" onclick="navTo('p7')">7</button>
-    <button class="nav-btn" id="btn-p9" onclick="navTo('p9')">9</button>
+    <button class="nav-btn" id="btn-1" onclick="navTo(1)">1</button>
+    <button class="nav-btn" id="btn-2" onclick="navTo(2)">2</button>
+    <button class="nav-btn" id="btn-3" onclick="navTo(3)">3</button>
+    <button class="nav-btn" id="btn-4" onclick="navTo(4)">4</button>
+    <button class="nav-btn" id="btn-5" onclick="navTo(5)">5</button>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, set, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     const firebaseConfig = { 
         apiKey: "AIzaSyBC3Dzm8PNPXw12VJNimvly5u2I93QeW54", 
@@ -132,20 +131,25 @@
     let colWord = "";
     let pPos = {x:1, y:11};
 
-    // --- NAVIGATIE & NAAM ---
+    // --- NAVIGATIE ---
     window.saveUser = () => {
         const n = document.getElementById('name-in').value.trim();
-        if(n) { userName = n; localStorage.setItem('sgName', n); push(ref(db, 'names'), n); navTo('p3'); }
+        if(n) { userName = n; localStorage.setItem('sgName', n); push(ref(db, 'names'), n); navTo(2); }
     };
-    window.navTo = (p) => set(ref(db, 'currentPhase'), p);
+
+    window.navTo = (num) => set(ref(db, 'currentPhase'), num);
+
     onValue(ref(db, 'currentPhase'), s => {
-        const p = s.val() || 'p1';
+        const p = s.val() || 1;
         document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
-        document.getElementById('phase-' + p.replace('p','')).style.display = 'flex';
+        document.getElementById('phase-' + p).style.display = 'flex';
+        
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-'+p).classList.add('active');
-        if(p === 'p9') startMaze(); else stopMaze();
-        if(p === 'p7') initWordSearch();
+        document.getElementById('btn-' + p).classList.add('active');
+        
+        // Specifieke acties per pagina
+        if(p === 5) startMaze(); else stopMaze();
+        if(p === 4) initWordSearch();
     });
 
     // --- LIVE KLUIS ---
@@ -156,10 +160,12 @@
         document.querySelectorAll('.vault').forEach(v => v.classList.remove('active'));
         document.getElementById('v-'+curDice).classList.add('active');
     });
+
     window.sendThought = () => {
         const m = document.getElementById('thought-in').value.trim();
         if(m && userName) { push(ref(db, 'vaults/'+curDice), {u:userName, m:m}); document.getElementById('thought-in').value=""; }
     };
+
     for(let i=1; i<=6; i++) {
         onValue(ref(db, 'vaults/'+i), s => {
             const l = document.getElementById('l'+i); l.innerHTML = "";
@@ -167,7 +173,7 @@
         });
     }
 
-    // --- WOORDZOEKER (LOGICA) ---
+    // --- WOORDZOEKER ---
     const wsWords = ["JUDAS", "KUS", "OLIJFBERG", "BIDDEN", "ENGEL", "OOR"];
     const wsLetters = "JOLIJFBERGDUDASGHKUSKBIDDENRENGELOORPOQWERTZUIOPASDFGHJK"; 
     function initWordSearch() {
