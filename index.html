@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schatgravers Avontuur 2026</title>
+    <title>Schatgravers 2026 - Master</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -13,28 +13,29 @@
         :root { --primary: #1e3799; --accent: #eb4d4b; --bg: #0a3d62; --gold: #f1c40f; }
         body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         
-        /* Navigatie & Timer */
         #top-bar { display: none; width: 100%; max-width: 600px; justify-content: space-between; align-items: center; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 10px; margin-bottom: 10px; }
         .timer-box { color: var(--gold); font-weight: bold; font-size: 1.2rem; }
 
-        /* Schermen */
         .screen { display: none; width: 100%; max-width: 600px; text-align: center; animation: fadeIn 0.4s; }
         .screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
 
         .card { background: white; color: #333; padding: 20px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); margin: 15px 0; }
         input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #ddd; font-size: 1rem; box-sizing: border-box; }
-        .btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1rem; width: 100%; margin: 5px 0; }
+        .btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1rem; width: 100%; margin: 5px 0; transition: 0.2s; }
         .btn-gold { background: var(--gold); color: #333; }
+        .btn:active { transform: scale(0.98); }
         
-        /* Woordenzoeker */
+        /* Woordenzoeker Grid */
         #ws-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 2px; background: #444; border: 2px solid #333; margin-top: 10px; }
-        .ws-letter { background: white; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; cursor: pointer; color: #333; }
-        .ws-letter.selected { background: var(--gold); }
+        .ws-letter { background: white; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; cursor: pointer; color: #333; user-select: none; }
+        .ws-letter.selected { background: var(--gold); color: white; }
+        .word-item { font-size: 0.75rem; padding: 4px 8px; background: #eee; border-radius: 5px; color: #666; transition: 0.3s; }
+        .word-item.found { background: #2ecc71 !important; color: white !important; text-decoration: line-through; }
 
         /* Drag & Drop */
-        .drag-item { background: var(--gold); color: #333; padding: 8px 15px; border-radius: 8px; cursor: grab; font-weight: bold; margin: 5px; display: inline-block; }
-        .drop-zone { border: 2px dashed #ccc; padding: 10px; margin: 10px 0; border-radius: 10px; min-height: 40px; }
+        .drag-item { background: var(--gold); color: #333; padding: 8px 15px; border-radius: 8px; cursor: grab; font-weight: bold; margin: 5px; display: inline-block; border: 1px solid #333; }
+        .drop-zone { border: 2px dashed #ccc; padding: 10px; margin: 10px 0; border-radius: 10px; min-height: 40px; transition: 0.3s; }
         .drop-zone.correct { background: #d4edda; border-color: #28a745; border-style: solid; }
 
         /* Doolhof */
@@ -52,19 +53,19 @@
     <div id="screen-1" class="screen active">
         <div class="card">
             <h1 style="color:var(--primary); margin:0;">Schatgravers</h1>
-            <p>Maart 2026</p>
-            <input type="text" id="name-in" placeholder="Typ je naam...">
-            <button onclick="startAvontuur()" class="btn">START AVONTUUR</button>
+            <p>Welkom bij het avontuur!</p>
+            <input type="text" id="name-in" placeholder="Typ je voornaam...">
+            <button onclick="startAvontuur()" class="btn">START</button>
         </div>
-        <div id="names-list" style="margin-top:20px; font-size: 0.8rem; opacity: 0.8;"></div>
+        <div id="names-list" style="margin-top:20px; font-size: 0.8rem; opacity: 0.7;"></div>
     </div>
 
     <div id="screen-2" class="screen">
         <h2>De Olijfberg</h2>
         <div class="card" style="padding:5px; height:350px;">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3392.3486395370215!2d35.24248477618956!3d31.774577574100654!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x150329c372658897%3A0x67305d233c778e24!2sMount%20of%20Olives!5e0!3m2!1snl!2snl!4v1700000000000!5m2!1snl!2snl" width="100%" height="100%" style="border:0; border-radius:15px;" allowfullscreen></iframe>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3392.2132386292534!2d35.2443093!3d31.7781161!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x150329c365855555%3A0x5734898144214f4!2sMount%20of%20Olives!5e0!3m2!1sen!2snl!4v1700000000000" width="100%" height="100%" style="border:0; border-radius:15px;" allowfullscreen></iframe>
         </div>
-        <button onclick="showScreen(3)" class="btn btn-gold">Ik heb rondgekeken →</button>
+        <button onclick="showScreen(3)" class="btn btn-gold">Naar het verhaal →</button>
     </div>
 
     <div id="screen-3" class="screen">
@@ -77,20 +78,19 @@
                 <p>Toen Jezus klaar was met bidden, stond Hij op en ging naar zijn leerlingen. Die waren van verdriet in slaap gevallen. Jezus zei: ‘Waarom slapen jullie? Bid God om kracht, zodat je geen verkeerde keuze maakt.’</p>
                 <hr>
                 <h3 style="color: var(--primary);">Judas verraadt Jezus</h3>
-                <p>Terwijl Jezus dat zei, kwam er een groep mannen aan. Judas, één van de twaalf leerlingen, liep voorop. Hij ging naar Jezus toe en groette hem met een kus. Maar Jezus zei: ‘Judas, verraad je de Mensenzoon met een kus?’</p>
-                <p>Toen de leerlingen begrepen wat er ging gebeuren, vroegen ze: ‘Heer, zullen we onze zwaarden pakken?’ En één van de leerlingen pakte zijn zwaard en sloeg de knecht van de hogepriester. Hij sloeg zijn rechteroor eraf. Maar Jezus zei: ‘Stop, genoeg!’ En hij pakte het oor en maakte de man weer beter.</p>
-                <p>Er waren priesters, officieren van de tempel en leiders van het volk meegekomen om Jezus gevangen te nemen. Jezus zei tegen hen: ‘Jullie zijn hier gekomen met zwaarden en stokken. Alsof ik een gevaarlijke misdadiger ben! Elke dag was ik bij jullie in de tempel, maar toen namen jullie mij niet gevangen. Nu is het moment gekomen waarop jullie gewacht hebben. Nu laat de duisternis haar macht zien.’</p>
+                <p>Terwijl Jezus dat zei, kwam er een groep mannen aan. Judas liep voorop. Hij ging naar Jezus toe en groette hem met een kus. Maar Jezus zei: ‘Judas, verraad je de Mensenzoon met een kus?’</p>
+                <p>Er waren priesters, officieren van de tempel en leiders van het volk meegekomen om Jezus gevangen te nemen. Jezus zei: ‘Nu is het moment gekomen waarop jullie gewacht hebben. Nu laat de duisternis haar macht zien.’</p>
             </div>
         </div>
-        <button onclick="showScreen(4)" class="btn btn-gold">Volgende stap</button>
+        <button onclick="showScreen(4)" class="btn btn-gold">Naar de stellingen →</button>
     </div>
 
     <div id="screen-4" class="screen">
         <h2>Wheel of Stellingen</h2>
-        <div id="stelling-display" class="card" style="font-weight:bold; min-height:60px; display:flex; align-items:center; justify-content:center;">Druk op draaien!</div>
+        <div id="stelling-display" class="card" style="font-weight:bold; min-height:80px; display:flex; align-items:center; justify-content:center; font-size: 1.1rem;">Druk op de knop!</div>
         <button onclick="draaiStelling()" class="btn">DRAAI HET WIEL</button>
         <div id="opinion-box" style="display:none;">
-            <input type="text" id="opinion-in" placeholder="Wat denk jij hiervan?">
+            <input type="text" id="opinion-in" placeholder="Wat vind jij?">
             <button onclick="stuurMening()" class="btn btn-gold">DEEL MENING</button>
         </div>
         <button onclick="initWoordenzoeker(); showScreen(5);" class="btn" style="margin-top:20px;">Naar de Woordenzoeker →</button>
@@ -98,9 +98,15 @@
 
     <div id="screen-5" class="screen">
         <h2>Woordenzoeker</h2>
+        <p style="font-size: 0.9rem;">Zoek de woorden. De overgebleven letters vormen een zin!</p>
         <div id="ws-grid"></div>
-        <div id="ws-words" style="display:flex; flex-wrap:wrap; gap:5px; margin-top:10px; justify-content:center; font-size: 0.8rem;"></div>
-        <button onclick="showScreen(6)" class="btn btn-gold" style="margin-top:20px;">Naar Gebeden →</button>
+        <div id="ws-words" style="display:flex; flex-wrap:wrap; gap:5px; margin-top:10px; justify-content:center;"></div>
+        
+        <div class="card">
+            <input type="text" id="secret-input" placeholder="Wat is de geheime zin?">
+            <button onclick="stuurGeheim()" class="btn btn-gold">OPLOSSING INSTUREN</button>
+        </div>
+        <button onclick="showScreen(6)" class="btn">Volgende: Gebeden →</button>
     </div>
 
     <div id="screen-6" class="screen">
@@ -121,25 +127,30 @@
     </div>
 
     <div id="screen-7" class="screen">
-        <h2>Doolhof Leaderboard</h2>
+        <h2>Doolhof</h2>
         <div id="maze-container">
             <div class="wall" style="top:50px; left:0; width:200px; height:10px;"></div>
             <div class="wall" style="top:100px; left:100px; width:200px; height:10px;"></div>
             <div class="wall" style="top:150px; left:0; width:150px; height:10px;"></div>
-            <div class="wall" style="top:200px; left:150px; width:150px; height:10px;"></div>
-            <div id="player-token" style="position:absolute; top:5px; left:5px; width:25px; height:25px; background:var(--accent); border-radius:50%; color:white; font-size:10px; display:flex; align-items:center; justify-content:center;">J</div>
-            <div id="target-token" style="position:absolute; bottom:5px; right:5px; width:35px; height:35px; background:green; border-radius:5px; color:white; font-size:10px; display:flex; align-items:center; justify-content:center;">JEZUS</div>
+            <div class="wall" style="top:220px; left:100px; width:200px; height:10px;"></div>
+            <div id="player-token" style="position:absolute; top:5px; left:5px; width:25px; height:25px; background:var(--accent); border-radius:50%; color:white; font-size:10px; display:flex; align-items:center; justify-content:center; z-index:10;">J</div>
+            <div id="target-token" style="position:absolute; bottom:5px; right:5px; width:40px; height:40px; background:green; border-radius:5px; color:white; font-size:10px; display:flex; align-items:center; justify-content:center;">JEZUS</div>
         </div>
-        <div style="display:grid; grid-template-columns:repeat(3,1fr); width:150px; margin:10px auto; gap:5px;">
-            <button class="btn" style="grid-column:2" onclick="moveMaze(0,-20)">↑</button>
-            <button class="btn" onclick="moveMaze(-20,0)">←</button><button class="btn" onclick="moveMaze(0,20)">↓</button><button class="btn" onclick="moveMaze(20,0)">→</button>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); width:180px; margin:15px auto; gap:10px;">
+            <button class="btn" style="grid-column:2" onclick="moveMaze(0,-25)">↑</button>
+            <button class="btn" onclick="moveMaze(-25,0)">←</button>
+            <button class="btn" onclick="moveMaze(0,25)">↓</button>
+            <button class="btn" onclick="moveMaze(25,0)">→</button>
         </div>
-        <div class="card"><h4>Top 5 Snelste</h4><div id="lb-display"></div></div>
+        <div class="card"><h4>Leaderboard</h4><div id="lb-display">Laden...</div></div>
     </div>
 
-    <button onclick="resetSysteem()" style="margin-top:50px; background:none; border:none; color:white; opacity:0.2; cursor:pointer;">⚠️ Systeem Reset</button>
+    <div style="margin-top:100px; padding: 20px;">
+        <button onclick="resetSysteem()" style="background:none; border:none; color:white; opacity:0.3; cursor:pointer; font-size:0.8rem;">⚠️ Reset alle database gegevens</button>
+    </div>
 
     <script>
+        // 1. INITIALISATIE
         const firebaseConfig = {
             apiKey: "AIzaSyBC3Dzm8PNPXw12VJNimvly5u2I93QeW54",
             databaseURL: "https://schatgravers15maart2026-default-rtdb.europe-west1.firebasedatabase.app",
@@ -149,14 +160,6 @@
         const db = firebase.database();
 
         let startTime, timerInterval;
-        function startTimer() {
-            startTime = Date.now();
-            timerInterval = setInterval(() => {
-                let diff = Date.now() - startTime;
-                let m = Math.floor(diff / 60000), s = Math.floor((diff % 60000) / 1000);
-                document.getElementById('main-timer').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-            }, 1000);
-        }
 
         function showScreen(nr) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -164,6 +167,7 @@
             window.scrollTo(0,0);
         }
 
+        // 2. TIMER & START
         function startAvontuur() {
             const n = document.getElementById('name-in').value.trim();
             if(n) {
@@ -171,12 +175,20 @@
                 localStorage.setItem('sg_naam', n);
                 document.getElementById('display-name').innerText = n;
                 document.getElementById('top-bar').style.display = 'flex';
-                startTimer();
+                startTime = Date.now();
+                timerInterval = setInterval(updateTimer, 1000);
                 showScreen(2);
             }
         }
 
-        const stellingen = ["1. Ik ben nooit bang.", "2. Als ik iets spannend vind, hoop ik dat het niet doorgaat.", "3. Als iemand het moeilijk heeft, help ik.", "4. Als ik bang ben, ga ik bidden.", "5. Ik heb weleens kracht van God gevoeld.", "6. Ik wil meer weten over wat God precies wil."];
+        function updateTimer() {
+            let diff = Date.now() - startTime;
+            let m = Math.floor(diff / 60000), s = Math.floor((diff % 60000) / 1000);
+            document.getElementById('main-timer').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        }
+
+        // 3. STELLINGEN
+        const stellingen = ["Ik ben nooit bang.", "Als ik iets spannend vind, hoop ik dat het niet doorgaat.", "Als iemand het moeilijk heeft, help ik.", "Als ik bang ben, ga ik bidden.", "Ik heb weleens kracht van God gevoeld.", "Ik wil meer weten over wat God precies wil."];
         function draaiStelling() {
             const s = stellingen[Math.floor(Math.random()*stellingen.length)];
             document.getElementById('stelling-display').innerText = s;
@@ -188,22 +200,55 @@
             if(t) {
                 db.ref('opinions').push({ naam: localStorage.getItem('sg_naam'), tekst: t, stelling: window.lastS });
                 document.getElementById('opinion-in').value = "";
+                alert("Gedeeld!");
             }
         }
 
+        // 4. WOORDENZOEKER MET GEHEIME ZIN (G-O-D-G-E-E-F-T-K-R-A-C-H-T)
         function initWoordenzoeker() {
             const g = document.getElementById('ws-grid'), w = document.getElementById('ws-words');
-            const words = ["OLIJFBERG", "JUDAS", "JEZUS", "PETRUS", "MARIA", "JERUZALEM"];
+            const words = ["OLIJFBERG", "JUDAS", "JEZUS", "PETRUS", "MARIA", "GETSEMANE", "PESACH", "VERRAAD", "JOHANNES", "MARTHA"];
+            const layout = [
+                'O','L','I','J','F','B','E','R','G','G','O','D',
+                'G','E','E','F','T','K','R','A','C','H','T','P',
+                'J','U','D','A','S','X','X','X','X','X','X','E',
+                'G','E','T','S','E','M','A','N','E','X','X','T',
+                'P','E','S','A','C','H','X','X','X','X','X','R',
+                'J','E','Z','U','S','X','V','E','R','R','A','A',
+                'D','X','X','X','X','X','X','X','X','X','X','U',
+                'X','J','O','H','A','N','N','E','S','X','X','S',
+                'X','M','A','R','T','H','A','X','X','X','X','X',
+                'X','M','A','R','I','A','X','X','X','X','X','X',
+                'X','X','X','X','X','X','X','X','X','X','X','X',
+                'X','X','X','X','X','X','X','X','X','X','X','X'
+            ];
             g.innerHTML = ""; w.innerHTML = "";
-            words.forEach(word => { w.innerHTML += `<span class="word-item">${word}</span>`; });
-            for(let i=0; i<144; i++) {
+            words.forEach(word => { w.innerHTML += `<span class="word-item" id="l-${word}">${word}</span>`; });
+            layout.forEach(letter => {
                 const d = document.createElement('div'); d.className = 'ws-letter';
-                d.innerText = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)];
-                d.onclick = function() { this.classList.toggle('selected'); };
+                d.innerText = letter === 'X' ? "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)] : letter;
+                d.onclick = function() { 
+                    this.classList.toggle('selected');
+                    checkFinds(words);
+                };
                 g.appendChild(d);
+            });
+        }
+        function checkFinds(words) {
+            const sel = Array.from(document.querySelectorAll('.ws-letter.selected')).map(el => el.innerText).join('');
+            words.forEach(word => {
+                if(sel.includes(word)) document.getElementById('l-'+word).classList.add('found');
+            });
+        }
+        function stuurGeheim() {
+            const opl = document.getElementById('secret-input').value.trim().toUpperCase();
+            if(opl) {
+                db.ref('oplossingen').push({naam: localStorage.getItem('sg_naam'), oplossing: opl});
+                alert("Oplossing verstuurd!");
             }
         }
 
+        // 5. DRAG & DROP
         document.querySelectorAll('.drag-item').forEach(d => {
             d.ondragstart = e => e.dataTransfer.setData('text', e.target.id);
         });
@@ -218,6 +263,7 @@
             };
         });
 
+        // 6. DOOLHOF
         let pX = 5, pY = 5;
         function moveMaze(dx, dy) {
             const nX = pX + dx, nY = pY + dy;
@@ -227,20 +273,22 @@
                 const top = parseInt(w.style.top), left = parseInt(w.style.left), width = parseInt(w.style.width), height = parseInt(w.style.height);
                 if(nX < left + width && nX + 25 > left && nY < top + height && nY + 25 > top) hit = true;
             });
-            if(hit) { pX = 5; pY = 5; alert("Muur! Terug naar start."); } 
+            if(hit) { pX = 5; pY = 5; alert("Muur geraakt!"); } 
             else { pX = nX; pY = nY; }
             const p = document.getElementById('player-token');
             p.style.left = pX + 'px'; p.style.top = pY + 'px';
             if(pX > 240 && pY > 240) {
+                clearInterval(timerInterval);
                 const time = document.getElementById('main-timer').innerText;
                 db.ref('leaderboard').push({ naam: localStorage.getItem('sg_naam'), tijd: time });
-                alert("Klaar! Tijd: " + time);
+                alert("GEWONNEN! Tijd: " + time);
             }
         }
 
+        // 7. SYNC & RESET
         db.ref('leaderboard').orderByChild('tijd').limitToFirst(5).on('value', snap => {
             const d = document.getElementById('lb-display'); d.innerHTML = "";
-            snap.forEach(c => { d.innerHTML += `<div>${c.val().tijd} - ${c.val().naam}</div>`; });
+            snap.forEach(c => { d.innerHTML += `<div><b>${c.val().tijd}</b> - ${c.val().naam}</div>`; });
         });
 
         db.ref('names').on('value', snap => {
@@ -249,7 +297,17 @@
         });
 
         function resetSysteem() {
-            if(confirm("Alles wissen?")) db.ref('/').set({names:null, opinions:null, leaderboard:null}).then(()=>location.reload());
+            if(confirm("LET OP: Hiermee wis je ALLE resultaten van alle kinderen in de database. Weet je het zeker?")) {
+                db.ref('/').set({
+                    names: null,
+                    opinions: null,
+                    leaderboard: null,
+                    oplossingen: null
+                }).then(() => {
+                    alert("Database is volledig gereset.");
+                    location.reload();
+                });
+            }
         }
     </script>
 </body>
