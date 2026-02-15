@@ -3,49 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Schatgravers V40 - De Olijfberg Race</title>
+    <title>Schatgravers V40 - De Olijfberg</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #1e3799; --accent: #eb4d4b; --success: #20bf6b; --bg: #0a3d62; --gold: #f1c40f; }
+        :root { --primary: #1e3799; --accent: #eb4d4b; --success: #20bf6b; --bg: #0a3d62; --gold: #f1c40f; --dark: #121212; }
         
-        /* Basis Layout */
         body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Fredoka', sans-serif; background: var(--bg); color: #333; overflow: hidden; }
-        .bg-fixed { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(10, 61, 98, 0.85), rgba(10, 61, 98, 0.85)), url('schatgravers15maart.jpg'); background-size: cover; z-index: -1; }
+        .bg-fixed { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(10, 61, 98, 0.9), rgba(10, 61, 98, 0.9)), url('schatgravers15maart.jpg'); background-size: cover; z-index: -1; }
         
-        /* Containers */
-        .container { display: none; height: 100vh; width: 100%; padding: 20px; box-sizing: border-box; flex-direction: column; align-items: center; overflow-y: auto; padding-bottom: 120px; position: relative; z-index: 1; }
+        .container { display: none; height: 100vh; width: 100%; padding: 20px; box-sizing: border-box; flex-direction: column; align-items: center; overflow-y: auto; padding-bottom: 110px; position: relative; }
         
-        /* Navigatie Balk - GEFIXED */
-        .navigation-panel { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; z-index: 9999; background: rgba(0,0,0,0.9); padding: 12px 25px; border-radius: 50px; border: 2px solid var(--gold); box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
-        .nav-btn { width: 45px; height: 45px; border-radius: 50%; border: 2px solid white; background: transparent; color: white; font-weight: bold; cursor: pointer; font-size: 1.1rem; transition: 0.3s; }
-        .nav-btn.active { background: var(--gold); color: black; border-color: var(--gold); transform: scale(1.2); }
+        /* NAVIGATIE */
+        .navigation-panel { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 9999; background: rgba(0,0,0,0.9); padding: 10px 20px; border-radius: 50px; border: 2px solid var(--gold); }
+        .nav-btn { width: 42px; height: 42px; border-radius: 50%; border: 1px solid white; background: transparent; color: white; font-weight: bold; cursor: pointer; }
+        .nav-btn.active { background: var(--gold); color: black; border-color: var(--gold); transform: scale(1.1); }
 
-        /* Story Text */
-        .story-container { background: #fdfbf7; padding: 15px; border-radius: 12px; width: 95%; max-width: 500px; border-top: 6px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .story-content { font-family: 'Lora', serif; font-size: 1rem; line-height: 1.6; color: #2c3e50; text-align: left; }
+        /* WOORDZOEKER STYLE (CONTRAST) */
+        .wordsearch-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; background: var(--dark); padding: 10px; border-radius: 10px; border: 3px solid var(--gold); margin-top: 10px; }
+        .ws-cell { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: #222; color: var(--gold); font-weight: bold; border-radius: 4px; cursor: pointer; font-size: 1.1rem; user-select: none; }
+        .ws-cell.found { background: var(--success); color: white; }
+        .word-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; justify-content: center; }
+        .word-item { padding: 5px 10px; background: rgba(255,255,255,0.2); color: white; border-radius: 20px; font-size: 0.8rem; }
+        .word-item.done { text-decoration: line-through; opacity: 0.5; background: var(--success); }
 
-        /* Live Feed Kluizen */
+        /* KLUIS & MAZE STYLES (ZOALS VOORHEEN) */
         .vault-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; max-width: 400px; }
-        .vault { background: white; padding: 8px; border-radius: 8px; height: 110px; border: 1px solid #ddd; overflow-y: auto; font-size: 0.75rem; box-shadow: inset 0 0 5px rgba(0,0,0,0.1); }
-        .vault b { color: var(--primary); display: block; border-bottom: 1px solid #eee; margin-bottom: 4px; }
-        .vault.active { border: 3px solid var(--gold); background: #fffdf0; }
-        .ans-item { background: #f0f0f0; margin-bottom: 4px; padding: 4px; border-radius: 4px; border-left: 3px solid var(--primary); }
-
-        /* Maze & Race */
-        #maze-wrap { width: 90vw; height: 90vw; max-width: 360px; max-height: 360px; position: relative; background: #2d5a27; border: 3px solid var(--gold); display: grid; grid-template-columns: repeat(15, 1fr); grid-template-rows: repeat(13, 1fr); margin-top: 10px; }
-        .cell { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; }
-        .wall { background: #1a3a16; }
-        .path { background: #4a7c44; opacity: 0.3; }
-        .letter-cell { color: white; text-shadow: 1px 1px 2px black; z-index: 5; }
-        #player { position: absolute; width: 6.66%; height: 7.69%; transition: all 0.1s; z-index: 10; background: var(--accent); border-radius: 50%; border: 2px solid white; box-sizing: border-box; }
-
-        /* Knoppen & Inputs */
-        .btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; font-family: 'Fredoka'; font-size: 1rem; }
-        .controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
-        .control-btn { width: 55px; height: 55px; background: white; border: none; border-radius: 15px; font-size: 1.5rem; color: var(--bg); font-weight: bold; box-shadow: 0 4px 0 #ccc; }
+        .vault { background: white; padding: 8px; border-radius: 8px; height: 100px; overflow-y: auto; font-size: 0.7rem; border: 2px solid transparent; }
+        .vault.active { border-color: var(--gold); background: #fffdf0; }
+        .ans-item { background: #eee; margin-bottom: 3px; padding: 3px; border-radius: 4px; border-left: 3px solid var(--primary); }
         
-        #leaderboard { background: rgba(255,255,255,0.2); border-radius: 10px; padding: 10px; width: 100%; max-width: 400px; margin-top: 15px; color: white; font-size: 0.85rem; }
-        .leader-row { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.2); padding: 5px 0; }
+        #maze-wrap { width: 90vw; height: 90vw; max-width: 350px; position: relative; background: #1a3a16; border: 2px solid var(--gold); display: grid; grid-template-columns: repeat(15, 1fr); grid-template-rows: repeat(13, 1fr); }
+        .cell { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+        .wall { background: #0d210b; }
+        .path { opacity: 0.3; background: #4a7c44; }
+        #player { position: absolute; width: 6.66%; height: 7.69%; background: var(--accent); border-radius: 50%; border: 1px solid white; z-index: 10; transition: 0.1s; }
+
+        .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; width: 100%; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -53,36 +46,26 @@
 <div class="bg-fixed"></div>
 
 <div id="phase-1" class="container" style="display:flex;">
-    <div style="background:white; padding:25px; border-radius:20px; text-align:center; width:90%; max-width:350px; margin-top: 50px;">
-        <h2 style="margin:0 0 10px 0; color: var(--primary);">Schatgravers</h2>
-        <p>Hoe heet je?</p>
-        <input type="text" id="name-in" placeholder="Je naam..." style="width:100%; padding:15px; margin-bottom:15px; border-radius:10px; border:1px solid #ddd; box-sizing: border-box; font-size: 1.1rem;">
-        <button onclick="saveUser()" class="btn">START DE LES</button>
-        <div id="live-names-box" style="margin-top: 20px; font-size: 0.8rem; color: #666;">
-            <b>Nu verbonden:</b><br><span id="names-list">...</span>
-        </div>
+    <div style="background:white; padding:25px; border-radius:20px; text-align:center; width:90%; max-width:350px; margin-top:30px;">
+        <h2 style="margin:0; color:var(--primary)">Schatgravers</h2>
+        <input type="text" id="name-in" placeholder="Je naam..." style="width:100%; padding:15px; margin:15px 0; border-radius:10px; border:1px solid #ddd; box-sizing:border-box;">
+        <button onclick="saveUser()" class="btn">DOE MEE</button>
+        <div id="names-list" style="margin-top:15px; font-size:0.8rem; color:#666;"></div>
     </div>
 </div>
 
 <div id="phase-3" class="container">
-    <div class="story-container">
-        <h3 style="color:var(--primary); margin:5px; text-align:center;">Lukas 22:39-53</h3>
-        <div class="story-content">
-            <p><strong>Jezus bidt op de Olijfberg</strong><br>
-            Jezus ging de stad uit naar de Olijfberg. Hij zei: ‘Bid God om kracht.’ Hij knielde en bad: ‘Vader, niet wat ik wilt, maar wat U wilt.’ Een engel gaf Hem kracht. Jezus was bang, zijn zweet leek op bloed.</p>
-            <p><strong>Het verraad</strong><br>
-            Judas kwam met een groep mannen. Hij groette Jezus met een kus. Jezus zei: ‘Judas, verraad je Mij met een kus?’ De leerlingen wilden vechten, maar Jezus genas het oor van een vijand. Hij zei: ‘Nu laat de duisternis haar macht zien.’</p>
-        </div>
+    <div style="background:#fdfbf7; padding:15px; border-radius:12px; border-top:6px solid var(--gold); max-width:500px;">
+        <h3 style="text-align:center; color:var(--primary)">Lukas 22:39-53</h3>
+        <p style="font-family:'Lora'; line-height:1.5;">Jezus bad op de Olijfberg. Hij was bang, maar zei: "Niet mijn wil, maar Uw wil geschiede." Judas verraadde Hem met een kus. Jezus genas nog het oor van een vijand voordat Hij werd meegenomen.</p>
     </div>
 </div>
 
 <div id="phase-6" class="container">
-    <div style="background:white; padding:15px; border-radius:15px; text-align:center; width:100%; max-width:400px; margin-bottom:15px;">
-        <div id="dice-display" style="font-size:3.5rem; margin:0;">🎲</div>
-        <p id="stelling-text" style="font-weight:bold; color:var(--primary); font-size:1rem; min-height: 2.4rem;">Klik op dobbelen...</p>
-        <button onclick="triggerRoll()" class="btn" style="background:var(--gold); color:black; padding:10px;">DOBBELEN</button>
+    <div style="background:white; padding:10px; border-radius:15px; text-align:center; width:100%; max-width:400px; margin-bottom:10px;">
+        <div id="dice-display" style="font-size:3rem;">🎲</div>
+        <button onclick="triggerRoll()" class="btn" style="background:var(--gold); color:black; width:auto; padding:5px 20px;">GOOI</button>
     </div>
-    
     <div class="vault-grid">
         <div class="vault" id="v-1"><b>1. ANGST</b><div id="l1"></div></div>
         <div class="vault" id="v-2"><b>2. KEUZES</b><div id="l2"></div></div>
@@ -91,45 +74,46 @@
         <div class="vault" id="v-5"><b>5. ALLEEN</b><div id="l5"></div></div>
         <div class="vault" id="v-6"><b>6. HERSTEL</b><div id="l6"></div></div>
     </div>
-    
-    <div style="width: 100%; max-width: 400px; margin-top: 15px; display: flex; gap: 5px;">
-        <input type="text" id="thought-in" placeholder="Typ je antwoord..." style="flex-grow: 1; padding:12px; border-radius:10px; border:none;">
-        <button onclick="sendThought()" class="btn" style="background:var(--success); width: auto; padding: 12px 20px;">STUUR</button>
+    <div style="margin-top:10px; display:flex; gap:5px; width:100%; max-width:400px;">
+        <input type="text" id="thought-in" placeholder="Antwoord..." style="flex:1; padding:10px; border-radius:10px; border:none;">
+        <button onclick="sendThought()" class="btn" style="width:auto; background:var(--success)">STUUR</button>
     </div>
 </div>
 
+<div id="phase-7" class="container">
+    <h3 style="color:white; margin:0;">Zoek de woorden</h3>
+    <div id="ws-grid" class="wordsearch-grid"></div>
+    <div id="ws-words" class="word-list"></div>
+</div>
+
 <div id="phase-9" class="container">
-    <div style="display:flex; justify-content:space-between; width:100%; max-width:360px; color:white; font-weight:bold; margin-bottom: 5px;">
-        <span id="timer-display">0.0s</span>
-        <span id="word-display" style="color:var(--gold); letter-spacing: 2px;">_______</span>
+    <div style="display:flex; justify-content:space-between; width:100%; max-width:350px; color:white; font-weight:bold;">
+        <span id="timer">0.0s</span>
+        <span id="word-display" style="color:var(--gold)">_______</span>
     </div>
     <div id="maze-wrap">
         <div id="player"></div>
-        <div id="maze-grid" style="display: contents;"></div>
+        <div id="maze-grid" style="display:contents"></div>
     </div>
-    <div class="controls">
-        <div></div><button class="control-btn" onclick="movePlayer(0,-1)">↑</button><div></div>
-        <button class="control-btn" onclick="movePlayer(-1,0)">←</button>
-        <button class="control-btn" onclick="movePlayer(0,1)">↓</button>
-        <button class="control-btn" onclick="movePlayer(1,0)">→</button>
+    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-top:10px;">
+        <div></div><button class="btn" onclick="movePlayer(0,-1)">↑</button><div></div>
+        <button class="btn" onclick="movePlayer(-1,0)">←</button>
+        <button class="btn" onclick="movePlayer(0,1)">↓</button>
+        <button class="btn" onclick="movePlayer(1,0)">→</button>
     </div>
-    <div id="leaderboard">
-        <b>🏆 SNELSTE TIJDEN</b>
-        <div id="leader-list"></div>
-    </div>
-    <button onclick="resetData()" style="background:none; border:none; color:rgba(255,255,255,0.3); font-size:10px; margin-top:20px;">RESET GAME</button>
 </div>
 
 <div class="navigation-panel">
     <button class="nav-btn" id="btn-p1" onclick="navTo('p1')">1</button>
     <button class="nav-btn" id="btn-p3" onclick="navTo('p3')">3</button>
     <button class="nav-btn" id="btn-p6" onclick="navTo('p6')">6</button>
+    <button class="nav-btn" id="btn-p7" onclick="navTo('p7')">7</button>
     <button class="nav-btn" id="btn-p9" onclick="navTo('p9')">9</button>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, set, onValue, push, remove, query, orderByChild, limitToFirst } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, set, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     const firebaseConfig = { 
         apiKey: "AIzaSyBC3Dzm8PNPXw12VJNimvly5u2I93QeW54", 
@@ -138,54 +122,44 @@
         projectId: "schatgravers15maart2026", 
         appId: "1:30561512857:web:fcb7868b87d292d1c97708" 
     };
-    
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
     let userName = localStorage.getItem('sgName') || "";
-    let startTime, timerInterval, gameActive = false;
-    let currentDice = 1;
-    let collectedWord = "";
-    const goal = "VERRAAD";
-    let pPos = { x: 1, y: 11 };
+    let curDice = 1;
+    let mazeActive = false;
+    let startTime, timerInt;
+    let colWord = "";
+    let pPos = {x:1, y:11};
 
-    // 1. Namen & Inloggen
+    // --- NAVIGATIE & NAAM ---
     window.saveUser = () => {
         const n = document.getElementById('name-in').value.trim();
         if(n) { userName = n; localStorage.setItem('sgName', n); push(ref(db, 'names'), n); navTo('p3'); }
     };
-    onValue(ref(db, 'names'), s => {
-        if(s.exists()) document.getElementById('names-list').innerText = Object.values(s.val()).join(", ");
-    });
-
-    // 2. Navigatie Sync
     window.navTo = (p) => set(ref(db, 'currentPhase'), p);
     onValue(ref(db, 'currentPhase'), s => {
         const p = s.val() || 'p1';
         document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
         document.getElementById('phase-' + p.replace('p','')).style.display = 'flex';
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-' + p).classList.add('active');
-        if(p === 'p9') startRace(); else stopRace();
+        document.getElementById('btn-'+p).classList.add('active');
+        if(p === 'p9') startMaze(); else stopMaze();
+        if(p === 'p7') initWordSearch();
     });
 
-    // 3. Dobbelsteen & Kluis Live Feed
+    // --- LIVE KLUIS ---
     window.triggerRoll = () => set(ref(db, 'dice'), Math.floor(Math.random()*6)+1);
     onValue(ref(db, 'dice'), s => {
-        currentDice = s.val() || 1;
-        const icons = ["⚀","⚁","⚂","⚃","⚄","⚅"];
-        const stellingen = ["1. Ben je weleens bang?","2. Maak je weleens foute keuzes?","3. Heb je weleens hulp gekregen?","4. Bid jij om kracht?","5. Voel je je weleens alleen?","6. Kun jij iemand vergeven?"];
-        document.getElementById('dice-display').innerText = icons[currentDice-1];
-        document.getElementById('stelling-text').innerText = stellingen[currentDice-1];
+        curDice = s.val() || 1;
+        document.getElementById('dice-display').innerText = ["⚀","⚁","⚂","⚃","⚄","⚅"][curDice-1];
         document.querySelectorAll('.vault').forEach(v => v.classList.remove('active'));
-        document.getElementById('v-'+currentDice).classList.add('active');
+        document.getElementById('v-'+curDice).classList.add('active');
     });
-
     window.sendThought = () => {
-        const msg = document.getElementById('thought-in').value.trim();
-        if(msg && userName) { push(ref(db, 'vaults/'+currentDice), {u: userName, m: msg}); document.getElementById('thought-in').value = ""; }
+        const m = document.getElementById('thought-in').value.trim();
+        if(m && userName) { push(ref(db, 'vaults/'+curDice), {u:userName, m:m}); document.getElementById('thought-in').value=""; }
     };
-
     for(let i=1; i<=6; i++) {
         onValue(ref(db, 'vaults/'+i), s => {
             const l = document.getElementById('l'+i); l.innerHTML = "";
@@ -193,47 +167,44 @@
         });
     }
 
-    // 4. Maze Race
-    const mazeMap = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[1,0,0,0,"Z",0,1,0,0,0,0,"B",0,0,1],[1,0,1,1,1,0,1,0,1,1,1,1,1,0,1],[1,"V",1,0,0,0,0,0,"J",0,1,0,0,"S",1],[1,0,1,0,1,1,1,0,1,0,1,0,1,1,1],[1,"U",0,0,1,0,0,"E",1,0,0,0,"Z",0,1],[1,1,1,0,1,0,1,1,1,0,1,1,1,0,1],[1,0,0,"R",0,0,1,"✝️",1,0,"R",0,0,0,1],[1,0,1,1,1,0,1,1,1,0,1,1,1,0,1],[1,"A",0,0,0,"B",0,0,0,0,0,"J",0,"A",1],[1,0,1,1,1,1,1,0,1,1,1,1,1,0,1],[1,"S",0,0,0,"D",0,0,"U",0,0,0,"Z",0,1],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]];
-
-    function startRace() {
-        const grid = document.getElementById('maze-grid'); grid.innerHTML = "";
-        mazeMap.flat().forEach(cell => {
-            const div = document.createElement('div'); div.className = 'cell ' + (cell === 1 ? 'wall' : 'path');
-            if(cell === "✝️") div.innerHTML = "✝️"; else if(typeof cell === 'string' && cell !== "0") { div.innerText = cell; div.className += ' letter-cell'; }
-            grid.appendChild(div);
+    // --- WOORDZOEKER (LOGICA) ---
+    const wsWords = ["JUDAS", "KUS", "OLIJFBERG", "BIDDEN", "ENGEL", "OOR"];
+    const wsLetters = "JOLIJFBERGDUDASGHKUSKBIDDENRENGELOORPOQWERTZUIOPASDFGHJK"; 
+    function initWordSearch() {
+        const grid = document.getElementById('ws-grid'); grid.innerHTML = "";
+        const list = document.getElementById('ws-words'); list.innerHTML = "";
+        wsLetters.split('').slice(0, 100).forEach(l => {
+            const d = document.createElement('div'); d.className = 'ws-cell'; d.innerText = l;
+            d.onclick = () => d.classList.toggle('found');
+            grid.appendChild(d);
         });
-        gameActive = true; collectedWord = ""; pPos = { x: 1, y: 11 }; updateP();
-        document.getElementById('word-display').innerText = "_______";
-        startTime = Date.now();
-        timerInterval = setInterval(() => { document.getElementById('timer-display').innerText = `${((Date.now()-startTime)/1000).toFixed(1)}s`; }, 100);
+        wsWords.forEach(w => { list.innerHTML += `<div class="word-item" onclick="this.classList.toggle('done')">${w}</div>`; });
     }
-    function stopRace() { gameActive = false; clearInterval(timerInterval); }
 
+    // --- MAZE ---
+    const mazeMap = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[1,0,0,0,"Z",0,1,0,0,0,0,"B",0,0,1],[1,0,1,1,1,0,1,0,1,1,1,1,1,0,1],[1,"V",1,0,0,0,0,0,"J",0,1,0,0,"S",1],[1,0,1,0,1,1,1,0,1,0,1,0,1,1,1],[1,"U",0,0,1,0,0,"E",1,0,0,0,"Z",0,1],[1,1,1,0,1,0,1,1,1,0,1,1,1,0,1],[1,0,0,"R",0,0,1,"✝️",1,0,"R",0,0,0,1],[1,0,1,1,1,0,1,1,1,0,1,1,1,0,1],[1,"A",0,0,0,"B",0,0,0,0,0,"J",0,"A",1],[1,0,1,1,1,1,1,0,1,1,1,1,1,0,1],[1,"S",0,0,0,"D",0,0,"U",0,0,0,"Z",0,1],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]];
+    function startMaze() {
+        const g = document.getElementById('maze-grid'); g.innerHTML = "";
+        mazeMap.flat().forEach(c => {
+            const d = document.createElement('div'); d.className = 'cell ' + (c===1?'wall':'path');
+            if(c==="✝️") d.innerText="✝️"; else if(typeof c==='string' && c!=='0') d.innerText=c;
+            g.appendChild(d);
+        });
+        mazeActive=true; colWord=""; pPos={x:1,y:11}; updateP();
+        startTime=Date.now(); timerInt=setInterval(()=> { document.getElementById('timer').innerText=((Date.now()-startTime)/1000).toFixed(1)+'s'; },100);
+    }
+    function stopMaze() { mazeActive=false; clearInterval(timerInt); }
     window.movePlayer = (dx, dy) => {
-        if(!gameActive) return;
-        const nx = pPos.x + dx, ny = pPos.y + dy;
-        if(mazeMap[ny] && mazeMap[ny][nx] !== 1) {
-            pPos.x = nx; pPos.y = ny; const tile = mazeMap[ny][nx];
-            if(typeof tile === 'string' && tile !== "✝️" && tile !== "0") {
-                if(tile === goal[collectedWord.length]) { collectedWord += tile; document.getElementById('word-display').innerText = collectedWord.padEnd(7, "_"); }
-            }
-            if(tile === "✝️") {
-                if(collectedWord === goal) {
-                    stopRace(); const ft = ((Date.now()-startTime)/1000).toFixed(1);
-                    push(ref(db, 'leaderboard'), { n: userName, s: parseFloat(ft) }); alert("FINISH! Tijd: " + ft + "s");
-                } else alert("Verzamel eerst V-E-R-R-A-A-D!");
-            }
+        if(!mazeActive) return;
+        const nx=pPos.x+dx, ny=pPos.y+dy;
+        if(mazeMap[ny] && mazeMap[ny][nx]!==1) {
+            pPos.x=nx; pPos.y=ny; const t = mazeMap[ny][nx];
+            if(t==="✝️" && colWord==="VERRAAD") alert("GEWONNEN!");
+            if(typeof t==='string' && "VERRAAD".includes(t)) { colWord+=t; document.getElementById('word-display').innerText=colWord.padEnd(7,'_'); }
             updateP();
         }
     };
-    function updateP() { const p = document.getElementById('player'); p.style.left = (pPos.x * (100/15)) + '%'; p.style.top = (pPos.y * (100/13)) + '%'; }
-    onValue(query(ref(db, 'leaderboard'), orderByChild('s'), limitToFirst(5)), s => {
-        const b = document.getElementById('leader-list'); b.innerHTML = "";
-        s.forEach(snap => { const d = snap.val(); b.innerHTML += `<div class="leader-row"><span>${d.n}</span><span>${d.s}s</span></div>`; });
-    });
-
-    window.resetData = () => { if(confirm("Wis alles?")) { remove(ref(db, 'leaderboard')); remove(ref(db, 'names')); remove(ref(db, 'vaults')); location.reload(); } };
+    function updateP() { const p=document.getElementById('player'); p.style.left=(pPos.x*6.66)+'%'; p.style.top=(pPos.y*7.69)+'%'; }
 </script>
 </body>
 </html>
