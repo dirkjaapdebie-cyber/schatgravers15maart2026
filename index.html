@@ -12,7 +12,7 @@
         .bg-fixed { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(10, 61, 98, 0.85), rgba(10, 61, 98, 0.85)), url('schatgravers15maart.jpg'); background-size: cover; z-index: -1; }
         .container { display: none; height: 100vh; padding: 15px; box-sizing: border-box; flex-direction: column; align-items: center; overflow-y: auto; padding-bottom: 110px; }
         
-        /* STORY STYLE MET KLIK-FUNCTIE */
+        /* STORY STYLE */
         .story-container { background: #fdfbf7; padding: 25px; border-radius: 12px; width: 90%; max-width: 550px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); border-top: 6px solid var(--gold); cursor: pointer; transition: transform 0.2s; position: relative; }
         .story-container:active { transform: scale(0.98); }
         .story-content { font-family: 'Lora', serif; font-size: 1.1rem; line-height: 1.6; color: #2c3e50; opacity: 0; transition: opacity 0.8s ease; text-align: left; }
@@ -48,7 +48,7 @@
 </div>
 
 <div id="phase-2" class="container">
-    <h1 id="timer-p2" style="color:white; font-size:3rem; margin:10px;">01:30</h1>
+    <h1 style="color:white; font-size:3rem; margin:10px;">01:30</h1>
     <div style="width:100%; max-width:280px; aspect-ratio:9/16; background:#000; border-radius:15px; overflow:hidden; border:3px solid var(--gold);">
         <iframe src="https://www.youtube.com/embed/7ljG1XWMYjY" style="width:100%; height:100%; border:none;" allowfullscreen></iframe>
     </div>
@@ -78,16 +78,16 @@
             
             Er waren priesters, officieren van de tempel en leiders van het volk meegekomen om Jezus gevangen te nemen. Jezus zei tegen hen: ‘Jullie zijn hier gekomen met zwaarden en stokken. Alsof ik een gevaarlijke misdadiger ben! Elke dag was ik bij jullie in de tempel, maar toen namen jullie mij niet gevangen. Nu is het moment gekomen waarop jullie gewacht hebben. Nu laat de duisternis haar macht zien.’
         </div>
-        <div class="click-hint">KLIK OM HET VERHAAL TE LEZEN</div>
+        <div class="click-hint">KLIK OM TE LEZEN</div>
     </div>
 </div>
 
 <div id="phase-4" class="container">
     <div class="story-container" onclick="revealText(this)">
-        <div class="story-header">VRAAG OVER HET GEBED</div>
+        <div class="story-header">Reflectie</div>
         <div class="story-content">
-            Jezus zei: <i>"Niet wat Ik wil, maar wat U wilt."</i><br><br>
-            Vind jij het weleens lastig om aan God te vragen wat Hij wil, in plaats van wat je zelf graag zou willen?
+            Jezus was heel bang, maar Hij koos ervoor om Gods plan te volgen.<br><br>
+            <strong>Vraag:</strong> Vind jij het makkelijk om te vertrouwen op God als je bang bent?
         </div>
         <div class="click-hint">KLIK VOOR DE VRAAG</div>
     </div>
@@ -95,10 +95,10 @@
 
 <div id="phase-5" class="container">
     <div class="story-container" onclick="revealText(this)">
-        <div class="story-header">HET WONDER</div>
+        <div class="story-header">De Kus</div>
         <div class="story-content">
-            Zelfs toen Jezus gevangen werd genomen, zorgde Hij voor anderen door het oor van de knecht te genezen.<br><br>
-            Wat zegt dit over de liefde van Jezus, zelfs op Zijn moeilijkste moment?
+            Judas verraadde Jezus met een kus, een teken van vriendschap.<br><br>
+            <strong>Vraag:</strong> Waarom zou Judas voor een kus hebben gekozen, denk je?
         </div>
         <div class="click-hint">KLIK VOOR DE VRAAG</div>
     </div>
@@ -219,17 +219,55 @@
     }
 
     function initWS() {
-        const g = document.getElementById('ws-grid'); g.innerHTML = '';
-        const letters = "OLIJFBERGJUDASGEBEDPASENKRACHTBEKERENGELKUSPETHANAAWAKKERTUINBLOEDZWEETHEER";
-        for(let i=0; i<144; i++){
-            const l = document.createElement('div'); l.style.cssText = "background:white; height:25px; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:0.8rem; border-radius:3px;";
-            l.innerText = i < letters.length ? letters[i] : "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)];
-            l.onclick = () => l.style.background = l.style.background === 'rgb(235, 77, 75)' ? 'white' : '#eb4d4b'; 
-            g.appendChild(l);
+        const gridElement = document.getElementById('ws-grid');
+        const listElement = document.getElementById('ws-list');
+        const size = 12;
+        const grid = Array(size).fill().map(() => Array(size).fill(''));
+        const words = ["OLIJFBERG", "JUDAS", "GEBED", "PASEN", "KRACHT", "BEKER", "ENGEL", "KUS", "PETRUS", "HAAN", "WAKKER", "TUIN", "BLOED", "ZWEET", "HEER"];
+
+        words.forEach(word => {
+            let placed = false;
+            while (!placed) {
+                const isVertical = Math.random() > 0.5;
+                const row = Math.floor(Math.random() * (isVertical ? size - word.length : size));
+                const col = Math.floor(Math.random() * (isVertical ? size : size - word.length));
+                let canPlace = true;
+                for (let i = 0; i < word.length; i++) {
+                    const char = isVertical ? grid[row + i][col] : grid[row][col + i];
+                    if (char !== '' && char !== word[i]) { canPlace = false; break; }
+                }
+                if (canPlace) {
+                    for (let i = 0; i < word.length; i++) {
+                        if (isVertical) grid[row + i][col] = word[i];
+                        else grid[row][col + i] = word[i];
+                    }
+                    placed = true;
+                }
+            }
+        });
+
+        gridElement.innerHTML = '';
+        for (let r = 0; r < size; r++) {
+            for (let c = 0; c < size; c++) {
+                const letter = grid[r][c] || "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random() * 26)];
+                const div = document.createElement('div');
+                div.style.cssText = "background:white; height:28px; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:0.7rem; border-radius:3px; cursor:pointer; border: 1px solid #eee;";
+                div.innerText = letter;
+                div.onclick = () => {
+                    div.style.background = div.style.background === 'rgb(235, 77, 75)' ? 'white' : '#eb4d4b';
+                    div.style.color = div.style.background === 'rgb(235, 77, 75)' ? 'white' : 'white';
+                };
+                gridElement.appendChild(div);
+            }
         }
-        const wl = document.getElementById('ws-list'); wl.innerHTML = '';
-        ["OLIJFBERG", "JUDAS", "GEBED", "PASEN", "KRACHT", "BEKER", "ENGEL", "KUS", "PETRUS", "HAAN", "WAKKER", "TUIN", "BLOED", "ZWEET", "HEER"].forEach(w => {
-            const span = document.createElement('span'); span.innerText = w; span.style.margin='2px'; span.onclick = () => span.style.textDecoration = 'line-through'; wl.appendChild(span);
+
+        listElement.innerHTML = '';
+        words.forEach(w => {
+            const span = document.createElement('span');
+            span.innerText = w;
+            span.style.margin = '2px';
+            span.onclick = () => span.style.textDecoration = 'line-through';
+            listElement.appendChild(span);
         });
     }
     window.checkSentence = (v) => { if(v.toLowerCase().trim() === "van u is het koninkrijk") confetti({particleCount:150}); };
