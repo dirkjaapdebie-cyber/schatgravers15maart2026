@@ -262,29 +262,121 @@
                 }
             };
         });
+<div id="screen-6" class="screen">
+    <h2>Doolhof: Ontwijk de Wachter!</h2>
+    <p style="font-size: 0.8rem;">De muren houden je tegen, maar de rode balk stuurt je terug!</p>
+    
+    <div id="maze-container" style="background: #ddd; border: 5px solid var(--gold);">
+        <div class="wall" style="top:60px; left:0; width:240px; height:15px;"></div>
+        <div class="wall" style="top:120px; left:60px; width:240px; height:15px;"></div>
+        <div class="wall" style="top:180px; left:0; width:240px; height:15px;"></div>
+        <div class="wall" style="top:240px; left:60px; width:240px; height:15px;"></div>
 
-        // 6. DOOLHOF
-        let pX = 5, pY = 5;
-        function moveMaze(dx, dy) {
-            const nX = pX + dx, nY = pY + dy;
-            if(nX < 0 || nX > 270 || nY < 0 || nY > 270) return;
-            let hit = false;
-            document.querySelectorAll('.wall').forEach(w => {
-                const top = parseInt(w.style.top), left = parseInt(w.style.left), width = parseInt(w.style.width), height = parseInt(w.style.height);
-                if(nX < left + width && nX + 25 > left && nY < top + height && nY + 25 > top) hit = true;
-            });
-            if(hit) { pX = 5; pY = 5; alert("Muur geraakt!"); } 
-            else { pX = nX; pY = nY; }
-            const p = document.getElementById('player-token');
-            p.style.left = pX + 'px'; p.style.top = pY + 'px';
-            if(pX > 240 && pY > 240) {
-                clearInterval(timerInterval);
-                const time = document.getElementById('main-timer').innerText;
-                db.ref('leaderboard').push({ naam: localStorage.getItem('sg_naam'), tijd: time });
-                alert("GEWONNEN! Tijd: " + time);
+        <div id="guard" style="position:absolute; top:135px; left:0; width:40px; height:45px; background:red; border-radius:5px; box-shadow: 0 0 10px rgba(255,0,0,0.5); transition: 0.1s linear; display:flex; align-items:center; justify-content:center; color:white; font-size:20px; font-weight:bold; z-index:5;">!</div>
+
+        <div id="player-token" style="position:absolute; top:15px; left:15px; width:25px; height:25px; background:var(--accent); border-radius:50%; color:white; font-size:12px; display:flex; align-items:center; justify-content:center; z-index:10; border: 2px solid white;">J</div>
+        
+        <div id="target-token" style="position:absolute; bottom:10px; right:10px; width:50px; height:50px; background:green; border-radius:10px; color:white; font-size:12px; display:flex; align-items:center; justify-content:center; font-weight:bold; z-index:2;">JEZUS</div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); width:210px; margin:20px auto; gap:15px;">
+        <button class="btn" style="grid-column:2" onclick="moveMaze(0,-30)">↑</button>
+        <button class="btn" onclick="moveMaze(-30,0)">←</button>
+        <button class="btn" onclick="moveMaze(0,30)">↓</button>
+        <button class="btn" onclick="moveMaze(30,0)">→</button>
+    </div>
+
+    <div class="card">
+        <h4>Leaderboard (Snelste tijden)</h4>
+        <div id="lb-display" style="font-weight:bold; color:var(--primary);">Laden...</div>
+    </div>
+</div>
+
+<script>
+    // Wachter animatie (Sneller en meedogenloos)
+    let guardPos = 0;
+    let guardDir = 1;
+    const guardSpeed = 8; // Hoe hoger, hoe lastiger
+
+    setInterval(() => {
+        const guard = document.getElementById('guard');
+        if(!guard) return;
+        
+        guardPos += (guardSpeed * guardDir);
+        if(guardPos > 260 || guardPos < 0) guardDir *= -1;
+        
+        guard.style.left = guardPos + 'px';
+        checkGuardCollision();
+    }, 30);
+
+    let pX = 15, pY = 15;
+
+    function moveMaze(dx, dy) {
+        const nX = pX + dx;
+        const nY = pY + dy;
+        
+        // Blijf binnen het veld
+        if(nX < 0 || nX > 270 || nY < 0 || nY > 270) return;
+        
+        // Check alleen of de muur de beweging TEGENHOUDT
+        let blocked = false;
+        document.querySelectorAll('.wall').forEach(w => {
+            const wTop = parseInt(w.style.top);
+            const wLeft = parseInt(w.style.left);
+            const wWidth = parseInt(w.style.width);
+            const wHeight = parseInt(w.style.height);
+
+            if(nX < wLeft + wWidth && nX + 25 > wLeft && nY < wTop + wHeight && nY + 25 > wTop) {
+                blocked = true;
             }
+        });
+
+        if(!blocked) { 
+            pX = nX; pY = nY; 
+            const p = document.getElementById('player-token');
+            p.style.left = pX + 'px';
+            p.style.top = pY + 'px';
         }
 
+        // Check finish
+        if(pX > 230 && pY > 230) {
+            finishGame();
+        }
+    }
+
+    function checkGuardCollision() {
+        const guardEl = document.getElementById('guard');
+        const playerEl = document.getElementById('player-token');
+        if(!guardEl || !playerEl) return;
+
+        const g = guardEl.getBoundingClientRect();
+        const p = playerEl.getBoundingClientRect();
+        
+        // De 'Hitbox' check
+        if (p.left < g.right && p.right > g.left && p.top < g.bottom && p.bottom > g.top) {
+            // BOEM! Alleen de balk reset de speler
+            pX = 15; pY = 15;
+            playerEl.style.left = '15px';
+            playerEl.style.top = '15px';
+            // Geef een korte visuele melding (optioneel)
+            playerEl.style.background = 'white';
+            setTimeout(() => { playerEl.style.background = 'var(--accent)'; }, 100);
+        }
+    }
+
+    function finishGame() {
+        if(window.gameFinished) return;
+        window.gameFinished = true;
+        
+        clearInterval(timerInterval);
+        const time = document.getElementById('main-timer').innerText;
+        const naam = localStorage.getItem('sg_naam') || "Anoniem";
+        
+        db.ref('leaderboard').push({ naam: naam, tijd: time });
+        alert("GEWELDIG! Je bent langs de wachter geglipt. Tijd: " + time);
+    }
+</script>
+       
         // 7. SYNC & RESET
         db.ref('leaderboard').orderByChild('tijd').limitToFirst(5).on('value', snap => {
             const d = document.getElementById('lb-display'); d.innerHTML = "";
