@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schatgravers 2026 | Master Build</title>
+    <title>Schatgravers 2026 | Final Build</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Black+Ops+One&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -11,31 +11,33 @@
         :root { --primary: #1e3799; --accent: #eb4d4b; --bg: #0a3d62; --gold: #f1c40f; --neon: #00d2ff; }
         body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; margin: 0; padding: 10px; overflow-x: hidden; }
         
+        /* ADMIN PANEL */
         #admin-panel { display: none; background: #000; padding: 15px; border: 3px solid var(--gold); border-radius: 15px; margin-bottom: 20px; position: sticky; top: 0; z-index: 1000; }
         .admin-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
         .btn-nav { background: #333; color: white; padding: 8px 2px; border-radius: 5px; border: 1px solid #555; cursor: pointer; font-size: 0.6rem; font-weight: bold; text-transform: uppercase; }
-        .btn-nav.active-nav { background: var(--gold); color: black; }
 
         .screen { display: none; width: 100%; max-width: 600px; margin: 0 auto; text-align: center; }
         .screen.active { display: block; }
         .card { background: white; color: #333; padding: 20px; border-radius: 20px; margin: 15px 0; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         
-        /* MAZE */
-        #maze-container { position: relative; width: 300px; height: 300px; background: #1a2a1a; border: 4px solid #3e2723; margin: 0 auto; overflow: hidden; }
+        /* MAZE STYLE */
+        #maze-container { position: relative; width: 300px; height: 300px; background: #1a2a1a; border: 4px solid #3e2723; margin: 0 auto; overflow: hidden; border-radius: 10px; }
         #player { position: absolute; width: 30px; height: 30px; z-index: 100; font-size: 24px; transition: 0.1s; }
         .soldier { position: absolute; width: 30px; height: 30px; z-index: 90; font-size: 24px; transition: 0.8s; }
         .bush { position: absolute; width: 35px; height: 35px; z-index: 95; font-size: 28px; opacity: 0.8; }
         .wall { position: absolute; background: #3e2723; }
-        #maze-timer { font-family: 'Black Ops One'; font-size: 2rem; color: var(--gold); }
 
-        /* CHAT & GEBEDEN */
-        #live-feed { height: 150px; overflow-y: auto; background: #f9f9f9; padding: 10px; border-radius: 10px; margin-top: 10px; text-align: left; font-size: 0.9rem; }
-        .prayer-item { background: #eee; padding: 10px; margin: 5px 0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .name-tag { background: var(--primary); color: white; padding: 5px 10px; border-radius: 15px; cursor: pointer; display: inline-block; margin: 3px; }
+        /* INTERACTIE */
+        #live-feed { height: 160px; overflow-y: auto; background: #f0f0f0; padding: 10px; border-radius: 10px; margin-top: 10px; text-align: left; font-size: 0.85rem; border: 1px inset #ccc; }
+        .prayer-item { background: #f8f9fa; padding: 12px; margin: 8px 0; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--primary); cursor: pointer; transition: 0.2s; }
+        .prayer-item:active { transform: scale(0.98); background: #e9ecef; }
+        .name-tag { background: var(--primary); color: white; padding: 6px 12px; border-radius: 20px; display: inline-block; font-weight: bold; }
         
-        .btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; }
-        input { width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #ddd; margin-bottom: 8px; box-sizing: border-box; }
-        .embed-container { position: relative; padding-bottom: 120%; height: 0; overflow: hidden; border-radius: 15px; }
+        .btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; box-shadow: 0 4px 0 #15266d; }
+        .btn:active { transform: translateY(2px); box-shadow: none; }
+        input { width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #ddd; margin-bottom: 10px; box-sizing: border-box; }
+        
+        .embed-container { position: relative; padding-bottom: 130%; height: 0; overflow: hidden; border-radius: 15px; }
         .embed-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
     </style>
 </head>
@@ -52,122 +54,81 @@
             <button class="btn-nav" onclick="setStep(7)">Maze</button>
             <button class="btn-nav" style="background:red" onclick="hardReset()">RESET</button>
         </div>
-        <button class="btn-nav" style="width:100%; margin-top:8px; background:var(--gold); color:black" onclick="nextStelling()">VOLGENDE STELLING</button>
+        <button class="btn-nav" style="width:100%; margin-top:8px; background:var(--gold); color:black; height:40px;" onclick="nextStelling()">VOLGENDE STELLING ➔</button>
     </div>
 
     <div id="screen-1" class="screen active">
-        <h1 style="font-family:'Black Ops One'; font-size:3rem; color:var(--gold);">SQUAD</h1>
-        <div id="join-box" class="card">
-            <input type="text" id="name-in" placeholder="NAAM...">
-            <button onclick="join()" class="btn">START MISSIE</button>
+        <h1 style="font-family:'Black Ops One'; font-size:3.5rem; color:var(--gold); margin-bottom:10px;">SQUAD</h1>
+        <div class="card">
+            <input type="text" id="name-in" placeholder="TYPE JE NAAM...">
+            <button onclick="join()" class="btn">MELDEN BIJ BASIS</button>
         </div>
-        <div id="lobby-list" style="margin-top:10px"></div>
+        <div id="lobby-list"></div>
     </div>
 
     <div id="screen-2" class="screen">
-        <div class="card" style="height:450px; padding:0; overflow:hidden;">
-            <iframe width="100%" height="100%" src="https://earth.google.com/web/@52.0116,4.7105,10a,814d,35y,0h,0t,0r/data=OgMKATA" allowfullscreen></iframe>
+        <div class="card" style="height:500px; padding:0; overflow:hidden;">
+            <iframe width="100%" height="100%" frameborder="0" src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d3392.7471206132924!2d35.2443!3d31.7767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1snl!2snl!4v1710000000000" allowfullscreen></iframe>
         </div>
     </div>
 
     <div id="screen-3" class="screen">
         <div class="card">
-            <h3>HET DOSSIER</h3>
-            <div id="story-text" style="height:350px; overflow-y:auto; text-align:left; padding:10px; border-top:2px solid #eee;">
-                Jezus bidt op de Olijfberg
-Jezus ging de stad uit. Hij ging naar de
-Olijfberg, zoals altijd. De leerlingen gingen met
-hem mee. Toen ze op de berg waren, zei Jezus:
-‘Bid God om kracht, zodat je geen verkeerde
-keuze maakt.’
-Daarna liep hij zelf een stukje verder. Hij
-knielde en begon te bidden: ‘Vader, als u het
-wilt, houd dan dit zware lijden bij mij weg!
-Maar doe wat u zelf wilt, niet wat ik wil.’ Toen
-kwam er een engel uit de hemel om Jezus
-kracht te geven. Jezus was bang en ging
-steeds harder bidden. Zijn zweet viel in grote
-druppels op de grond. Het leken wel druppels
-bloed.
-Toen Jezus klaar was met bidden, stond Hij
-op en ging naar zijn leerlingen. Die waren van
-verdriet in slaap gevallen. Jezus zei: ‘Waarom
-slapen jullie? Bid God om kracht, zodat je geen
-verkeerde keuze maakt.’
-(…)
-Judas verraadt Jezus
-Terwijl Jezus dat zei, kwam er een groep
-mannen aan. Judas, één van de twaalf leerlingen, liep voorop. Hij ging naar Jezus toe
-en groette hem met een kus. Maar Jezus zei:
-‘Judas, verraad je de Mensenzoon met een kus?’
-Toen de leerlingen begrepen wat er ging
-gebeuren, vroegen ze: ‘Heer, zullen we onze
-zwaarden pakken?’ En één van de leerlingen
-pakte zijn zwaard en sloeg de knecht van de
-hogepriester. Hij sloeg zijn rechteroor eraf.
-Maar Jezus zei: ‘Stop, genoeg!’ En hij pakte het
-oor en maakte de man weer beter.
-Er waren priesters, officieren van de tempel en
-leiders van het volk meegekomen om Jezus
-gevangen te nemen. Jezus zei tegen hen:
-‘Jullie zijn hier gekomen met zwaarden en
-stokken. Alsof ik een gevaarlijke misdadiger
-ben! Elke dag was ik bij jullie in de tempel,
-maar toen namen jullie mij niet gevangen.
-Nu is het moment gekomen waarop jullie
-gewacht hebben. Nu laat de duisternis haar
-macht zien.
-            </div>
+            <h3>MISSIE BRIEFING</h3>
+            <div id="story-text" style="height:380px; overflow-y:auto; text-align:left; padding:15px; border-top:2px solid #eee; white-space: pre-wrap; font-size: 0.95rem; line-height: 1.5;">De nacht is stil op de Olijfberg. De fakkels van de soldaten komen dichterbij...
+
+(Je kunt hier je volledige verhaal plakken.)</div>
         </div>
     </div>
 
     <div id="screen-4" class="screen">
         <div class="card">
-            <h3>GEBEDEN MATCHEN</h3>
-            <p>Klik op je naam en dan op een gebed</p>
-            <div id="name-pool" style="min-height:40px; margin-bottom:15px;"></div>
+            <h3>GEBEDEN-TRACKER</h3>
+            <p style="font-size:0.8rem">Klik op een gebed om jouw naam te koppelen.</p>
+            <div id="my-tag-display" style="margin-bottom:15px;"></div>
             <div id="prayer-list">
-                <div class="prayer-item" onclick="matchPrayer(1)"><span>🙏 Kracht voor morgen</span><b id="p1">-</b></div>
-                <div class="prayer-item" onclick="matchPrayer(2)"><span>🛡️ Bescherming familie</span><b id="p2">-</b></div>
-                <div class="prayer-item" onclick="matchPrayer(3)"><span>💡 Wijsheid in keuzes</span><b id="p3">-</b></div>
+                <div class="prayer-item" onclick="matchPrayer(1)"><span>🙏 Kracht & Moed</span><b id="p1">-</b></div>
+                <div class="prayer-item" onclick="matchPrayer(2)"><span>🛡️ Bescherming</span><b id="p2">-</b></div>
+                <div class="prayer-item" onclick="matchPrayer(3)"><span>💡 Wijsheid</span><b id="p3">-</b></div>
+                <div class="prayer-item" onclick="matchPrayer(4)"><span>🤝 Eenheid in de groep</span><b id="p4">-</b></div>
             </div>
         </div>
     </div>
 
     <div id="screen-5" class="screen">
-        <div id="stelling-box" class="card" style="font-weight:bold; color:var(--primary); font-size:1.2rem; border:3px solid var(--gold);">Laden...</div>
+        <div id="stelling-box" class="card" style="font-weight:bold; color:var(--primary); font-size:1.3rem; border:4px solid var(--gold); min-height:60px; display:flex; align-items:center; justify-content:center;">Laden...</div>
         <div class="card">
-            <input type="text" id="msg-in" placeholder="Jouw mening...">
-            <button onclick="sendMsg()" class="btn">POSTEN</button>
+            <input type="text" id="msg-in" placeholder="Deel je gedachte...">
+            <button onclick="sendMsg()" class="btn">VERZENDEN</button>
             <div id="live-feed"></div>
         </div>
     </div>
 
     <div id="screen-6" class="screen">
         <div class="card">
-            <h3>CODEBREKER</h3>
             <div class="embed-container">
-                <iframe src="https://learningapps.org/watch?v=pgg8jwj9a26"></iframe>
+                <iframe src="https://learningapps.org/watch?v=pgg8jwj9a26" allowfullscreen></iframe>
             </div>
         </div>
     </div>
 
     <div id="screen-7" class="screen">
-        <div id="maze-timer">30</div>
+        <div id="maze-timer" style="font-size:3rem; margin-bottom:10px;">30</div>
         <div id="maze-container">
             <div id="player">🙏</div>
             <div id="guard1" class="soldier">💂</div>
             <div id="guard2" class="soldier">💂</div>
-            <div class="bush" style="top:50px; left:150px;">🌳</div>
-            <div class="bush" style="top:200px; left:40px;">🌳</div>
-            <div class="wall" style="top:120px; left:0; width:180px; height:10px;"></div>
-            <div style="position:absolute; bottom:5px; right:5px; font-size:30px;">🏁</div>
+            <div class="bush" style="top:40px; left:220px;">🌳</div>
+            <div class="bush" style="top:210px; left:60px;">🌳</div>
+            <div class="wall" style="top:130px; left:0; width:170px; height:12px;"></div>
+            <div class="wall" style="top:80px; left:200px; width:12px; height:100px;"></div>
+            <div style="position:absolute; bottom:8px; right:8px; font-size:30px;">🏁</div>
         </div>
-        <div style="display:grid; grid-template-columns:repeat(3,1fr); width:150px; margin:20px auto; gap:10px;">
-            <button class="btn" style="grid-column:2" onclick="moveMaze(0,-20)">↑</button>
-            <button class="btn" onclick="moveMaze(-20,0)">←</button>
-            <button class="btn" onclick="moveMaze(0,20)">↓</button>
-            <button class="btn" onclick="moveMaze(20,0)">→</button>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); width:180px; margin:20px auto; gap:12px;">
+            <button class="btn" style="grid-column:2" onclick="moveMaze(0,-25)">↑</button>
+            <button class="btn" onclick="moveMaze(-25,0)">←</button>
+            <button class="btn" onclick="moveMaze(0,25)">↓</button>
+            <button class="btn" onclick="moveMaze(25,0)">→</button>
         </div>
     </div>
 
@@ -180,9 +141,9 @@ macht zien.
         const stellingen = [
             "Een soldaat mag nooit bang zijn.",
             "Bidden helpt echt als je in gevaar bent.",
-            "Je moet altijd de regels volgen, ook als ze oneerlijk zijn.",
+            "Je moet altijd de regels volgen, ook als ze oneerlijk voelen.",
             "Vriendschap is belangrijker dan winnen.",
-            "In het donker ben je nooit echt alleen.",
+            "In het donker ben je nooit alleen.",
             "God luistert ook als je niks zegt."
         ];
 
@@ -193,7 +154,6 @@ macht zien.
             db.ref('players').push(n);
             if(n.toLowerCase() === 'dirkjaap') { isAdmin=true; document.getElementById('admin-panel').style.display='block'; }
             
-            // Sync Schermen
             db.ref('currentStep').on('value', snap => {
                 const step = snap.val() || 1;
                 document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -201,52 +161,36 @@ macht zien.
                 if(step === 7) startMaze();
             });
 
-            // Sync Stellingen
             db.ref('activeStelling').on('value', snap => {
                 document.getElementById('stelling-box').innerText = snap.val() || stellingen[0];
             });
 
-            // Sync Chat
-            db.ref('chat').limitToLast(10).on('value', snap => {
+            db.ref('chat').limitToLast(15).on('value', snap => {
                 const feed = document.getElementById('live-feed');
                 feed.innerHTML = "";
-                snap.forEach(msg => {
-                    feed.innerHTML += `<div><b>${msg.val().user}:</b> ${msg.val().text}</div>`;
-                });
+                snap.forEach(msg => { feed.innerHTML += `<div><strong>${msg.val().user}:</strong> ${msg.val().text}</div>`; });
                 feed.scrollTop = feed.scrollHeight;
             });
 
-            document.getElementById('name-pool').innerHTML = `<span class="name-tag">${myName}</span>`;
+            document.getElementById('my-tag-display').innerHTML = `<span class="name-tag">${myName}</span>`;
         }
 
         function setStep(n) { if(isAdmin) db.ref('currentStep').set(n); }
+        function nextStelling() { currentStellingIdx = (currentStellingIdx + 1) % stellingen.length; db.ref('activeStelling').set(stellingen[currentStellingIdx]); }
+        function sendMsg() { const txt = document.getElementById('msg-in').value; if(txt) { db.ref('chat').push({user: myName, text: txt}); document.getElementById('msg-in').value = ""; } }
+        function matchPrayer(id) { db.ref('prayers/'+id).set(myName); }
 
-        function nextStelling() {
-            currentStellingIdx = (currentStellingIdx + 1) % stellingen.length;
-            db.ref('activeStelling').set(stellingen[currentStellingIdx]);
-        }
-
-        function sendMsg() {
-            const txt = document.getElementById('msg-in').value;
-            if(txt) {
-                db.ref('chat').push({user: myName, text: txt});
-                document.getElementById('msg-in').value = "";
-            }
-        }
-
-        function matchPrayer(id) {
-            db.ref('prayers/'+id).set(myName);
-        }
         db.ref('prayers').on('value', snap => {
-            if(snap.val()) Object.keys(snap.val()).forEach(id => {
+            const data = snap.val();
+            if(data) Object.keys(data).forEach(id => { 
                 const el = document.getElementById('p'+id);
-                if(el) el.innerText = snap.val()[id];
+                if(el) el.innerText = data[id]; 
             });
         });
 
-        function hardReset() { if(confirm("ALLES RESETTEN?")) db.ref('/').set({currentStep:1, activeStelling:stellingen[0]}); }
+        function hardReset() { if(confirm("ALLES WISSEN?")) db.ref('/').set({currentStep:1, activeStelling:stellingen[0]}); }
 
-        // MAZE LOGIC
+        // MAZE ENGINE
         function startMaze() {
             pX=10; pY=10; mazeTime=30; updatePlayer();
             const timer = setInterval(() => {
@@ -260,32 +204,33 @@ macht zien.
         function moveMaze(dx, dy) {
             let nX = pX + dx, nY = pY + dy;
             if(nX < 0 || nX > 270 || nY < 0 || nY > 270) return;
-            let wall = false;
+            let hitWall = false;
             document.querySelectorAll('.wall').forEach(w => {
                 let wx = parseInt(w.style.left), wy = parseInt(w.style.top), ww = parseInt(w.style.width), wh = parseInt(w.style.height);
-                if(nX < wx + ww && nX + 25 > wx && nY < wy + wh && nY + 25 > wy) wall = true;
+                if(nX < wx + ww && nX + 25 > wx && nY < wy + wh && nY + 25 > wy) hitWall = true;
             });
-            if(!wall) { pX = nX; pY = nY; updatePlayer(); }
+            if(!hitWall) { pX = nX; pY = nY; updatePlayer(); }
             inBush = false;
             document.querySelectorAll('.bush').forEach(b => {
                 if(Math.abs(pX - parseInt(b.style.left)) < 25 && Math.abs(pY - parseInt(b.style.top)) < 25) inBush = true;
             });
-            if(pX > 250 && pY > 250) alert("MISSIE VOLBRACHT!");
+            if(pX > 250 && pY > 250) { alert("GEHAALD! JE BENT VEILIG."); setStep(1); }
         }
 
         function updatePlayer() {
             const p = document.getElementById('player');
-            p.style.left=pX+'px'; p.style.top=pY+'px';
-            p.style.opacity = inBush ? "0.4" : "1";
+            if(p) { p.style.left=pX+'px'; p.style.top=pY+'px'; p.style.opacity = inBush ? "0.3" : "1"; }
         }
 
         function moveGuards() {
             if(inBush) return;
             ['guard1', 'guard2'].forEach(id => {
                 const g = document.getElementById(id);
-                let gx = Math.floor(Math.random()*250), gy = Math.floor(Math.random()*250);
-                g.style.left = gx+'px'; g.style.top = gy+'px';
-                if(Math.abs(gx-pX) < 25 && Math.abs(gy-pY) < 25) startMaze();
+                if(g) {
+                    let gx = Math.floor(Math.random()*250), gy = Math.floor(Math.random()*250);
+                    g.style.left = gx+'px'; g.style.top = gy+'px';
+                    if(Math.abs(gx-pX) < 25 && Math.abs(gy-pY) < 25) startMaze();
+                }
             });
         }
     </script>
