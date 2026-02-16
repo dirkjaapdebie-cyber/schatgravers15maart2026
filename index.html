@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schatgravers 15 Maart 2026 | Live Control</title>
+    <title>Schatgravers 15 Maart 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Black+Ops+One&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -11,26 +11,30 @@
         :root { --primary: #1e3799; --accent: #eb4d4b; --bg: #0a3d62; --gold: #f1c40f; --neon: #00d2ff; }
         body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; margin: 0; padding: 10px; overflow-x: hidden; }
         
-        /* ADMIN PANEEL */
-        #admin-panel { display: none; background: #000; padding: 15px; border: 3px solid var(--gold); border-radius: 15px; margin-bottom: 20px; position: sticky; top: 0; z-index: 1000; }
+        /* ADMIN PANEEL - Alleen voor Dirkjaap */
+        #admin-panel { display: none; background: #000; padding: 15px; border: 3px solid var(--gold); border-radius: 15px; margin-bottom: 20px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 0 20px var(--gold); }
         .admin-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
-        .btn-nav { background: #333; color: white; padding: 8px 2px; border-radius: 5px; border: 1px solid #555; cursor: pointer; font-size: 0.6rem; font-weight: bold; }
-        .btn-nav.active-nav { background: var(--gold); color: black; }
+        .btn-nav { background: #333; color: white; padding: 8px 2px; border-radius: 5px; border: 1px solid #555; cursor: pointer; font-size: 0.6rem; font-weight: bold; text-transform: uppercase; }
+        .btn-nav.active-nav { background: var(--gold); color: black; box-shadow: 0 0 10px var(--gold); }
+        .btn-reset { background: var(--accent) !important; color: white !important; }
 
         /* SCHERMEN */
-        .screen { display: none; width: 100%; max-width: 600px; margin: 0 auto; text-align: center; }
-        .screen.active { display: block; }
+        .screen { display: none; width: 100%; max-width: 500px; margin: 0 auto; text-align: center; }
+        .screen.active { display: block; animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
         .card { background: white; color: #333; padding: 20px; border-radius: 20px; margin: 15px 0; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        .scroll-area { height: 350px; overflow-y: auto; text-align: left; padding: 10px; border: 1px solid #eee; border-radius: 10px; white-space: pre-wrap; }
+        .scroll-area { height: 350px; overflow-y: auto; text-align: left; padding: 10px; border: 1px solid #eee; border-radius: 10px; white-space: pre-wrap; line-height: 1.6; }
 
-        /* WHEEL & FEED */
-        #live-feed { height: 180px; overflow-y: auto; background: #eee; border-radius: 10px; padding: 10px; display: flex; flex-direction: column-reverse; }
-        .feed-msg { background: white; padding: 8px; margin-bottom: 5px; border-radius: 8px; border-left: 4px solid var(--primary); font-size: 0.8rem; text-align: left; color: #333; }
+        /* FEED & LOBBY */
+        #lobby-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 15px; }
+        .badge { background: var(--neon); color: black; padding: 6px 12px; border-radius: 15px; font-weight: bold; font-size: 0.8rem; }
+        #live-feed { height: 180px; overflow-y: auto; background: #f4f4f4; border-radius: 10px; padding: 10px; margin-top: 10px; display: flex; flex-direction: column-reverse; }
+        .feed-item { background: white; padding: 8px; border-radius: 8px; margin-bottom: 5px; border-left: 4px solid var(--primary); font-size: 0.85rem; text-align: left; }
 
-        /* BUTTONS */
-        .btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; }
-        .btn-reset { background: #eb4d4b !important; color: white; margin-top: 10px; }
-        input { width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #ddd; margin-bottom: 10px; box-sizing: border-box; }
+        /* KNOPPEN & INPUT */
+        .btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; font-size: 1rem; }
+        input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 10px; box-sizing: border-box; font-family: 'Fredoka'; }
     </style>
 </head>
 <body>
@@ -39,56 +43,41 @@
         <div class="admin-grid">
             <button class="btn-nav" id="nav1" onclick="setStep(1)">1. Lobby</button>
             <button class="btn-nav" id="nav2" onclick="setStep(2)">2. Kaart</button>
-            <button class="btn-nav" id="nav3" onclick="setStep(3)">3. Verhaal</button>
+            <button class="btn-nav" id="nav3" onclick="setStep(3)">3. Story</button>
             <button class="btn-nav" id="nav4" onclick="setStep(4)">4. Gebeden</button>
             <button class="btn-nav" id="nav5" onclick="setStep(5)">5. Wheel</button>
             <button class="btn-nav" id="nav6" onclick="setStep(6)">6. Puzzel</button>
             <button class="btn-nav" id="nav7" onclick="setStep(7)">7. Maze</button>
-            <button class="btn-nav btn-reset" onclick="hardReset()">HARD RESET</button>
+            <button class="btn-nav btn-reset" onclick="hardReset()">RESET ALL</button>
         </div>
-        <button class="btn-nav" style="width:100%; margin-top:8px; background:var(--gold); color:black" onclick="spinWheel()">NIEUWE STELLING DRAAIEN</button>
+        <button class="btn-nav" style="width:100%; margin-top:8px; background:var(--gold); color:black" onclick="spinWheel()">DRAAI NIEUWE STELLING</button>
     </div>
 
     <div id="screen-1" class="screen active">
-        <h1 style="font-family:'Black Ops One'; font-size:3rem; color:var(--gold); margin-bottom:0;">SQUAD</h1>
-        <div id="login-box" class="card">
-            <input type="text" id="name-in" placeholder="TYP JE NAAM...">
-            <button onclick="join()" class="btn">START DE LES</button>
+        <h1 style="font-family:'Black Ops One'; font-size:3.5rem; color:var(--gold); margin-bottom:0; text-shadow: 2px 2px 0px #000;">SQUAD</h1>
+        <div id="join-area" class="card">
+            <input type="text" id="name-in" placeholder="HOE HEET JE?">
+            <button onclick="join()" class="btn">MISSIE STARTEN</button>
         </div>
-        <div class="card" style="background:rgba(255,255,255,0.1); border:1px solid var(--neon);">
-            <p style="color:var(--neon); font-size:0.8rem; font-weight:bold;">SQUAD MEMBERS ONLINE:</p>
-            <div id="lobby-list" style="display:flex; flex-wrap:wrap; gap:5px; justify-content:center;"></div>
-        </div>
-    </div>
-
-    <div id="screen-2" class="screen">
-        <h2 style="color:var(--gold)">VIRTUEEL OP DE OLIJFBERG</h2>
-        <div class="card" style="padding:0; height:450px; overflow:hidden;">
-            <iframe width="100%" height="100%" frameborder="0" src="http://googleusercontent.com/maps.google.com/8"></iframe>
-        </div>
-    </div>
-
-    <div id="screen-3" class="screen">
-        <div class="card">
-            <div class="scroll-area" id="story-content">
-                Jezus bidt op de Olijfberg... (enzovoort)
-            </div>
+        <div class="card" style="background: rgba(255,255,255,0.1); border: 2px dashed var(--neon);">
+            <p style="color:var(--neon); font-weight:bold; margin-top:0;">BIJ DE POORT:</p>
+            <div id="lobby-list"></div>
         </div>
     </div>
 
     <div id="screen-5" class="screen">
-        <div id="stelling-box" class="card" style="font-weight:bold; color:var(--primary); font-size:1.2rem; border:4px solid var(--neon); min-height:60px;">
-            De stelling verschijnt hier...
+        <div id="wheel-card" class="card" style="font-size:1.3rem; font-weight:bold; border:4px solid var(--neon); min-height:80px; display:flex; align-items:center; justify-content:center; color: var(--primary);">
+            Wachten op de stelling...
         </div>
-        <div class="card">
-            <input type="text" id="opinion-in" placeholder="Wat vind jij hiervan?">
-            <button onclick="sendOpinion()" class="btn">VERSTUREN</button>
+        <div class="card" style="padding:10px;">
+            <input type="text" id="msg-in" placeholder="Jouw mening..." style="margin-bottom:10px;">
+            <button onclick="sendMsg()" class="btn">VERSTUUR</button>
             <div id="live-feed"></div>
         </div>
     </div>
 
     <script>
-        // FIREBASE INITIALISATIE
+        // --- INITIALISATIE ---
         const firebaseConfig = { 
             apiKey: "AIzaSyBC3Dzm8PNPXw12VJNimvly5u2I93QeW54", 
             databaseURL: "https://schatgravers15maart2026-default-rtdb.europe-west1.firebasedatabase.app", 
@@ -96,80 +85,76 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        let myName = "", isAdmin = false, currentStep = 1;
+        let myName = "", isAdmin = false;
 
-        // --- DE REFRESH & RESET LOGICA ---
-
-        // 1. Forceer een frisse start bij laden van de pagina
-        window.onload = function() {
-            console.log("Systeem ververst...");
-            // We checken direct waar de groep is
-            db.ref('currentStep').once('value').then(snap => {
-                updateView(snap.val() || 1);
-            });
-        };
-
-        // 2. Hard Reset functie (voor Dirkjaap)
-        function hardReset() {
-            if(confirm("DIT ZET IEDEREEN TERUG NAAR DE LOBBY. WEET JE HET ZEKER?")) {
-                db.ref('/').update({
-                    currentStep: 1,
-                    activeStelling: "Klaar voor de start?",
-                    opinions: null // Wist ook de oude chatberichten!
-                });
-                location.reload(); // Ververs je eigen scherm
-            }
-        }
-
-        // 3. De Master Sync (Luisteren naar veranderingen)
+        // --- DE "STAY-IN-LOBBY" LOGICA ---
+        // We luisteren naar de stap, maar we forceren Dirkjaap om eerst de boel te resetten.
         db.ref('currentStep').on('value', snap => {
-            updateView(snap.val() || 1);
+            const step = snap.val() || 1;
+            // Alleen verspringen als we NIET in de inlog-fase zitten
+            if (myName !== "") {
+                showScreen(step);
+            }
         });
 
-        function updateView(step) {
-            currentStep = step;
+        function showScreen(step) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            const activeScreen = document.getElementById('screen-' + step);
-            if(activeScreen) activeScreen.classList.add('active');
+            const target = document.getElementById('screen-' + step);
+            if(target) target.classList.add('active');
             
-            // Highlight admin knop
+            // Admin knopjes kleuren
             document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active-nav'));
-            if(document.getElementById('nav'+step)) document.getElementById('nav'+step).classList.add('active-nav');
+            if(isAdmin && document.getElementById('nav'+step)) document.getElementById('nav'+step).classList.add('active-nav');
+        }
 
-            // Laad stelling ALLEEN als we op scherm 5 zijn
-            if(step === 5) {
-                db.ref('activeStelling').on('value', snap => {
-                    document.getElementById('stelling-box').innerText = snap.val() || "Wachten op de volgende stelling...";
+        // --- ADMIN FUNCTIES ---
+        function setStep(n) { if(isAdmin) db.ref('currentStep').set(n); }
+
+        function hardReset() {
+            if(confirm("DIT RESET ALLES VOOR IEDEREEN!")) {
+                db.ref('/').set({
+                    currentStep: 1,
+                    activeStelling: "Klaar voor de start?",
+                    players: {},
+                    chat: {}
+                }).then(() => {
+                    location.reload(); 
                 });
             }
         }
 
-        // --- OVERIGE FUNCTIES ---
-
-        function setStep(n) { if(isAdmin) db.ref('currentStep').set(n); }
-
+        // --- LOBBY & JOIN ---
         function join() {
             const n = document.getElementById('name-in').value.trim();
             if(n) {
                 myName = n;
                 db.ref('players').push(n);
-                document.getElementById('login-box').style.display='none';
+                document.getElementById('join-area').innerHTML = "<h3>Succes! Wacht op de start...</h3>";
+                
                 if(n.toLowerCase() === 'dirkjaap') {
                     isAdmin = true;
                     document.getElementById('admin-panel').style.display = 'block';
                 }
+                
+                // Na het inloggen direct naar de huidige stap van de groep
+                db.ref('currentStep').once('value', snap => {
+                    showScreen(snap.val() || 1);
+                });
             }
         }
 
+        // Update de lijst met namen
         db.ref('players').on('value', snap => {
-            const l = document.getElementById('lobby-list'); l.innerHTML = "";
+            const list = document.getElementById('lobby-list'); 
+            list.innerHTML = "";
             if(snap.exists()) {
                 Object.values(snap.val()).forEach(v => {
-                    l.innerHTML += `<span class="badge" style="background:var(--neon); padding:5px 10px; border-radius:10px; color:black; margin:2px;">${v}</span>`;
+                    list.innerHTML += `<span class="badge">${v}</span>`;
                 });
             }
         });
 
+        // --- STELLINGEN ---
         const stellingen = [
             "1 Ik ben nooit bang.", 
             "2 Als het spannend wordt, hoop ik dat het niet doorgaat.", 
@@ -184,21 +169,27 @@
             db.ref('activeStelling').set(s);
         }
 
-        function sendOpinion() {
-            const t = document.getElementById('opinion-in').value.trim();
-            if(t) {
-                db.ref('opinions').push({n: myName || "Anoniem", t: t});
-                document.getElementById('opinion-in').value = "";
+        db.ref('activeStelling').on('value', snap => {
+            const card = document.getElementById('wheel-card');
+            if(card) card.innerText = snap.val() || "Wachten op Dirkjaap...";
+        });
+
+        function sendMsg() {
+            const t = document.getElementById('msg-in').value.trim();
+            if(t && myName) {
+                db.ref('chat').push({n: myName, t: t});
+                document.getElementById('msg-in').value = "";
             }
         }
 
-        db.ref('opinions').limitToLast(15).on('value', snap => {
-            const f = document.getElementById('live-feed'); f.innerHTML = "";
+        db.ref('chat').limitToLast(10).on('value', snap => {
+            const f = document.getElementById('live-feed'); 
+            if(!f) return;
+            f.innerHTML = "";
             snap.forEach(c => {
-                f.innerHTML += `<div class="feed-msg"><b>${c.val().n}:</b> ${c.val().t}</div>`;
+                f.innerHTML += `<div class="feed-item"><b>${c.val().n}:</b> ${c.val().t}</div>`;
             });
         });
-
     </script>
 </body>
 </html>
