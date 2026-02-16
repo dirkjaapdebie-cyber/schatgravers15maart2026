@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schatgravers 15 Maart 2026</title>
+    <title>Schatgravers 2026 | Full Mission</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Black+Ops+One&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -11,30 +11,39 @@
         :root { --primary: #1e3799; --accent: #eb4d4b; --bg: #0a3d62; --gold: #f1c40f; --neon: #00d2ff; }
         body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; margin: 0; padding: 10px; overflow-x: hidden; }
         
-        /* ADMIN PANEEL - Alleen voor Dirkjaap */
-        #admin-panel { display: none; background: #000; padding: 15px; border: 3px solid var(--gold); border-radius: 15px; margin-bottom: 20px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 0 20px var(--gold); }
+        /* ADMIN */
+        #admin-panel { display: none; background: #000; padding: 15px; border: 3px solid var(--gold); border-radius: 15px; margin-bottom: 20px; position: sticky; top: 0; z-index: 1000; }
         .admin-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
         .btn-nav { background: #333; color: white; padding: 8px 2px; border-radius: 5px; border: 1px solid #555; cursor: pointer; font-size: 0.6rem; font-weight: bold; text-transform: uppercase; }
         .btn-nav.active-nav { background: var(--gold); color: black; box-shadow: 0 0 10px var(--gold); }
-        .btn-reset { background: var(--accent) !important; color: white !important; }
 
         /* SCHERMEN */
-        .screen { display: none; width: 100%; max-width: 500px; margin: 0 auto; text-align: center; }
-        .screen.active { display: block; animation: fadeIn 0.3s ease-in; }
+        .screen { display: none; width: 100%; max-width: 600px; margin: 0 auto; text-align: center; }
+        .screen.active { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
         .card { background: white; color: #333; padding: 20px; border-radius: 20px; margin: 15px 0; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        .scroll-area { height: 350px; overflow-y: auto; text-align: left; padding: 10px; border: 1px solid #eee; border-radius: 10px; white-space: pre-wrap; line-height: 1.6; }
+        .scroll-area { height: 350px; overflow-y: auto; text-align: left; padding: 15px; border: 1px solid #eee; border-radius: 10px; white-space: pre-wrap; line-height: 1.6; }
 
-        /* FEED & LOBBY */
-        #lobby-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 15px; }
-        .badge { background: var(--neon); color: black; padding: 6px 12px; border-radius: 15px; font-weight: bold; font-size: 0.8rem; }
-        #live-feed { height: 180px; overflow-y: auto; background: #f4f4f4; border-radius: 10px; padding: 10px; margin-top: 10px; display: flex; flex-direction: column-reverse; }
-        .feed-item { background: white; padding: 8px; border-radius: 8px; margin-bottom: 5px; border-left: 4px solid var(--primary); font-size: 0.85rem; text-align: left; }
+        /* GEBEDEN */
+        .name-pool { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 15px; justify-content: center; }
+        .drag-name { background: var(--neon); color: black; padding: 6px 10px; border-radius: 8px; cursor: grab; font-weight: bold; font-size: 0.75rem; }
+        .prayer-row { display: flex; align-items: flex-start; gap: 8px; background: #f1f2f6; padding: 10px; margin-bottom: 5px; border-radius: 10px; font-size: 0.8rem; }
+        .drop-zone { min-width: 80px; min-height: 30px; border: 2px dashed #ccc; border-radius: 5px; background: white; }
 
-        /* KNOPPEN & INPUT */
-        .btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; font-size: 1rem; }
-        input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 10px; box-sizing: border-box; font-family: 'Fredoka'; }
+        /* WOORDZOEKER & MAZE */
+        #ws-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 2px; background: #333; padding: 5px; border-radius: 8px; }
+        .ws-letter { background: white; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; cursor: pointer; }
+        .ws-letter.selected { background: var(--accent); color: white; }
+        #maze-container { position: relative; width: 300px; height: 300px; background: #111; border: 3px solid var(--neon); margin: 0 auto; overflow: hidden; }
+        #player { position: absolute; width: 30px; height: 30px; z-index: 10; font-size: 24px; }
+        .wall { position: absolute; background: #444; }
+
+        /* FEED */
+        #live-feed { height: 150px; overflow-y: auto; background: #eee; border-radius: 10px; padding: 10px; display: flex; flex-direction: column-reverse; }
+        .feed-item { background: white; padding: 6px; margin-bottom: 4px; border-radius: 6px; border-left: 3px solid var(--primary); font-size: 0.75rem; text-align: left; }
+
+        .btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; }
+        input { width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #ddd; margin-bottom: 8px; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -48,147 +57,199 @@
             <button class="btn-nav" id="nav5" onclick="setStep(5)">5. Wheel</button>
             <button class="btn-nav" id="nav6" onclick="setStep(6)">6. Puzzel</button>
             <button class="btn-nav" id="nav7" onclick="setStep(7)">7. Maze</button>
-            <button class="btn-nav btn-reset" onclick="hardReset()">RESET ALL</button>
+            <button class="btn-nav" style="background:red" onclick="hardReset()">RESET</button>
         </div>
-        <button class="btn-nav" style="width:100%; margin-top:8px; background:var(--gold); color:black" onclick="spinWheel()">DRAAI NIEUWE STELLING</button>
+        <button class="btn-nav" style="width:100%; margin-top:8px; background:var(--gold); color:black" onclick="spinWheel()">DRAAI STELLING</button>
     </div>
 
     <div id="screen-1" class="screen active">
-        <h1 style="font-family:'Black Ops One'; font-size:3.5rem; color:var(--gold); margin-bottom:0; text-shadow: 2px 2px 0px #000;">SQUAD</h1>
-        <div id="join-area" class="card">
+        <h1 style="font-family:'Black Ops One'; font-size:3rem; color:var(--gold);">SQUAD</h1>
+        <div id="join-box" class="card">
             <input type="text" id="name-in" placeholder="HOE HEET JE?">
             <button onclick="join()" class="btn">MISSIE STARTEN</button>
         </div>
-        <div class="card" style="background: rgba(255,255,255,0.1); border: 2px dashed var(--neon);">
-            <p style="color:var(--neon); font-weight:bold; margin-top:0;">BIJ DE POORT:</p>
+        <div class="card" style="background:rgba(255,255,255,0.1); border:1px solid var(--neon);">
             <div id="lobby-list"></div>
         </div>
     </div>
 
-    <div id="screen-5" class="screen">
-        <div id="wheel-card" class="card" style="font-size:1.3rem; font-weight:bold; border:4px solid var(--neon); min-height:80px; display:flex; align-items:center; justify-content:center; color: var(--primary);">
-            Wachten op de stelling...
+    <div id="screen-2" class="screen">
+        <h2 style="color:var(--gold)">LOCATIE: OLIJFBERG</h2>
+        <div class="card" style="padding:0; height:400px; overflow:hidden;">
+            <iframe width="100%" height="100%" frameborder="0" src="http://googleusercontent.com/maps.google.com/9"></iframe>
         </div>
-        <div class="card" style="padding:10px;">
-            <input type="text" id="msg-in" placeholder="Jouw mening..." style="margin-bottom:10px;">
-            <button onclick="sendMsg()" class="btn">VERSTUUR</button>
+    </div>
+
+    <div id="screen-3" class="screen">
+        <div class="card">
+            <div class="scroll-area">
+<h3 style="color:var(--primary); margin:0;">Jezus bidt op de Olijfberg</h3>
+Jezus ging de stad uit. Hij ging naar de Olijfberg, zoals altijd. De leerlingen gingen met hem mee. Toen ze op de berg waren, zei Jezus: ‘Bid God om kracht, zodat je geen verkeerde keuze maakt.’
+
+Daarna liep hij zelf een stukje verder. Hij knielde en begon te bidden: ‘Vader, als u het wilt, houd dan dit zware lijden bij mij weg! Maar doe wat u zelf wilt, niet wat ik wil.’ Toen kwam er een engel uit de hemel om Jezus kracht te geven. Jezus was bang en ging steeds harder bidden. Zijn zweet viel in grote druppels op de grond. Het leken wel druppels bloed.
+
+Toen Jezus klaar was met bidden, stond Hij op en ging naar zijn leerlingen. Die waren van verdriet in slaap gevallen. Jezus zei: ‘Waarom slapen jullie? Bid God om kracht, zodat je geen verkeerde keuze maakt.’
+(…)
+<h3 style="color:var(--primary); margin:0;">Judas verraadt Jezus</h3>
+Terwijl Jezus dat zei, kwam er een groep mannen aan. Judas, één van de twaalf leerlingen, liep voorop. Hij ging naar Jezus toe en groette hem met een kus. Maar Jezus zei: ‘Judas, verraad je de Mensenzoon met een kus?’
+
+Toen de leerlingen begrepen wat er ging gebeuren, vroegen ze: ‘Heer, zullen we onze zwaarden pakken?’ En één van de leerlingen pakte zijn zwaard en sloeg de knecht van de hogepriester. Hij sloeg zijn rechteroor eraf. Maar Jezus zei: ‘Stop, genoeg!’ En hij pakte het oor en maakte de man weer beter.
+
+Er waren priesters, officieren van de tempel en leiders van het volk meegekomen om Jezus gevangen te nemen. Jezus zei tegen hen: ‘Jullie zijn hier gekomen met zwaarden en stokken. Alsof ik een gevaarlijke misdadiger ben! Elke dag was ik bij jullie in de tempel, maar toen namen jullie mij niet gevangen. Nu is het moment gekomen waarop jullie gewacht hebben. Nu laat de duisternis haar macht zien.’
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-4" class="screen">
+        <div class="card">
+            <h3 style="margin:0">Wie bad wat?</h3>
+            <div id="name-pool" class="name-pool"></div>
+            <div class="scroll-area" id="prayer-list" style="height:350px"></div>
+        </div>
+    </div>
+
+    <div id="screen-5" class="screen">
+        <div id="stelling-box" class="card" style="font-weight:bold; color:var(--primary); border:3px solid var(--neon);">...</div>
+        <div class="card">
+            <input type="text" id="msg-in" placeholder="Jouw mening...">
+            <button onclick="sendMsg()" class="btn">POSTEN</button>
             <div id="live-feed"></div>
         </div>
     </div>
 
+    <div id="screen-6" class="screen">
+        <div class="card">
+            <h3>Woordzoeker</h3>
+            <div id="ws-grid"></div>
+            <p id="ws-words" style="font-size:0.7rem; color:var(--primary); margin:10px 0;"></p>
+            <input type="text" id="ws-sol" placeholder="WAT IS DE OPLOSSING?">
+            <button onclick="checkWS()" class="btn">CHECK</button>
+        </div>
+    </div>
+
+    <div id="screen-7" class="screen">
+        <h2 style="color:var(--gold)">ONTSNAP JUDAS!</h2>
+        <div id="maze-container">
+            <div id="player" style="left:10px; top:10px;">🙏</div>
+            <div id="soldier" style="position:absolute; width:30px; height:30px; left:250px; top:250px; font-size:24px;">💂</div>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); width:150px; margin:20px auto; gap:10px;">
+            <button class="btn" style="grid-column:2" onclick="moveMaze(0,-20)">↑</button>
+            <button class="btn" onclick="moveMaze(-20,0)">←</button>
+            <button class="btn" onclick="moveMaze(0,20)">↓</button>
+            <button class="btn" onclick="moveMaze(20,0)">→</button>
+        </div>
+    </div>
+
     <script>
-        // --- INITIALISATIE ---
-        const firebaseConfig = { 
-            apiKey: "AIzaSyBC3Dzm8PNPXw12VJNimvly5u2I93QeW54", 
-            databaseURL: "https://schatgravers15maart2026-default-rtdb.europe-west1.firebasedatabase.app", 
-            projectId: "schatgravers15maart2026" 
-        };
+        const firebaseConfig = { apiKey: "AIzaSyBC3Dzm8PNPXw12VJNimvly5u2I93QeW54", databaseURL: "https://schatgravers15maart2026-default-rtdb.europe-west1.firebasedatabase.app", projectId: "schatgravers15maart2026" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        let myName = "", isAdmin = false;
+        let myName = "", isAdmin = false, pX=10, pY=10;
 
-        // --- DE "STAY-IN-LOBBY" LOGICA ---
-        // We luisteren naar de stap, maar we forceren Dirkjaap om eerst de boel te resetten.
-        db.ref('currentStep').on('value', snap => {
-            const step = snap.val() || 1;
-            // Alleen verspringen als we NIET in de inlog-fase zitten
-            if (myName !== "") {
-                showScreen(step);
-            }
-        });
-
-        function showScreen(step) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            const target = document.getElementById('screen-' + step);
-            if(target) target.classList.add('active');
-            
-            // Admin knopjes kleuren
-            document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active-nav'));
-            if(isAdmin && document.getElementById('nav'+step)) document.getElementById('nav'+step).classList.add('active-nav');
-        }
-
-        // --- ADMIN FUNCTIES ---
-        function setStep(n) { if(isAdmin) db.ref('currentStep').set(n); }
-
-        function hardReset() {
-            if(confirm("DIT RESET ALLES VOOR IEDEREEN!")) {
-                db.ref('/').set({
-                    currentStep: 1,
-                    activeStelling: "Klaar voor de start?",
-                    players: {},
-                    chat: {}
-                }).then(() => {
-                    location.reload(); 
-                });
-            }
-        }
-
-        // --- LOBBY & JOIN ---
         function join() {
             const n = document.getElementById('name-in').value.trim();
-            if(n) {
-                myName = n;
-                db.ref('players').push(n);
-                document.getElementById('join-area').innerHTML = "<h3>Succes! Wacht op de start...</h3>";
-                
-                if(n.toLowerCase() === 'dirkjaap') {
-                    isAdmin = true;
-                    document.getElementById('admin-panel').style.display = 'block';
-                }
-                
-                // Na het inloggen direct naar de huidige stap van de groep
-                db.ref('currentStep').once('value', snap => {
-                    showScreen(snap.val() || 1);
-                });
-            }
-        }
-
-        // Update de lijst met namen
-        db.ref('players').on('value', snap => {
-            const list = document.getElementById('lobby-list'); 
-            list.innerHTML = "";
-            if(snap.exists()) {
-                Object.values(snap.val()).forEach(v => {
-                    list.innerHTML += `<span class="badge">${v}</span>`;
-                });
-            }
-        });
-
-        // --- STELLINGEN ---
-        const stellingen = [
-            "1 Ik ben nooit bang.", 
-            "2 Als het spannend wordt, hoop ik dat het niet doorgaat.", 
-            "3 Ik help anderen die het moeilijk hebben.", 
-            "4 Als ik bang ben, ga ik bidden.", 
-            "5 Ik heb de kracht van God weleens gevoeld.", 
-            "6 Ik wil graag weten wat God van mij wil."
-        ];
-
-        function spinWheel() {
-            const s = stellingen[Math.floor(Math.random()*stellingen.length)];
-            db.ref('activeStelling').set(s);
-        }
-
-        db.ref('activeStelling').on('value', snap => {
-            const card = document.getElementById('wheel-card');
-            if(card) card.innerText = snap.val() || "Wachten op Dirkjaap...";
-        });
-
-        function sendMsg() {
-            const t = document.getElementById('msg-in').value.trim();
-            if(t && myName) {
-                db.ref('chat').push({n: myName, t: t});
-                document.getElementById('msg-in').value = "";
-            }
-        }
-
-        db.ref('chat').limitToLast(10).on('value', snap => {
-            const f = document.getElementById('live-feed'); 
-            if(!f) return;
-            f.innerHTML = "";
-            snap.forEach(c => {
-                f.innerHTML += `<div class="feed-item"><b>${c.val().n}:</b> ${c.val().t}</div>`;
+            if(!n) return;
+            myName = n; db.ref('players').push(n);
+            document.getElementById('join-box').innerHTML = "<h3>Wacht op de start...</h3>";
+            if(n.toLowerCase() === 'dirkjaap') { isAdmin=true; document.getElementById('admin-panel').style.display='block'; }
+            db.ref('currentStep').on('value', snap => {
+                const step = snap.val() || 1;
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                document.getElementById('screen-'+step).classList.add('active');
+                if(step === 4) initPrayers();
+                if(step === 6) initWS();
+                if(step === 7) initMaze();
             });
+        }
+
+        function setStep(n) { if(isAdmin) db.ref('currentStep').set(n); }
+        function hardReset() { if(confirm("ALLES RESETTEN?")) db.ref('/').set({currentStep:1, activeStelling:"Klaar?", chat:null}); }
+
+        // GEBEDEN
+        const prayers = [
+            {n:"Abraham", p:"Ik bid dat er geen onschuldige mensen in de stad Sodom gedood zullen worden."},
+            {n:"Agur", p:"Ik bid om altijd eerlijk te zijn en om precies te krijgen wat ik nodig heb."},
+            {n:"David", p:"Ik bid om vergeving omdat ik iemand vermoord heb."},
+            {n:"Elia", p:"Ik bid dat God mij antwoord geeft."},
+            {n:"Gideon", p:"Ik vraag God om een teken."},
+            {n:"Hanna", p:"Ik bid om een zoon."},
+            {n:"Jesaja", p:"Ik bid dat God vanuit de hemel naar ons kijkt."},
+            {n:"Jezus", p:"Ik bid voor alle mensen die in mij zullen geloven."},
+            {n:"Jezus", p:"Ik bid: ‘Doe wat U zelf wilt, niet wat ik wil’."},
+            {n:"Jezus", p:"Ik bid: ‘Vader, vergeef de mensen die mij doden’."},
+            {n:"Job", p:"Ik bid dat God aan mij denkt, ik ben ongelukkig."},
+            {n:"Mozes", p:"Ik probeer God op andere gedachten te brengen."},
+            {n:"Nehemia", p:"Ik doe in stilte een schietgebedje om hulp."},
+            {n:"Paulus", p:"Ik vraag aan anderen om voor mij te bidden."},
+            {n:"Salomo", p:"Ik bid om het verschil tussen goed en kwaad."}
+        ];
+        function initPrayers() {
+            const p = document.getElementById('name-pool'), l = document.getElementById('prayer-list');
+            if(p.children.length > 0) return;
+            [...prayers].sort(()=>Math.random()-0.5).forEach((o, i) => {
+                const d = document.createElement('div'); d.className='drag-name'; d.innerText=o.n; d.draggable=true; d.id='n-'+i;
+                d.ondragstart = (e) => e.dataTransfer.setData('text', e.target.id); p.appendChild(d);
+            });
+            prayers.forEach(o => {
+                const r = document.createElement('div'); r.className='prayer-row';
+                r.innerHTML = `<div class="drop-zone" data-ans="${o.n}"></div><div style="flex:1">${o.p}</div>`;
+                l.appendChild(r);
+            });
+            document.querySelectorAll('.drop-zone').forEach(dz => {
+                dz.ondragover = e => e.preventDefault();
+                dz.ondrop = e => {
+                    const el = document.getElementById(e.dataTransfer.getData('text'));
+                    if(el.innerText === dz.dataset.ans) dz.appendChild(el);
+                };
+            });
+        }
+
+        // WHEEL
+        const stellingen = ["1 Ik ben nooit bang.", "2 Bij spanning hoop ik dat het niet doorgaat.", "3 Ik help anderen die het moeilijk hebben.", "4 Bij angst ga ik bidden.", "5 Ik heb de kracht van God gevoeld.", "6 Ik wil weten wat God wil."];
+        function spinWheel() { db.ref('activeStelling').set(stellingen[Math.floor(Math.random()*6)]); }
+        db.ref('activeStelling').on('value', snap => { if(document.getElementById('stelling-box')) document.getElementById('stelling-box').innerText = snap.val(); });
+        function sendMsg() { const t = document.getElementById('msg-in').value; if(t) { db.ref('chat').push({n:myName, t:t}); document.getElementById('msg-in').value=""; } }
+        db.ref('chat').limitToLast(10).on('value', snap => {
+            const f = document.getElementById('live-feed'); if(!f) return;
+            f.innerHTML = ""; snap.forEach(c => f.innerHTML += `<div class="feed-item"><b>${c.val().n}:</b> ${c.val().t}</div>`);
+        });
+
+        // WS
+        function initWS() {
+            const g = document.getElementById('ws-grid'), w = ["GETHSEMANE", "JUDAS", "KRACHT", "OLIJFBERG", "GEBED"];
+            if(g.children.length > 0) return;
+            document.getElementById('ws-words').innerText = w.join(" • ");
+            let letters = Array(144).fill(''); const sol = "GODGEEFTKRACHT".split(''); let sIdx = 0;
+            for(let i=0; i<144; i++) {
+                if(i % 10 === 0 && sIdx < sol.length) letters[i] = sol[sIdx++];
+                else letters[i] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)];
+            }
+            letters.forEach(l => {
+                const d = document.createElement('div'); d.className='ws-letter'; d.innerText=l;
+                d.onclick = () => d.classList.toggle('selected'); g.appendChild(d);
+            });
+        }
+        function checkWS() { if(document.getElementById('ws-sol').value.toUpperCase().replace(/\s/g,'') === "GODGEEFTKRACHT") alert("GECRACKT!"); }
+
+        // MAZE
+        function initMaze() {
+            const c = document.getElementById('maze-container'); if(c.querySelectorAll('.wall').length > 0) return;
+            const w = [{t:60, l:0, w:200, h:10}, {t:150, l:100, w:200, h:10}, {t:230, l:0, w:180, h:10}];
+            w.forEach(o => {
+                const d = document.createElement('div'); d.className='wall';
+                d.style.top=o.t+'px'; d.style.left=o.l+'px'; d.style.width=o.w+'px'; d.style.height=o.h+'px'; c.appendChild(d);
+            });
+        }
+        function moveMaze(dx,dy) {
+            pX += dx; pY += dy; pX = Math.max(0, Math.min(270, pX)); pY = Math.max(0, Math.min(270, pY));
+            const p = document.getElementById('player'); p.style.left=pX+'px'; p.style.top=pY+'px';
+            if(pX > 240 && pY > 240) alert("JE BENT ONTSNAPT!");
+        }
+
+        db.ref('players').on('value', snap => {
+            const l = document.getElementById('lobby-list'); l.innerHTML = "";
+            if(snap.exists()) Object.values(snap.val()).forEach(v => l.innerHTML += `<span style="background:var(--neon); color:black; padding:4px 8px; border-radius:8px; margin:2px; font-size:0.7rem; font-weight:bold;">${v}</span>`);
         });
     </script>
 </body>
