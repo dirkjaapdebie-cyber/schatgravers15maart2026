@@ -22,7 +22,7 @@
         #screen-title { font-weight: 600; font-size: 1.2rem; }
 
         h2 { color: #1e3799; margin-bottom: 15px; font-size: 1.8rem; text-align: center; }
-        input, textarea { width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #ddd; border-radius: 15px; font-family: 'Fredoka', sans-serif; }
+        input, textarea { width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #ddd; border-radius: 15px; font-family: 'Fredoka', sans-serif; font-size: 16px; }
         .btn { background: #1e3799; color: white; border: none; padding: 15px; border-radius: 50px; font-weight: bold; width: 100%; cursor: pointer; font-size: 1.1rem; margin: 10px 0; }
 
         /* Scherm 1 - Login */
@@ -212,7 +212,7 @@
         <div id="stellingenContainer"></div>
     </div>
 
-    <!-- Scherm 5: DRAG & DROP NAMEN EN GEBEDEN (NIEUW!) -->
+    <!-- Scherm 5: DRAG & DROP NAMEN EN GEBEDEN -->
     <div id="screen5" class="screen">
         <h2>🙏 Bij welk gebed hoort wie?</h2>
         <p style="text-align:center; margin-bottom:10px;">Sleep de bijbelfiguur naar het juiste gebed</p>
@@ -260,6 +260,7 @@
         appId: "1:30561512857:web:fcb7868b87d292d1c97708"
     };
     
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     
@@ -270,7 +271,7 @@
     let selectedLetters = [];
     let guardInterval;
     let gameActive = true;
-    let dragMatches = {}; // Voor drag & drop
+    let dragMatches = {};
     
     const stellingen = [
         "Ik ben nooit bang.",
@@ -281,7 +282,7 @@
         "Ik wil meer weten over wat God wil."
     ];
     
-    // GEBEDEN MATCH DATA (15 stuks)
+    // GEBEDEN MATCH DATA
     const gebedenMatch = [
         { figuur: "Abraham", gebed: "Ik bid dat er geen onschuldige mensen in de stad Sodom gedood zullen worden. (Genesis 18:22-33)" },
         { figuur: "Agur", gebed: "Ik bid om altijd eerlijk te zijn en om precies te krijgen wat ik nodig heb. (Spreuken 30:7-9)" },
@@ -300,8 +301,12 @@
         { figuur: "Salomo", gebed: "Ik bid om het verschil tussen goed en kwaad te zien. (1 Koningen 3:9)" }
     ];
     
-    // Navigatie
-    function nextScreen() {
+    // WOORDEN VOOR WOORDVELD
+    const words = ['GETSEMANE', 'OLIJFBERG', 'JEZUS', 'NARCISSEN', 'OPBLOEIEN'];
+    let currentWord = '';
+    
+    // ========== NAVIGATIE ==========
+    window.nextScreen = function() {
         document.getElementById(`screen${currentScreen}`).classList.remove('active');
         currentScreen = currentScreen < 7 ? currentScreen + 1 : 1;
         document.getElementById(`screen${currentScreen}`).classList.add('active');
@@ -309,6 +314,7 @@
         const titles = ['', 'Inloggen', 'Olijfberg', 'Verhaal', 'Rad', 'Gebeden', 'Woordveld', 'Doolhof'];
         document.getElementById('screen-title').innerText = titles[currentScreen];
         
+        // Initialiseer schermen wanneer ze voor het eerst getoond worden
         if(currentScreen === 4) initStellingen();
         if(currentScreen === 5) initDragDrop();
         if(currentScreen === 6) initWordGame();
@@ -317,32 +323,50 @@
             if(guardInterval) clearInterval(guardInterval);
             guardInterval = setInterval(moveGuards, 800);
         }
-    }
+    };
     
-    // SCHERM 1: LOGIN
-    function login() {
+    // ========== SCHERM 1: LOGIN ==========
+    window.login = function() {
         const name = document.getElementById('playerName').value.trim();
         if(name) {
             currentUser = name;
             localStorage.setItem('spelerNaam', name);
-            db.ref('spelers').push({ naam: name, tijd: Date.now() });
-            document.getElementById('playerName').value = '';
-            nextScreen();
-        }
-    }
-    
-    db.ref('spelers').on('value', (snap) => {
-        const list = document.getElementById('liveNames');
-        list.innerHTML = '';
-        if(snap.exists()) {
-            Object.values(snap.val()).reverse().forEach(p => {
-                list.innerHTML += `<div class="name-tag">👋 <b>${p.naam}</b> doet mee!</div>`;
+            
+            // Push naar Firebase
+            db.ref('spelers').push({ 
+                naam: name, 
+                tijd: Date.now() 
             });
+            
+            document.getElementById('playerName').value = '';
+            nextScreen(); // Ga naar scherm 2
+        } else {
+            alert('Voer je naam in!');
+        }
+    };
+    
+    // Live feed van namen
+    db.ref('spelers').on('value', (snapshot) => {
+        const list = document.getElementById('liveNames');
+        if(list) {
+            list.innerHTML = '';
+            if(snapshot.exists()) {
+                const spelers = snapshot.val();
+                Object.values(spelers).reverse().forEach(speler => {
+                    const div = document.createElement('div');
+                    div.className = 'name-tag';
+                    div.innerHTML = `👋 <b>${speler.naam}</b> doet mee!`;
+                    list.appendChild(div);
+                });
+            }
         }
     });
     
-    // SCHERM 4: RAD VAN FORTUIN
+    // ========== SCHERM 4: RAD VAN FORTUIN ==========
     function initStellingen() {
+        const container = document.getElementById('stellingenContainer');
+        if(!container) return;
+        
         let html = '';
         stellingen.forEach((s, i) => {
             html += `<div id="stelling${i+1}" class="stelling-card">
@@ -352,8 +376,9 @@
                 <div class="answers-feed" id="feed${i+1}"></div>
             </div>`;
         });
-        document.getElementById('stellingenContainer').innerHTML = html;
+        container.innerHTML = html;
         
+        // Live feeds voor elke stelling
         for(let i=1; i<=6; i++) {
             db.ref(`antwoorden/stelling${i}`).on('value', (snap) => {
                 const feed = document.getElementById(`feed${i}`);
@@ -369,7 +394,7 @@
         }
     }
     
-    function spinWheel() {
+    window.spinWheel = function() {
         const wheel = document.getElementById('wheel');
         const spin = Math.floor(Math.random() * 360) + 720;
         wheel.style.transform = `rotate(${spin}deg)`;
@@ -379,14 +404,17 @@
             currentStelling = segment;
             document.getElementById('currentStelling').innerHTML = `<h3>Stelling ${segment}</h3>`;
             
+            // Verberg alle stellingen, toon alleen de gekozen
             for(let i=1; i<=6; i++) {
-                document.getElementById(`stelling${i}`).classList.remove('active');
+                const el = document.getElementById(`stelling${i}`);
+                if(el) el.classList.remove('active');
             }
-            document.getElementById(`stelling${segment}`).classList.add('active');
+            const activeEl = document.getElementById(`stelling${segment}`);
+            if(activeEl) activeEl.classList.add('active');
         }, 3000);
-    }
+    };
     
-    function saveAnswer(nr) {
+    window.saveAnswer = function(nr) {
         const antwoord = document.getElementById(`antwoord${nr}`).value.trim();
         if(antwoord && currentUser) {
             db.ref(`antwoorden/stelling${nr}`).push({
@@ -395,12 +423,16 @@
                 tijd: Date.now()
             });
             document.getElementById(`antwoord${nr}`).value = '';
+        } else {
+            alert('Je moet eerst inloggen met je naam!');
         }
-    }
+    };
     
-    // SCHERM 5: DRAG & DROP GEBEDEN
-    function initDragDrop() {
+    // ========== SCHERM 5: DRAG & DROP ==========
+    window.initDragDrop = function() {
         const container = document.getElementById('dragDropArea');
+        if(!container) return;
+        
         dragMatches = {};
         
         container.innerHTML = `
@@ -411,7 +443,7 @@
         const figuurContainer = document.getElementById('figuurContainer');
         const gebedContainer = document.getElementById('gebedContainer');
         
-        // Unieke figuren voor drag
+        // Unieke figuren
         const uniekeFiguren = [...new Set(gebedenMatch.map(g => g.figuur))];
         
         uniekeFiguren.forEach(figuur => {
@@ -430,7 +462,9 @@
         });
         
         // Gebeden (geshuffled)
-        gebedenMatch.sort(() => Math.random() - 0.5).forEach((item, index) => {
+        const shuffled = [...gebedenMatch].sort(() => Math.random() - 0.5);
+        
+        shuffled.forEach((item, index) => {
             const div = document.createElement('div');
             div.className = 'gebed-card';
             div.id = `gebed-${index}`;
@@ -454,7 +488,7 @@
                     div.classList.add('matched');
                     dragMatches[`gebed-${index}`] = figuur;
                     
-                    // Maak figuur niet meer dragbaar (opgebruikt)
+                    // Maak figuur niet meer dragbaar
                     const figElem = document.getElementById(`fig-${figuur.replace(/\s+/g, '')}`);
                     if(figElem) {
                         figElem.draggable = false;
@@ -467,22 +501,20 @@
             
             gebedContainer.appendChild(div);
         });
-    }
+    };
     
-    function checkAllMatches() {
+    window.checkAllMatches = function() {
         const totalMatches = Object.keys(dragMatches).length;
+        const resultDiv = document.getElementById('dragResult');
         if(totalMatches === gebedenMatch.length) {
-            document.getElementById('dragResult').innerHTML = '🎉 Geweldig! Alle gebeden zijn goed gekoppeld!';
+            resultDiv.innerHTML = '🎉 Geweldig! Alle gebeden zijn goed gekoppeld!';
         } else {
-            document.getElementById('dragResult').innerHTML = `Je hebt ${totalMatches} van de ${gebedenMatch.length} gebeden goed.`;
+            resultDiv.innerHTML = `Je hebt ${totalMatches} van de ${gebedenMatch.length} gebeden goed.`;
         }
-    }
+    };
     
-    // SCHERM 6: WOORDVELD
-    const words = ['GETSEMANE', 'OLIJFBERG', 'JEZUS', 'NARCISSEN', 'OPBLOEIEN'];
-    let currentWord = '';
-    
-    function initWordGame() {
+    // ========== SCHERM 6: WOORDVELD ==========
+    window.initWordGame = function() {
         currentWord = words[Math.floor(Math.random() * words.length)];
         document.getElementById('targetDisplay').innerText = '_ '.repeat(currentWord.length);
         
@@ -490,7 +522,12 @@
         const grid = document.getElementById('letterGrid');
         grid.innerHTML = '';
         
-        for(let i=letters.length; i<16; i++) letters.push(String.fromCharCode(65 + Math.floor(Math.random()*26)));
+        // Vul aan tot 16 letters met willekeurige letters
+        while(letters.length < 16) {
+            letters.push(String.fromCharCode(65 + Math.floor(Math.random() * 26)));
+        }
+        
+        // Schud de letters
         letters.sort(() => Math.random() - 0.5);
         
         letters.forEach(l => {
@@ -500,7 +537,9 @@
             tile.onclick = () => toggleLetter(tile, l);
             grid.appendChild(tile);
         });
-    }
+        
+        selectedLetters = [];
+    };
     
     function toggleLetter(tile, letter) {
         tile.classList.toggle('selected');
@@ -521,22 +560,22 @@
         document.getElementById('targetDisplay').innerText = display;
     }
     
-    function checkWord() {
+    window.checkWord = function() {
         const current = document.getElementById('targetDisplay').innerText.replace(/ /g, '');
         if(current === currentWord) {
             document.getElementById('wordResult').innerHTML = '🎉 Goed gedaan!';
         } else {
             document.getElementById('wordResult').innerHTML = '❌ Nog niet goed';
         }
-    }
+    };
     
-    function resetWordGame() {
+    window.resetWordGame = function() {
         selectedLetters = [];
         document.querySelectorAll('.letter-tile').forEach(t => t.classList.remove('selected'));
         initWordGame();
-    }
+    };
     
-    // SCHERM 7: DOOLHOF
+    // ========== SCHERM 7: DOOLHOF ==========
     let maze = {
         disciple: {x: 2, y: 2},
         jesus: {x: 22, y: 12},
@@ -567,10 +606,10 @@
         ]
     };
     
-    function initMaze() {
+    window.initMaze = function() {
         gameActive = true;
         drawMaze();
-    }
+    };
     
     function drawMaze() {
         const canvas = document.getElementById('mazeCanvas');
@@ -641,13 +680,13 @@
         ctx.fillText('✝️', maze.jesus.x*cs + 10, maze.jesus.y*cs + 32);
     }
     
-    function moveDisciple(dx, dy) {
+    window.moveDisciple = function(dx, dy) {
         if(!gameActive) return;
         
         let nx = maze.disciple.x + dx;
         let ny = maze.disciple.y + dy;
         
-        if(nx >= 0 && nx < 24 && ny >= 0 && ny < 14) {
+        if(nx >= 0 && nx < 25 && ny >= 0 && ny < 15) {
             const hitWall = maze.walls.some(w => w.x === nx && w.y === ny);
             if(!hitWall) {
                 maze.disciple = {x: nx, y: ny};
@@ -655,7 +694,7 @@
         }
         drawMaze();
         checkGuardCollision();
-    }
+    };
     
     function moveGuards() {
         if(!gameActive) return;
@@ -676,7 +715,7 @@
             newX = Math.round(newX);
             newY = Math.round(newY);
             
-            if(newX >= 0 && newX < 24 && newY >= 0 && newY < 14) {
+            if(newX >= 0 && newX < 25 && newY >= 0 && newY < 15) {
                 const hitWall = maze.walls.some(w => w.x === newX && w.y === newY);
                 if(!hitWall) {
                     return {x: newX, y: newY, speed: guard.speed};
@@ -696,17 +735,18 @@
         
         if(caught) {
             gameActive = false;
-            document.getElementById('guardWarning').innerHTML = '😵 GEPAKT! Je begint opnieuw...';
-            document.getElementById('guardWarning').style.background = '#c0392b';
+            const warning = document.getElementById('guardWarning');
+            warning.innerHTML = '😵 GEPAKT! Je begint opnieuw...';
+            warning.style.background = '#c0392b';
             setTimeout(() => {
                 resetMaze();
-                document.getElementById('guardWarning').innerHTML = '🚨 8 WACHTERS ACHTERVOLGEN JE! 🚨';
-                document.getElementById('guardWarning').style.background = '#e74c3c';
+                warning.innerHTML = '🚨 8 WACHTERS ACHTERVOLGEN JE! 🚨';
+                warning.style.background = '#e74c3c';
             }, 2000);
         }
     }
     
-    function finishMaze() {
+    window.finishMaze = function() {
         if(maze.disciple.x === maze.jesus.x && maze.disciple.y === maze.jesus.y) {
             gameActive = false;
             clearInterval(guardInterval);
@@ -714,9 +754,9 @@
         } else {
             alert('Je bent nog niet bij Jezus! Blijf zoeken...');
         }
-    }
+    };
     
-    function resetMaze() {
+    window.resetMaze = function() {
         maze.disciple = {x: 2, y: 2};
         maze.guards = [
             {x: 8, y: 5, speed: 1.2},
@@ -730,10 +770,10 @@
         ];
         gameActive = true;
         drawMaze();
-    }
+    };
     
-    // Start
-    window.onload = () => {
+    // ========== INIT ==========
+    window.onload = function() {
         const saved = localStorage.getItem('spelerNaam');
         if(saved) document.getElementById('playerName').value = saved;
     };
