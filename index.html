@@ -40,11 +40,21 @@
         .story-text { line-height: 1.8; font-size: 1.1rem; }
         .story-text h3 { color: #1e3799; margin: 15px 0 10px; }
 
-        /* Scherm 4 - LearningApps Embed */
+        /* Scherm 4 - Rad van Fortuin */
+        .wheel-wrapper { position: relative; width: 280px; height: 280px; margin: 10px auto; }
+        #wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #333; transition: transform 3s cubic-bezier(0.25, 0.1, 0.15, 1); background: conic-gradient(#f6b93b 0deg 60deg, #1e3799 60deg 120deg, #20bf6b 120deg 180deg, #e55039 180deg 240deg, #fa983a 240deg 300deg, #b71540 300deg 360deg); }
+        #pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 40px; color: #333; z-index: 10; }
+        .stelling-card { background: #f8f9fa; padding: 15px; border-radius: 15px; margin: 15px 0; border: 2px solid #1e3799; display: none; }
+        .stelling-card.active { display: block; }
+        .answers-feed { background: #f1f2f6; padding: 10px; border-radius: 10px; margin-top: 10px; max-height: 150px; overflow-y: auto; }
+        .answer-item { background: white; padding: 5px 10px; margin: 3px 0; border-radius: 5px; border-left: 3px solid #20bf6b; font-size: 0.85rem; }
+        #currentStelling { text-align: center; font-size: 1.3rem; margin: 15px 0; color: #1e3799; font-weight: bold; }
+
+        /* Scherm 5 - LearningApps Embed */
         .learningapps-container { width: 100%; height: 500px; border-radius: 20px; overflow: hidden; border: 3px solid #1e3799; margin: 10px 0; }
         .learningapps-container iframe { width: 100%; height: 100%; border: 0; }
 
-        /* Scherm 5 - Drag & Drop Gebeden */
+        /* Scherm 6 - Drag & Drop Gebeden */
         .drag-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
         .figuur-col, .gebed-col { background: #f1f2f6; padding: 15px; border-radius: 15px; max-height: 450px; overflow-y: auto; }
         .figuur-card { background: white; padding: 12px; margin: 8px 0; border-radius: 12px; border: 2px solid #1e3799; cursor: grab; text-align: center; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -53,13 +63,13 @@
         .gebed-card.matched { background: #c8e6c9; border: 2px solid #20bf6b; border-style: solid; }
         .match-badge { display: inline-block; background: #20bf6b; color: white; padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; margin-top: 5px; }
 
-        /* Scherm 6 - Woordveld */
+        /* Scherm 7 - Woordveld */
         .word-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
         .letter-tile { background: #1e3799; color: white; font-size: 1.8rem; font-weight: bold; padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
         .letter-tile.selected { background: #f6b93b; color: #1e3799; transform: scale(0.95); }
         .target-word { font-size: 2rem; letter-spacing: 10px; text-align: center; margin: 20px 0; font-weight: bold; color: #1e3799; }
 
-        /* Scherm 7 - Uitdagend Doolhof (Labyrinth) */
+        /* Scherm 8 - Uitdagend Labyrinth */
         .maze-container { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; background: #2d5a27; border-radius: 20px; border: 4px solid #8B4513; }
         #mazeCanvas { width: 800px; height: 600px; display: block; margin: 0 auto; background: #2d5a27; }
         .maze-controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 200px; margin: 20px auto; }
@@ -82,7 +92,7 @@
         </div>
     </div>
 
-    <!-- Scherm 1: Inloggen (blijft actief tot admin op Volgende klikt) -->
+    <!-- Scherm 1: Inloggen -->
     <div id="screen1" class="screen active">
         <h2>👋 Welkom Schatgraver!</h2>
         <input type="text" id="playerName" placeholder="Jouw naam...">
@@ -122,8 +132,20 @@
         </div>
     </div>
 
-    <!-- Scherm 4: LearningApps Oefening -->
+    <!-- Scherm 4: RAD VAN FORTUIN + 6 STELLINGEN -->
     <div id="screen4" class="screen">
+        <h2>🎡 Rad van Fortuin</h2>
+        <div class="wheel-wrapper">
+            <div id="wheel"></div>
+            <div id="pointer">▼</div>
+        </div>
+        <button class="btn" style="background:#f6b93b; color:#1e3799;" onclick="spinWheel()">🎲 Draai aan het rad!</button>
+        <div id="currentStelling"></div>
+        <div id="stellingenContainer"></div>
+    </div>
+
+    <!-- Scherm 5: LearningApps Oefening -->
+    <div id="screen5" class="screen">
         <h2>🎮 Interactieve Oefening</h2>
         <div class="learningapps-container">
             <iframe src="https://learningapps.org/watch?v=pgg8jwj9a26" style="border:0px;width:100%;height:100%" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
@@ -131,8 +153,8 @@
         <p style="text-align:center; margin-top:10px;">Maak de oefening op je eigen tempo!</p>
     </div>
 
-    <!-- Scherm 5: Drag & Drop Gebeden -->
-    <div id="screen5" class="screen">
+    <!-- Scherm 6: Drag & Drop Gebeden -->
+    <div id="screen6" class="screen">
         <h2>🙏 Bij welk gebed hoort wie?</h2>
         <p style="text-align:center; margin-bottom:10px;">Sleep de bijbelfiguur naar het juiste gebed</p>
         <div class="drag-container" id="dragDropArea"></div>
@@ -140,8 +162,8 @@
         <div id="dragResult" style="text-align:center; margin-top:15px; font-weight:bold;"></div>
     </div>
 
-    <!-- Scherm 6: Woordveld -->
-    <div id="screen6" class="screen">
+    <!-- Scherm 7: Woordveld -->
+    <div id="screen7" class="screen">
         <h2>🔤 Zoek de woorden</h2>
         <p>Vorm woorden rond Pasen: <strong>GETSEMANE • OLIJFBERG • JEZUS • NARCISSEN • OPBLOEIEN</strong></p>
         <div class="target-word" id="targetDisplay"></div>
@@ -150,8 +172,8 @@
         <div id="wordResult" style="text-align:center; margin-top:10px;"></div>
     </div>
 
-    <!-- Scherm 7: Uitdagend Labyrinth (voor echte schatgravers!) -->
-    <div id="screen7" class="screen">
+    <!-- Scherm 8: Uitdagend Labyrinth -->
+    <div id="screen8" class="screen">
         <h2>🏃 Het Grote Labyrinth</h2>
         <div class="danger-indicator" id="guardWarning">🚨 10 WACHTERS PATROUILLEREN! 🚨</div>
         <div class="jesus-indicator" id="jesusDistance">✝️ Jezus wacht in het midden...</div>
@@ -188,11 +210,21 @@
 
     let currentScreen = 1;
     let currentUser = '';
+    let currentStelling = 0;
     let selectedLetters = [];
     let dragMatches = {};
     let gameActive = true;
     let gameStartTime;
     let guardInterval, jesusMoveInterval, distanceInterval;
+
+    const stellingen = [
+        "Ik ben nooit bang.",
+        "Als ik iets heel spannend vind, hoop ik dat het niet doorgaat.",
+        "Als ik zie dat iemand het moeilijk heeft, probeer ik te helpen.",
+        "Als ik bang ben, ga ik bidden.",
+        "Ik heb weleens kracht van God gevoeld.",
+        "Ik zou graag meer willen weten over wat God precies wil."
+    ];
 
     const gebedenMatch = [
         { figuur: "Abraham", gebed: "Ik bid dat er geen onschuldige mensen in de stad Sodom gedood zullen worden. (Genesis 18:22-33)" },
@@ -215,22 +247,23 @@
     const words = ['GETSEMANE', 'OLIJFBERG', 'JEZUS', 'NARCISSEN', 'OPBLOEIEN'];
     let currentWord = '';
 
-    // ========== NAVIGATIE (Alleen via admin knop) ==========
+    // ========== NAVIGATIE ==========
     window.nextScreen = function() {
         document.getElementById(`screen${currentScreen}`).classList.remove('active');
-        currentScreen = currentScreen < 7 ? currentScreen + 1 : 1;
+        currentScreen = currentScreen < 8 ? currentScreen + 1 : 1;
         document.getElementById(`screen${currentScreen}`).classList.add('active');
         
-        const titles = ['', 'Inloggen', 'Olijfberg', 'Verhaal', 'LearningApps', 'Gebeden', 'Woordveld', 'Doolhof'];
+        const titles = ['', 'Inloggen', 'Olijfberg', 'Verhaal', 'Rad van Fortuin', 'LearningApps', 'Gebeden', 'Woordveld', 'Doolhof'];
         document.getElementById('screen-title').innerText = titles[currentScreen];
 
         // Initialiseer schermen
-        if(currentScreen === 5) initDragDrop();
-        if(currentScreen === 6) initWordGame();
-        if(currentScreen === 7) {
+        if(currentScreen === 4) initStellingen();
+        if(currentScreen === 6) initDragDrop();
+        if(currentScreen === 7) initWordGame();
+        if(currentScreen === 8) {
             initMaze();
             if(guardInterval) clearInterval(guardInterval);
-            guardInterval = setInterval(moveGuards, 600); // Snellere wachters
+            guardInterval = setInterval(moveGuards, 600);
             if(jesusMoveInterval) clearInterval(jesusMoveInterval);
             jesusMoveInterval = setInterval(moveJesusCloser, 1500);
             if(distanceInterval) clearInterval(distanceInterval);
@@ -262,7 +295,77 @@
         }
     });
 
-    // ========== SCHERM 5: DRAG & DROP ==========
+    // ========== SCHERM 4: RAD VAN FORTUIN ==========
+    window.initStellingen = function() {
+        const container = document.getElementById('stellingenContainer');
+        if(!container) return;
+        
+        container.innerHTML = '';
+        
+        stellingen.forEach((s, i) => {
+            const stellingDiv = document.createElement('div');
+            stellingDiv.id = `stelling${i+1}`;
+            stellingDiv.className = 'stelling-card';
+            stellingDiv.innerHTML = `
+                <strong>Stelling ${i+1}:</strong> ${s}
+                <textarea id="antwoord${i+1}" placeholder="Jouw gedachten..." rows="2"></textarea>
+                <button class="btn" style="padding:10px;" onclick="saveAnswer(${i+1})">💾 Opslaan</button>
+                <div class="answers-feed" id="feed${i+1}"></div>
+            `;
+            container.appendChild(stellingDiv);
+        });
+        
+        // Live feeds voor elke stelling
+        for(let i=1; i<=6; i++) {
+            db.ref(`antwoorden/stelling${i}`).on('value', (snap) => {
+                const feed = document.getElementById(`feed${i}`);
+                if(feed) {
+                    feed.innerHTML = '';
+                    if(snap.exists()) {
+                        Object.values(snap.val()).reverse().forEach(a => {
+                            feed.innerHTML += `<div class="answer-item"><b>${a.naam}:</b> ${a.antwoord}</div>`;
+                        });
+                    }
+                }
+            });
+        }
+    };
+
+    window.spinWheel = function() {
+        const wheel = document.getElementById('wheel');
+        const spin = Math.floor(Math.random() * 360) + 720;
+        wheel.style.transform = `rotate(${spin}deg)`;
+        
+        setTimeout(() => {
+            const segment = Math.floor((spin % 360) / 60) + 1;
+            currentStelling = segment;
+            document.getElementById('currentStelling').innerHTML = `🎯 <strong>Stelling ${segment}</strong> is actief!`;
+            
+            // Verberg alle stellingen, toon alleen de gekozen
+            for(let i=1; i<=6; i++) {
+                const el = document.getElementById(`stelling${i}`);
+                if(el) el.classList.remove('active');
+            }
+            const activeEl = document.getElementById(`stelling${segment}`);
+            if(activeEl) activeEl.classList.add('active');
+        }, 3000);
+    };
+
+    window.saveAnswer = function(nr) {
+        const antwoord = document.getElementById(`antwoord${nr}`).value.trim();
+        if(antwoord && currentUser) {
+            db.ref(`antwoorden/stelling${nr}`).push({
+                naam: currentUser,
+                antwoord: antwoord,
+                tijd: Date.now()
+            });
+            document.getElementById(`antwoord${nr}`).value = '';
+        } else {
+            alert('Je moet eerst inloggen met je naam!');
+        }
+    };
+
+    // ========== SCHERM 6: DRAG & DROP ==========
     window.initDragDrop = function() {
         const area = document.getElementById('dragDropArea');
         dragMatches = {};
@@ -329,7 +432,7 @@
             : `Je hebt ${totalMatches} van de ${gebedenMatch.length} goed.`;
     };
 
-    // ========== SCHERM 6: WOORDVELD ==========
+    // ========== SCHERM 7: WOORDVELD ==========
     window.initWordGame = function() {
         currentWord = words[Math.floor(Math.random() * words.length)];
         document.getElementById('targetDisplay').innerText = '_ '.repeat(currentWord.length);
@@ -382,12 +485,11 @@
         }
     };
 
-    // ========== SCHERM 7: UITDAGEND LABYRINTH ==========
+    // ========== SCHERM 8: DOOLHOF ==========
     let maze = {
-        disciple: {x: 1, y: 1}, // Startpositie
-        jesus: {x: 12, y: 7}, // Jezus in het midden
+        disciple: {x: 1, y: 1},
+        jesus: {x: 12, y: 7},
         walls: [
-            // Echt labyrint met doolhofpaden
             {x: 3, y: 0}, {x: 3, y: 1}, {x: 3, y: 2}, {x: 3, y: 3},
             {x: 5, y: 2}, {x: 5, y: 3}, {x: 5, y: 4}, {x: 5, y: 5},
             {x: 7, y: 1}, {x: 7, y: 2}, {x: 7, y: 3}, {x: 7, y: 4}, {x: 7, y: 5}, {x: 7, y: 6},
@@ -427,11 +529,10 @@
         const canvas = document.getElementById('mazeCanvas');
         if(!canvas) return;
         const ctx = canvas.getContext('2d');
-        const cs = 40; // cell size
+        const cs = 40;
         
         ctx.clearRect(0, 0, 800, 600);
         
-        // Grid
         ctx.strokeStyle = '#666';
         ctx.lineWidth = 0.5;
         for(let i=0; i<=20; i++) {
@@ -445,13 +546,11 @@
             ctx.stroke();
         }
         
-        // Muren (donkerbruin)
         maze.walls.forEach(w => {
             ctx.fillStyle = '#8B4513';
             ctx.fillRect(w.x*cs, w.y*cs, cs-1, cs-1);
         });
         
-        // Struiken (groen)
         maze.bushes.forEach(b => {
             ctx.fillStyle = '#2ecc71';
             ctx.beginPath();
@@ -462,7 +561,6 @@
             ctx.fillText('🌿', b.x*cs + 10, b.y*cs + 28);
         });
         
-        // Wachters (rood)
         maze.guards.forEach(g => {
             ctx.fillStyle = '#e74c3c';
             ctx.fillRect(g.x*cs + 5, g.y*cs + 5, 30, 30);
@@ -471,7 +569,6 @@
             ctx.fillText('👮', g.x*cs + 10, g.y*cs + 30);
         });
         
-        // Discipel (blauw)
         ctx.fillStyle = '#3498db';
         ctx.beginPath();
         ctx.arc(maze.disciple.x*cs + cs/2, maze.disciple.y*cs + cs/2, 15, 0, 2*Math.PI);
@@ -480,7 +577,6 @@
         ctx.font = 'bold 20px Arial';
         ctx.fillText('👤', maze.disciple.x*cs + 12, maze.disciple.y*cs + 28);
         
-        // Jezus (geel met kruis)
         ctx.fillStyle = '#f1c40f';
         ctx.beginPath();
         ctx.arc(maze.jesus.x*cs + cs/2, maze.jesus.y*cs + cs/2, 18, 0, 2*Math.PI);
@@ -494,7 +590,7 @@
         if(!gameActive) return;
         
         const elapsedSeconds = (Date.now() - gameStartTime) / 1000;
-        const progress = Math.min(elapsedSeconds / 25, 0.8); // Na 25 sec 80% dichterbij
+        const progress = Math.min(elapsedSeconds / 25, 0.8);
         
         const startX = 12, startY = 7;
         const targetX = 5, targetY = 4;
@@ -562,13 +658,11 @@
             let newY = guard.y;
             
             if(distanceToJesus < 4) {
-                // Terugdeinzen voor Jezus
                 const fearX = guard.x - (maze.jesus.x - guard.x) * 0.4;
                 const fearY = guard.y - (maze.jesus.y - guard.y) * 0.4;
                 newX = Math.round(fearX);
                 newY = Math.round(fearY);
             } else {
-                // Slimme achtervolging
                 if(Math.abs(dx) > Math.abs(dy)) {
                     newX = guard.x + (dx > 0 ? 1 : -1);
                 } else {
