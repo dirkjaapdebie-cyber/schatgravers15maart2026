@@ -198,8 +198,8 @@
     <div id="nav-bar">
         <span id="screen-title">Inloggen</span>
         <div class="nav-buttons">
-            <button class="nav-btn" id="reset-btn" onclick="resetAllData()">🔄 Reset</button>
-            <button class="nav-btn" onclick="nextScreen()">Volgende ➔</button>
+            <button class="nav-btn" id="reset-btn" onclick="window.resetAllData()">🔄 Reset</button>
+            <button class="nav-btn" onclick="window.nextScreen()">Volgende ➔</button>
         </div>
     </div>
 
@@ -207,7 +207,7 @@
     <div id="screen1" class="screen active">
         <h2>👋 Welkom Schatgraver!</h2>
         <input type="text" id="playerName" placeholder="Jouw naam...">
-        <button class="btn" onclick="login()">Start het avontuur</button>
+        <button class="btn" onclick="window.login()">Start het avontuur</button>
         <div class="live-feed">
             <h4>📱 Live deelnemers:</h4>
             <div id="liveNames"></div>
@@ -251,7 +251,7 @@
             <div id="wheel"></div>
             <div id="pointer">▼</div>
         </div>
-        <button class="btn" style="background:#f6b93b; color:#1e3799;" onclick="spinWheel()">🎲 Draaien!</button>
+        <button class="btn" style="background:#f6b93b; color:#1e3799;" onclick="window.spinWheel()">🎲 Draaien!</button>
         <div id="currentStelling"></div>
         <div id="stellingenContainer"></div>
     </div>
@@ -261,7 +261,7 @@
         <h2>🙏 Bij welk gebed hoort wie?</h2>
         <p style="text-align:center; margin-bottom:10px;">Sleep de bijbelfiguur naar het juiste gebed</p>
         <div class="drag-container" id="dragDropArea"></div>
-        <button class="btn" style="background:#20bf6b;" onclick="checkAllMatches()">✅ Controleer alle antwoorden</button>
+        <button class="btn" style="background:#20bf6b;" onclick="window.checkAllMatches()">✅ Controleer alle antwoorden</button>
         <div id="dragResult" style="text-align:center; margin-top:15px; font-weight:bold;"></div>
     </div>
 
@@ -271,8 +271,8 @@
         <p>Vorm woorden rond Pasen: <strong>GETSEMANE • OLIJFBERG • JEZUS • NARCISSEN • OPBLOEIEN</strong></p>
         <div class="target-word" id="targetDisplay"></div>
         <div class="word-grid" id="letterGrid"></div>
-        <button class="btn" style="background:#20bf6b;" onclick="checkWord()">✅ Controleer</button>
-        <button class="btn" style="background:#e55039;" onclick="resetWordGame()">🔄 Opnieuw</button>
+        <button class="btn" style="background:#20bf6b;" onclick="window.checkWord()">✅ Controleer</button>
+        <button class="btn" style="background:#e55039;" onclick="window.resetWordGame()">🔄 Opnieuw</button>
         <div id="wordResult" style="text-align:center; margin-top:10px;"></div>
     </div>
 
@@ -285,13 +285,13 @@
             <canvas id="mazeCanvas" width="1000" height="600"></canvas>
         </div>
         <div class="maze-controls">
-            <div></div><button class="maze-btn" onclick="moveDisciple(0,-1)">↑</button><div></div>
-            <button class="maze-btn" onclick="moveDisciple(-1,0)">←</button>
-            <button class="maze-btn" onclick="moveDisciple(0,1)">↓</button>
-            <button class="maze-btn" onclick="moveDisciple(1,0)">→</button>
+            <div></div><button class="maze-btn" onclick="window.moveDisciple(0,-1)">↑</button><div></div>
+            <button class="maze-btn" onclick="window.moveDisciple(-1,0)">←</button>
+            <button class="maze-btn" onclick="window.moveDisciple(0,1)">↓</button>
+            <button class="maze-btn" onclick="window.moveDisciple(1,0)">→</button>
         </div>
-        <button class="btn" style="background:#20bf6b;" onclick="finishMaze()">🏁 Omhels Jezus</button>
-        <button class="btn" style="background:#e55039;" onclick="resetMaze()">🔄 Reset doolhof</button>
+        <button class="btn" style="background:#20bf6b;" onclick="window.finishMaze()">🏁 Omhels Jezus</button>
+        <button class="btn" style="background:#e55039;" onclick="window.resetMaze()">🔄 Reset doolhof</button>
     </div>
 </div>
 
@@ -442,7 +442,7 @@
             });
             
             document.getElementById('playerName').value = '';
-            nextScreen(); // Ga naar scherm 2
+            window.nextScreen(); // Ga naar scherm 2
         } else {
             alert('Voer je naam in!');
         }
@@ -475,7 +475,7 @@
             html += `<div id="stelling${i+1}" class="stelling-card">
                 <strong>Stelling ${i+1}:</strong> ${s}
                 <textarea id="antwoord${i+1}" placeholder="Jouw gedachten..." rows="2"></textarea>
-                <button class="btn" style="padding:10px;" onclick="saveAnswer(${i+1})">💾 Opslaan</button>
+                <button class="btn" style="padding:10px;" onclick="window.saveAnswer(${i+1})">💾 Opslaan</button>
                 <div class="answers-feed" id="feed${i+1}"></div>
             </div>`;
         });
@@ -785,7 +785,7 @@
         ctx.fillText('✝️', maze.jesus.x*cs + 10, maze.jesus.y*cs + 32);
     }
     
-    // NIEUW: Jezus komt dichterbij naarmate de tijd vordert
+    // Jezus komt dichterbij naarmate de tijd vordert
     function moveJesusCloser() {
         if(!gameActive) return;
         
@@ -808,7 +808,7 @@
         }
     }
     
-    // NIEUW: Update afstandsindicator
+    // Update afstandsindicator
     function updateJesusDistance() {
         if(!gameActive) return;
         
@@ -849,7 +849,7 @@
         checkGuardCollision();
     };
     
-    // AANGEPAST: Wachters bewegen met ontzag voor Jezus
+    // Wachters bewegen met ontzag voor Jezus
     function moveGuards() {
         if(!gameActive) return;
         
@@ -866,7 +866,7 @@
             let newX = guard.x;
             let newY = guard.y;
             
-            // NIEUW: Als Jezus dichtbij is (< 5 stappen), doen wachters een stap TERUG!
+            // Als Jezus dichtbij is (< 5 stappen), doen wachters een stap TERUG!
             if(distanceToJesus < 5) {
                 // Wachter deinst terug van Jezus
                 const fearX = guard.x - (maze.jesus.x - guard.x) * 0.5;
@@ -919,7 +919,7 @@
         }
     }
     
-    // AANGEPAST: Win conditie - omhels Jezus
+    // Win conditie - omhels Jezus
     window.finishMaze = function() {
         const distance = Math.sqrt(
             Math.pow(maze.disciple.x - maze.jesus.x, 2) + 
@@ -948,7 +948,7 @@
         }
     };
     
-    // AANGEPAST: Reset met nieuwe starttijd
+    // Reset met nieuwe starttijd
     window.resetMaze = function() {
         maze.disciple = {x: 2, y: 2};
         maze.jesus = {x: 22, y: 12}; // Jezus terug naar beginpositie
