@@ -3,487 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Schatgravers - Het Verhaal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Firebase toegevoegd voor live feed -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
+    <title>Schatgravers - Olijfberg</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <style>
-        /* Basisstijl */
-        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
-        body { font-family: 'Fredoka', sans-serif; background: #0a3d62; color: #333; }
-        
+        :root { --main-blue: #1e3799; --gold: #f6b93b; --grass: #7ca35f; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Fredoka', sans-serif; }
+        body { background: #0a3d62; color: #333; overflow-x: hidden; }
         #app { width: 100%; max-width: 500px; margin: 0 auto; padding: 10px; }
+        
         .screen { display: none; background: white; border-radius: 25px; padding: 20px; min-height: 85vh; box-shadow: 0 10px 30px rgba(0,0,0,0.5); flex-direction: column; }
         .screen.active { display: flex; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* Navigatie */
-        #nav-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; background: #1e3799; padding: 12px; border-radius: 15px; color: white; }
-        .nav-btn { background: #f6b93b; border: none; padding: 10px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; color: #0a3d62; }
+        #nav-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; background: var(--main-blue); padding: 12px; border-radius: 15px; color: white; }
+        .nav-btn { background: var(--gold); border: none; padding: 10px 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
 
-        /* Rad van Fortuin */
-        .wheel-container { position: relative; width: 280px; height: 280px; margin: 10px auto; }
-        #wheel { width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(#f6b93b 0deg 60deg, #1e3799 60deg 120deg, #20bf6b 120deg 180deg, #e55039 180deg 240deg, #fa983a 240deg 300deg, #b71540 300deg 360deg); transition: transform 3s cubic-bezier(0.25, 0.1, 0.15, 1); border: 5px solid #333; }
-        #wheel-pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 40px; color: #333; z-index: 10; }
-        #wheel-number { text-align: center; font-size: 1.5rem; margin: 10px; color: #1e3799; }
+        /* Scherm 3: Scrollbaar Verhaal */
+        .story-container { flex-grow: 1; overflow-y: auto; background: #fdf6e3; padding: 20px; border-radius: 15px; border-left: 5px solid var(--gold); max-height: 60vh; line-height: 1.6; }
 
-        /* Stellingen */
-        .stelling-card { background: #f8f9fa; padding: 15px; border-radius: 15px; margin: 15px 0; border: 2px solid #1e3799; display: none; }
-        .stelling-card.active-stelling { display: block; }
-        .antwoorden-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 5px; margin-top: 10px; max-height: 150px; overflow-y: auto; padding: 5px; background: #f1f2f6; border-radius: 10px; }
-        .antwoord-item { background: white; padding: 5px; border-radius: 5px; border-left: 3px solid #20bf6b; font-size: 0.8rem; }
+        /* Scherm 4: Rad & Stellingen */
+        .wheel-box { position: relative; width: 200px; height: 200px; margin: 10px auto; border: 5px solid #333; border-radius: 50%; overflow: hidden; transition: transform 3s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
+        .wheel-segment { position: absolute; width: 50%; height: 50%; transform-origin: 100% 100%; }
+        .stelling-card { display: none; background: #f1f2f6; padding: 15px; border-radius: 15px; margin-top: 15px; border: 2px solid var(--main-blue); }
+        .live-answers { background: white; margin-top: 10px; padding: 10px; border-radius: 10px; max-height: 120px; overflow-y: auto; font-size: 0.9rem; }
 
-        /* Drag & Drop */
-        .drag-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
-        .figuur-col, .gebed-col { background: #f1f2f6; padding: 10px; border-radius: 15px; max-height: 400px; overflow-y: auto; }
-        .figuur-card { background: white; padding: 8px; margin: 5px 0; border-radius: 8px; border: 2px solid #1e3799; cursor: grab; text-align: center; font-weight: bold; }
-        .gebed-card { background: #e3f2fd; padding: 8px; margin: 5px 0; border-radius: 8px; border: 2px dashed #1e3799; min-height: 50px; font-size: 0.8rem; }
-        .matched { background: #c8e6c9; border: 2px solid #20bf6b; }
+        /* Scherm 5: Woordveld */
+        .word-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; background: #ccc; padding: 5px; border-radius: 10px; }
+        .cell { background: white; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; cursor: pointer; }
+        .cell.selected { background: var(--gold); color: white; }
 
-        /* Scherm 3: Scrollbaar Bijbelverhaal */
-        .story-container { 
-            flex-grow: 1;
-            overflow-y: auto; 
-            background: #fdf6e3; 
-            padding: 20px; 
-            border-radius: 15px; 
-            border-left: 5px solid #f6b93b;
-            margin: 10px 0;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
-            max-height: 60vh;
-        }
-        .story-text h3 { color: #1e3799; margin-bottom: 10px; }
-        .story-text p { line-height: 1.6; margin-bottom: 15px; font-size: 1.05rem; }
-        .bible-ref { font-style: italic; color: #666; font-size: 0.9rem; }
+        /* Scherm 6: Doolhof Getsemane */
+        #maze-container { position: relative; width: 300px; height: 300px; background: var(--grass); margin: 0 auto; border: 5px solid #5d4037; overflow: hidden; }
+        .wall { position: absolute; background: #2d5a27; border-radius: 2px; }
+        .player { position: absolute; width: 16px; height: 16px; background: #3498db; border-radius: 50%; z-index: 10; border: 2px solid white; }
+        .jesus { position: absolute; width: 20px; height: 20px; background: #f1c40f; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px gold; }
 
-        /* Woordzoeker */
-        .grid-container { display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; background: #ddd; padding: 5px; border-radius: 10px; margin-top: 10px; }
-        .cell { background: white; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; border-radius: 3px; }
-        .cell.selected { background: #f6b93b; color: white; }
-        
-        /* Doolhof */
-        #maze-board { position: relative; width: 300px; height: 300px; background: #2d5a27; border: 4px solid #8B4513; margin: 0 auto; border-radius: 10px; overflow: hidden; }
-        #player { position: absolute; width: 20px; height: 20px; background: #3498db; border-radius: 50%; border: 2px solid white; z-index: 10; transition: 0.1s; }
-        #jesus { position: absolute; width: 25px; height: 25px; background: #f1c40f; border-radius: 50%; box-shadow: 0 0 15px gold; z-index: 5; }
-        .guard { position: absolute; width: 20px; height: 20px; background: #e74c3c; border-radius: 4px; z-index: 8; transition: 0.6s linear; }
-        .controls { display: grid; grid-template-columns: repeat(3, 1fr); width: 160px; margin: 15px auto; gap: 10px; }
-        .ctrl-btn { background: #1e3799; color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.3rem; box-shadow: 0 4px #0a266e; cursor: pointer; }
-        .ctrl-btn:active { box-shadow: 0 0; transform: translateY(4px); }
-
-        .btn { background: #1e3799; color: white; width: 100%; padding: 15px; border: none; border-radius: 15px; font-weight: bold; font-size: 1.1rem; cursor: pointer; margin: 5px 0; }
-        input, textarea { width: 100%; padding: 12px; margin: 5px 0; border: 2px solid #ddd; border-radius: 10px; font-family: inherit; }
-        
-        /* Live feed */
-        .live-feed { background: #f1f2f6; padding: 10px; border-radius: 10px; margin-top: 5px; max-height: 150px; overflow-y: auto; }
-        .name-tag { background: white; padding: 5px; margin: 3px 0; border-radius: 5px; border-left: 3px solid #20bf6b; font-size: 0.9rem; }
+        .btn { background: var(--main-blue); color: white; width: 100%; padding: 15px; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; margin: 10px 0; }
+        input, textarea { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; margin: 5px 0; }
     </style>
 </head>
 <body>
 
 <div id="app">
     <div id="nav-bar">
-        <span id="screen-title">Welkom</span>
-        <button class="nav-btn" onclick="nextScreen()">Volgende ➔</button>
+        <span id="screen-title">Schatgravers</span>
+        <button class="nav-btn" onclick="nextScreen()">VOLGENDE</button>
     </div>
 
-    <!-- Scherm 0: Login -->
     <div id="screen0" class="screen active">
-        <h2>Schatgravers Online</h2>
-        <p style="margin: 15px 0;">Vul je naam in om te beginnen:</p>
-        <input type="text" id="pname" placeholder="Naam..." style="width:100%; padding:15px; border-radius:10px; border:2px solid #ddd;">
-        <button class="btn" style="margin-top:20px;" onclick="saveUser()">START HET AVONTUUR</button>
-        
-        <div class="live-feed" style="margin-top: 20px;">
-            <h4>👥 Live deelnemers:</h4>
-            <div id="name-list"></div>
-        </div>
+        <h2>🔑 Toegang</h2>
+        <input type="text" id="username" placeholder="Typ je naam...">
+        <button class="btn" onclick="login()">START</button>
     </div>
 
-    <!-- Scherm 1: Olijfberg -->
     <div id="screen1" class="screen">
-        <h2>De Olijfberg</h2>
-        <div style="width:100%; height:350px; border-radius:15px; overflow:hidden; border:3px solid #ddd;">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3392.541334947938!2d35.24294117625147!3d31.777444125171783!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x150329eb006f654b%3A0x6a3838634e73f8b0!2sMount%20of%20Olives!5e1!3m2!1snl!2snl!4v1700000000000!5m2!1snl!2snl" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-        </div>
-        <p style="margin-top:10px;">Dit is de berg waar het verhaal zich afspeelt.</p>
+        <h2>📍 De Olijfberg</h2>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3391.876356475514!2d35.2428612!3d31.7780515!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x150329c369e710d3%3A0xc62220f8c057692!2sMount%20of%20Olives!5e1!3m2!1snl!2snl!4v1700000000000" width="100%" height="300" style="border:0; border-radius:15px;" allowfullscreen></iframe>
+        <p style="margin-top:10px;">Vanaf hier keek Jezus uit over de stad Jeruzalem.</p>
     </div>
 
-    <!-- Scherm 2: Het Verhaal -->
     <div id="screen2" class="screen">
-        <h2>Het Verhaal</h2>
+        <h2>📖 Het Verhaal</h2>
         <div class="story-container">
-            <div class="story-text">
-                <h3>Jezus bidt op de Olijfberg</h3>
-                <p>Jezus ging de stad uit. Hij ging naar de Olijfberg, zoals altijd. De leerlingen gingen met hem mee. Toen ze op de berg waren, zei Jezus: ‘Bid God om kracht, zodat je geen verkeerde keuze maakt.’</p>
-                <p>Daarna liep hij zelf een stukje verder. Hij knielde en begon te bidden: ‘Vader, als u het wilt, houd dan dit zware lijden bij mij weg! Maar doe wat u zelf wilt, niet wat ik wil.’</p>
-                <p>Toen kwam er een engel uit de hemel om Jezus kracht te geven. Jezus was bang en ging steeds harder bidden. Zijn zweet viel in grote druppels op de grond. Het leken wel druppels bloed.</p>
-                <p>Toen Jezus klaar was met bidden, stond Hij op en ging naar zijn leerlingen. Die waren van verdriet in slaap gevallen. Jezus zei: ‘Waarom slapen jullie? Bid God om kracht, zodat je geen verkeerde keuze maakt.’</p>
-                <hr style="margin: 20px 0; border: 0; border-top: 1px dashed #ccc;">
-                <h3>Judas verraadt Jezus</h3>
-                <p>Terwijl Jezus dat zei, kwam er een groep mannen aan. Judas, één van de twaalf leerlingen, liep voorop. Hij ging naar Jezus toe en groette hem met een kus. Maar Jezus zei: ‘Judas, verraad je de Mensenzoon met een kus?’</p>
-                <p>Toen de leerlingen begrepen wat er ging gebeuren, vroegen ze: ‘Heer, zullen we onze zwaarden pakken?’ En één van de leerlingen pakte zijn zwaard en sloeg de knecht van de hogepriester. Hij sloeg zijn rechteroor eraf. Maar Jezus zei: ‘Stop, genoeg!’ En hij pakte het oor en maakte de man weer beter.</p>
-                <p>Er waren priesters, officieren van de tempel en leiders van het volk meegekomen om Jezus gevangen te nemen. Jezus zei tegen hen: ‘Jullie zijn hier gekomen met zwaarden en stokken. Alsof ik een gevaarlijke misdadiger ben! Elke dag was ik bij jullie in de tempel, maar toen namen jullie mij niet gevangen. Nu is het moment gekomen waarop jullie gewacht hebben. Nu laat de duisternis haar macht zien.’</p>
-                <p class="bible-ref">(Gebaseerd op Lucas 22)</p>
-            </div>
+            <h3>Jezus bidt op de Olijfberg</h3>
+            <p>Jezus ging de stad uit. Hij ging naar de Olijfberg, zoals altijd. De leerlingen gingen met hem mee. Toen ze op de berg waren, zei Jezus: ‘Bid God om kracht, zodat je geen verkeerde keuze maakt.’</p>
+            <p>Daarna liep hij zelf een stukje verder. Hij knielde en begon te bidden: ‘Vader, als u het wilt, houd dan dit zware lijden bij mij weg! Maar doe wat u zelf wilt, niet wat ik wil.’</p>
+            <p>Toen kwam er een engel uit de hemel om Jezus kracht te geven. Jezus was bang en ging steeds harder bidden. Zijn zweet viel in grote druppels op de grond. Het leken wel druppels bloed.</p>
+            <p>Toen Jezus klaar was met bidden, stond Hij op en ging naar zijn leerlingen. Die waren van verdriet in slaap gevallen.</p>
+            <hr style="margin:15px 0;">
+            <h3>Judas verraadt Jezus</h3>
+            <p>Terwijl Jezus dat zei, kwam er een groep mannen aan. Judas liep voorop. Hij gaf Jezus een kus. Maar Jezus zei: ‘Judas, verraad je de Mensenzoon met een kus?’</p>
+            <p>Een van de leerlingen pakte zijn zwaard en sloeg het rechteroor van de knecht van de hogepriester eraf. Maar Jezus zei: ‘Stop, genoeg!’ Hij maakte de man weer beter.</p>
+            <p>Jezus zei tegen de priesters: ‘Jullie komen met zwaarden alsof ik een misdadiger ben. Elke dag was ik in de tempel. Nu laat de duisternis haar macht zien.’</p>
         </div>
     </div>
 
-    <!-- Scherm 3: Rad van Fortuin + 6 Stellingen -->
     <div id="screen3" class="screen">
-        <h2>🎡 Rad van Fortuin</h2>
-        <div class="wheel-container">
-            <div id="wheel"></div>
-            <div id="wheel-pointer">▼</div>
+        <h2>🎡 Het Rad</h2>
+        <div id="wheel" class="wheel-box">
+            </div>
+        <button class="btn" style="background:var(--gold); color:black;" onclick="spin()">DRAAI HET RAD</button>
+        <div id="active-stelling-box" class="stelling-card">
+            <h4 id="stelling-titel"></h4>
+            <p id="stelling-tekst"></p>
+            <textarea id="my-answer" placeholder="Wat vind jij?"></textarea>
+            <button class="btn" onclick="sendAnswer()">STUUR ANTWOORD</button>
+            <div class="live-answers" id="live-feed"></div>
         </div>
-        <div id="wheel-number">Klik op draaien!</div>
-        <button onclick="spinWheel()" class="btn" style="background: #f6b93b; color: #1e3799;">🎲 Draai aan het rad!</button>
-        
-        <!-- 6 Stellingen container -->
-        <div id="stellingen-container" style="margin-top: 20px;"></div>
     </div>
 
-    <!-- Scherm 4: Drag & Drop Gebeden -->
     <div id="screen4" class="screen">
-        <h2>🙏 Bij welk gebed hoort wie?</h2>
-        <p style="text-align: center; font-size:0.9rem;">Sleep de naam naar het juiste gebed</p>
-        <div class="drag-container" id="drag-drop-area"></div>
-        <button onclick="checkMatches()" class="btn" style="background: #20bf6b;">✅ Controleer</button>
-        <div id="match-result" style="text-align: center; margin-top: 10px;"></div>
+        <h2>🔍 Woordzoeker</h2>
+        <p style="font-size:0.7rem; margin-bottom:5px;">Zoek: GETSEMANE, OLIJFBERG, JEZUS, NARCISSEN, OPBLOEIEN, PASEN, VERRAAD</p>
+        <div class="word-grid" id="word-grid"></div>
     </div>
 
-    <!-- Scherm 5: Woordzoeker -->
     <div id="screen5" class="screen">
-        <h2>Woordzoeker</h2>
-        <p style="font-size:0.8rem;">Zoek: PESACH, VERDRIET, OLIJFBERG, GETSEMANE, JERUZALEM, LIJDEN, DISCIPEL</p>
-        <div id="word-grid" class="grid-container"></div>
-    </div>
-
-    <!-- Scherm 6: Doolhof -->
-    <div id="screen6" class="screen">
-        <h2>Ontwijk de wachters!</h2>
-        <div id="maze-board">
-            <div id="player"></div>
-            <div id="jesus"></div>
+        <h2>🏃 Ontsnap uit de Hof</h2>
+        <div id="maze-container">
+            <div id="maze-walls"></div>
+            <div id="player" class="player"></div>
+            <div id="jesus" class="jesus">🙏</div>
         </div>
-        <div class="controls">
-            <div></div><button class="ctrl-btn" onclick="move(0,-1)">↑</button><div></div>
-            <button class="ctrl-btn" onclick="move(-1,0)">←</button>
-            <button class="ctrl-btn" onclick="move(0,1)">↓</button>
-            <button class="ctrl-btn" onclick="move(1,0)">→</button>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:15px; width:150px; align-self:center;">
+            <div></div><button class="nav-btn" onclick="move(0,-1)">↑</button><div></div>
+            <button class="nav-btn" onclick="move(-1,0)">←</button><button class="nav-btn" onclick="move(0,1)">↓</button><button class="nav-btn" onclick="move(1,0)">→</button>
         </div>
     </div>
 </div>
 
 <script>
-    // Firebase Config
+    // --- CONFIG & FIREBASE ---
     const firebaseConfig = {
         apiKey: "AIzaSyBC3Dzm8PNPXw12VJNimvly5u2I93QeW54",
-        authDomain: "schatgravers15maart2026.firebaseapp.com",
         databaseURL: "https://schatgravers15maart2026-default-rtdb.europe-west1.firebasedatabase.app",
         projectId: "schatgravers15maart2026",
-        appId: "1:30561512857:web:fcb7868b87d292d1c97708"
     };
-
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Globale variabelen
-    let currentScreen = 0;
-    const totalScreens = 7; // 0 t/m 6
-    let currentUser = null;
-    let pPos = { x: 10, y: 10 };
-    let guards = [];
-    
+    let curScr = 0;
+    let myName = "";
+    let curStelling = 0;
+
     const stellingen = [
-        "Ik ben nooit bang.",
-        "Als ik iets heel spannend vind om te gaan doen, hoop ik dat het niet doorgaat.",
-        "Als ik zie dat iemand het moeilijk heeft, probeer ik hem of haar te helpen.",
-        "Als ik het moeilijk heb of bang ben, ga ik bidden.",
-        "Ik heb weleens kracht van God gekregen of de kracht van God gevoeld toen ik het moeilijk had.",
-        "Ik zou graag meer willen weten over wat God precies wil."
+        "Ik ben weleens bang voor wat er gaat komen.",
+        "Als ik het moeilijk heb, bid ik om kracht.",
+        "Ik probeer anderen te helpen die verdrietig zijn.",
+        "Soms is het moeilijk om te doen wat God wil.",
+        "Ik vind het dapper dat Jezus niet wegrende.",
+        "Vriendschap is belangrijker dan winnen."
     ];
 
-    // Navigatie
+    // --- NAVIGATIE ---
     function nextScreen() {
-        document.getElementById(`screen${currentScreen}`).classList.remove('active');
-        currentScreen = (currentScreen + 1) % totalScreens;
-        document.getElementById(`screen${currentScreen}`).classList.add('active');
-        
-        const titels = ["Welkom", "Olijfberg", "Verhaal", "Rad", "Gebeden", "Woordzoeker", "Doolhof"];
-        document.getElementById('screen-title').innerText = titels[currentScreen];
-        
-        if(currentScreen === 3) initStellingen();
-        if(currentScreen === 4) initDragDrop();
-        if(currentScreen === 5) initWordsearch();
-        if(currentScreen === 6) initMaze();
+        document.getElementById(`screen${curScr}`).classList.remove('active');
+        curScr = (curScr + 1) % 6;
+        document.getElementById(`screen${curScr}`).classList.add('active');
+        if(curScr === 3) buildWheel();
+        if(curScr === 4) buildWordSearch();
+        if(curScr === 5) initMaze();
     }
 
-    // Login functie
-    function saveUser() {
-        const name = document.getElementById('pname').value.trim();
-        if(name) {
-            currentUser = name;
-            localStorage.setItem('mijnNaam', name);
-            
-            db.ref('users').push({
-                name: name,
-                timestamp: Date.now()
-            });
-            
-            document.getElementById('pname').value = '';
-            nextScreen(); // Ga naar eerste scherm
+    function login() {
+        myName = document.getElementById('username').value;
+        if(myName) nextScreen();
+    }
+
+    // --- RAD & FEED ---
+    function buildWheel() {
+        const w = document.getElementById('wheel');
+        w.innerHTML = '';
+        const colors = ['#e55039', '#4a69bd', '#60a3bc', '#38ada9', '#f6b93b', '#b71540'];
+        for(let i=0; i<6; i++) {
+            const s = document.createElement('div');
+            s.className = 'wheel-segment';
+            s.style.backgroundColor = colors[i];
+            s.style.transform = `rotate(${i*60}deg) skewY(30deg)`;
+            w.appendChild(s);
         }
     }
 
-    // Live feed van namen
-    db.ref('users').on('value', (snapshot) => {
-        const list = document.getElementById('name-list');
-        list.innerHTML = '';
-        if(snapshot.exists()) {
-            const users = snapshot.val();
-            Object.values(users).reverse().forEach(user => {
-                const div = document.createElement('div');
-                div.className = 'name-tag';
-                div.innerHTML = `👋 <b>${user.name}</b>`;
-                list.appendChild(div);
-            });
-        }
-    });
-
-    // RAD VAN FORTUIN
-    function initStellingen() {
-        const container = document.getElementById('stellingen-container');
-        container.innerHTML = '';
-        
-        stellingen.forEach((stelling, index) => {
-            const stellingDiv = document.createElement('div');
-            stellingDiv.id = `stelling-${index+1}`;
-            stellingDiv.className = 'stelling-card';
-            stellingDiv.innerHTML = `
-                <strong>Stelling ${index+1}:</strong> ${stelling}
-                <textarea id="antwoord-${index+1}" placeholder="Jouw gedachten..." rows="2"></textarea>
-                <button onclick="saveAnswer(${index+1})" class="btn" style="padding: 8px;">💾 Opslaan</button>
-                <div class="antwoorden-grid" id="feed-stelling-${index+1}"></div>
-            `;
-            container.appendChild(stellingDiv);
-        });
-        
-        // Verberg alle stellingen
-        hideAllStellingen();
-    }
-
-    function hideAllStellingen() {
-        for(let i = 1; i <= 6; i++) {
-            const el = document.getElementById(`stelling-${i}`);
-            if(el) el.classList.remove('active-stelling');
-        }
-    }
-
-    function spinWheel() {
-        const wheel = document.getElementById('wheel');
-        const spin = Math.floor(Math.random() * 360) + 720;
-        wheel.style.transform = `rotate(${spin}deg)`;
-        
+    function spin() {
+        const deg = Math.floor(Math.random() * 360) + 1440;
+        document.getElementById('wheel').style.transform = `rotate(${deg}deg)`;
         setTimeout(() => {
-            const degrees = spin % 360;
-            const segment = Math.floor(degrees / 60) + 1;
-            
-            document.getElementById('wheel-number').textContent = `Stelling ${segment}: ${stellingen[segment-1]}`;
-            
-            hideAllStellingen();
-            const activeStelling = document.getElementById(`stelling-${segment}`);
-            if(activeStelling) {
-                activeStelling.classList.add('active-stelling');
-            }
-        }, 3000);
+            curStelling = Math.floor(((deg % 360)) / 60);
+            showStelling(curStelling);
+        }, 3100);
     }
 
-    function saveAnswer(stellingNr) {
-        const naam = currentUser || localStorage.getItem('mijnNaam') || 'Anoniem';
-        const antwoord = document.getElementById(`antwoord-${stellingNr}`).value.trim();
-        if(antwoord) {
-            db.ref(`antwoorden/stelling${stellingNr}`).push({
-                naam: naam,
-                antwoord: antwoord,
-                timestamp: Date.now()
-            });
-            document.getElementById(`antwoord-${stellingNr}`).value = '';
+    function showStelling(id) {
+        document.getElementById('active-stelling-box').style.display = 'block';
+        document.getElementById('stelling-titel').innerText = `Stelling ${id+1}`;
+        document.getElementById('stelling-tekst').innerText = stellingen[id];
+        loadFeed(id);
+    }
+
+    function sendAnswer() {
+        const text = document.getElementById('my-answer').value;
+        if(text) {
+            db.ref(`live/${curStelling}`).push({naam: myName, tekst: text});
+            document.getElementById('my-answer').value = '';
         }
     }
 
-    // Live antwoorden per stelling
-    for(let i = 1; i <= 6; i++) {
-        db.ref(`antwoorden/stelling${i}`).on('value', (snapshot) => {
-            const container = document.getElementById(`feed-stelling-${i}`);
-            if(container) {
-                container.innerHTML = '';
-                if(snapshot.exists()) {
-                    Object.values(snapshot.val()).reverse().forEach(item => {
-                        const div = document.createElement('div');
-                        div.className = 'antwoord-item';
-                        div.innerHTML = `<b>${item.naam}:</b> ${item.antwoord.substring(0,30)}${item.antwoord.length>30 ? '...' : ''}`;
-                        container.appendChild(div);
-                    });
-                }
-            }
-        });
-    }
-
-    // DRAG & DROP GEBEDEN
-    const gebedenMatch = [
-        { figuur: "Abraham", gebed: "Ik bid dat er geen onschuldige mensen in de stad Sodom gedood zullen worden." },
-        { figuur: "Agur", gebed: "Ik bid om altijd eerlijk te zijn en om precies te krijgen wat ik nodig heb." },
-        { figuur: "David", gebed: "Ik bid om vergeving omdat ik iemand vermoord heb." },
-        { figuur: "Elia", gebed: "Ik bid dat God mij antwoord geeft." },
-        { figuur: "Gideon", gebed: "Ik vraag God om een teken." },
-        { figuur: "Hanna", gebed: "Ik bid om een zoon." },
-        { figuur: "Jesaja", gebed: "Ik bid dat God vanuit de hemel naar ons kijkt." },
-        { figuur: "Jezus", gebed: "Ik bid voor alle mensen die in mij zullen geloven." },
-        { figuur: "Jezus", gebed: "Doe wat U zelf wilt, niet wat ik wil." },
-        { figuur: "Jezus", gebed: "Vader, vergeef de mensen die mij doden." },
-        { figuur: "Job", gebed: "Ik bid dat God aan mij denkt." },
-        { figuur: "Mozes", gebed: "Ik probeer God op andere gedachten te brengen." },
-        { figuur: "Nehemia", gebed: "Ik doe in stilte een schietgebedje." },
-        { figuur: "Paulus", gebed: "Ik vraag aan anderen om voor mij te bidden." },
-        { figuur: "Salomo", gebed: "Ik bid om het verschil tussen goed en kwaad te zien." }
-    ];
-
-    function initDragDrop() {
-        const container = document.getElementById('drag-drop-area');
-        container.innerHTML = `
-            <div class="figuur-col" id="figuren-container"></div>
-            <div class="gebed-col" id="gebeden-container"></div>
-        `;
-        
-        const figurenContainer = document.getElementById('figuren-container');
-        const gebedenContainer = document.getElementById('gebeden-container');
-        
-        // Figuren (drag sources)
-        const figuren = [...new Set(gebedenMatch.map(g => g.figuur))];
-        figuren.forEach(figuur => {
-            const div = document.createElement('div');
-            div.className = 'figuur-card';
-            div.draggable = true;
-            div.textContent = figuur;
-            div.addEventListener('dragstart', (e) => {
-                e.dataTransfer.setData('text/plain', figuur);
+    function loadFeed(id) {
+        db.ref(`live/${id}`).on('value', snap => {
+            const feed = document.getElementById('live-feed');
+            feed.innerHTML = '<b>Wat anderen zeggen:</b><br>';
+            snap.forEach(child => {
+                const v = child.val();
+                feed.innerHTML += `<div><b>${v.naam}:</b> ${v.tekst}</div>`;
             });
-            figurenContainer.appendChild(div);
-        });
-        
-        // Gebeden (drop targets)
-        gebedenMatch.sort(() => Math.random() - 0.5).forEach((item, index) => {
-            const div = document.createElement('div');
-            div.className = 'gebed-card';
-            div.innerHTML = `<small>${item.gebed}</small><br><span id="match-${index}" style="color: #1e3799;"></span>`;
-            div.addEventListener('dragover', (e) => e.preventDefault());
-            div.addEventListener('drop', (e) => {
-                e.preventDefault();
-                const figuur = e.dataTransfer.getData('text/plain');
-                if(figuur === item.figuur) {
-                    document.getElementById(`match-${index}`).innerHTML = `✓ ${figuur}`;
-                    div.classList.add('matched');
-                } else {
-                    alert('❌ Dat is niet de juiste figuur!');
-                }
-            });
-            gebedenContainer.appendChild(div);
         });
     }
 
-    function checkMatches() {
-        const matches = document.querySelectorAll('.matched').length;
-        document.getElementById('match-result').innerHTML = `Je hebt ${matches} van de ${gebedenMatch.length} goed.`;
-    }
-
-    // WOORDZOEKER
-    function initWordsearch() {
+    // --- WOORDZOEKER ---
+    function buildWordSearch() {
         const grid = document.getElementById('word-grid');
         grid.innerHTML = '';
-        const words = ["PESACH", "VERDRIET", "OLIJFBERG", "GETSEMANE", "JERUZALEM", "LIJDEN", "DISCIPEL"];
-        const letters = [];
-        
-        // Simpele woordzoeker vulling
+        const words = ["GETSEMANE", "OLIJFBERG", "JEZUS", "NARCISSEN", "OPBLOEIEN", "PASEN", "VERRAAD"];
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         for(let i=0; i<100; i++) {
-            letters.push(String.fromCharCode(65 + Math.floor(Math.random() * 26)));
+            const c = document.createElement('div');
+            c.className = 'cell';
+            c.innerText = chars[Math.floor(Math.random()*26)];
+            c.onclick = () => c.classList.toggle('selected');
+            grid.appendChild(c);
         }
-        
-        // Plaats woorden (simplified)
-        words.forEach(word => {
-            let pos = Math.floor(Math.random() * 80);
-            for(let i=0; i<word.length; i++) {
-                if(pos+i < 100) letters[pos+i] = word[i];
-            }
-        });
-        
-        letters.forEach(l => {
-            const d = document.createElement('div');
-            d.className = 'cell';
-            d.innerText = l;
-            d.onclick = () => d.classList.toggle('selected');
-            grid.appendChild(d);
-        });
+        // Simpele plaatsing van 1 woord als voorbeeld (statisch)
+        const cells = document.querySelectorAll('.cell');
+        "GETSEMANE".split('').forEach((l, i) => cells[i].innerText = l);
     }
 
-    // DOOLHOF
-    function initMaze() {
-        const board = document.getElementById('maze-board');
-        pPos = { x: 10, y: 10 };
-        updatePlayer();
-        document.getElementById('jesus').style.left = '260px';
-        document.getElementById('jesus').style.top = '260px';
+    // --- DOOLHOF ---
+    const layout = [
+        [1,1,1,1,1,1,1,1,1,1],[1,0,0,0,1,0,0,0,0,1],[1,0,1,0,1,0,1,1,0,1],[1,0,1,0,0,0,1,0,0,1],[1,0,1,1,1,0,1,1,0,1],[1,0,0,0,1,0,0,0,0,1],[1,1,1,0,1,1,1,1,0,1],[1,0,0,0,0,0,0,1,0,1],[1,0,1,1,1,1,0,0,0,1],[1,1,1,1,1,1,1,1,1,1]
+    ];
+    let pPos = {x:1, y:1};
 
-        if(guards.length === 0) {
-            for(let i=0; i<3; i++) {
-                const g = document.createElement('div');
-                g.className = 'guard';
-                board.appendChild(g);
-                guards.push({ el: g, x: Math.random()*270, y: Math.random()*270 });
-                g.style.left = guards[i].x + 'px';
-                g.style.top = guards[i].y + 'px';
-            }
-            setInterval(() => {
-                guards.forEach(g => {
-                    g.x = Math.random()*270;
-                    g.y = Math.random()*270;
-                    g.el.style.left = g.x + 'px';
-                    g.el.style.top = g.y + 'px';
-                    checkCollision(g);
-                });
-            }, 1500);
-        }
+    function initMaze() {
+        const container = document.getElementById('maze-walls');
+        container.innerHTML = '';
+        layout.forEach((row, y) => {
+            row.forEach((v, x) => {
+                if(v === 1) {
+                    const w = document.createElement('div');
+                    w.className = 'wall';
+                    w.style.left = x*30+'px'; w.style.top = y*30+'px';
+                    w.style.width = '30px'; w.style.height = '30px';
+                    container.appendChild(w);
+                }
+            });
+        });
+        updatePlayer();
+        const j = document.getElementById('jesus');
+        j.style.left = '240px'; j.style.top = '240px';
     }
 
     function move(dx, dy) {
-        pPos.x = Math.max(0, Math.min(280, pPos.x + dx*20));
-        pPos.y = Math.max(0, Math.min(280, pPos.y + dy*20));
-        updatePlayer();
-        if(pPos.x >= 250 && pPos.y >= 250) alert("Je hebt Jezus gevonden!");
+        if(layout[pPos.y+dy][pPos.x+dx] === 0) {
+            pPos.x += dx; pPos.y += dy;
+            updatePlayer();
+        }
+        if(pPos.x === 8 && pPos.y === 8) alert("Gevonden!");
     }
 
     function updatePlayer() {
         const p = document.getElementById('player');
-        p.style.left = pPos.x + 'px';
-        p.style.top = pPos.y + 'px';
+        p.style.left = pPos.x*30+7+'px'; p.style.top = pPos.y*30+7+'px';
     }
-
-    function checkCollision(g) {
-        const dist = Math.sqrt(Math.pow(pPos.x - g.x, 2) + Math.pow(pPos.y - g.y, 2));
-        if(dist < 20) {
-            pPos = { x: 10, y: 10 };
-            updatePlayer();
-        }
-    }
-
-    // Initialisatie
-    window.onload = () => {
-        const savedName = localStorage.getItem('mijnNaam');
-        if(savedName) {
-            document.getElementById('pname').value = savedName;
-        }
-    };
 </script>
 </body>
 </html>
