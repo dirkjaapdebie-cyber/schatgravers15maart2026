@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Schatgravers - Met Leaderboard</title>
+    <title>Schatgravers - Verbeterd Rad & Doolhof</title>
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -50,8 +50,9 @@
         #wheel-number { text-align: center; font-size: 2rem; margin: 10px; color: #1e3799; }
         
         /* Stelling cards */
-        .stelling-card { background: #f8f9fa; padding: 15px; border-radius: 15px; margin: 15px 0; border: 2px solid #1e3799; }
-        .antwoorden-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 10px; }
+        .stelling-card { background: #f8f9fa; padding: 15px; border-radius: 15px; margin: 15px 0; border: 2px solid #1e3799; display: none; }
+        .stelling-card.active-stelling { display: block; }
+        .antwoorden-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 10px; max-height: 200px; overflow-y: auto; padding: 5px; }
         .antwoord-item { background: white; padding: 8px; border-radius: 8px; border-left: 3px solid #20bf6b; font-size: 0.9rem; }
         
         /* Drag & Drop */
@@ -68,12 +69,13 @@
         .woord-oplossing { font-size: 2rem; letter-spacing: 10px; text-align: center; margin: 20px 0; font-weight: bold; color: #1e3799; }
         
         /* Doolhof */
-        #maze-canvas { width: 100%; height: 450px; border-radius: 20px; background: #2d5a27; display: block; margin: 10px 0; border: 3px solid #8B4513; }
-        .controls { display: flex; justify-content: center; gap: 20px; margin: 15px 0; }
+        .maze-container { position: relative; width: 100%; overflow-x: auto; }
+        #maze-canvas { width: 600px; height: 400px; border-radius: 20px; background: #2d5a27; display: block; margin: 10px auto; border: 3px solid #8B4513; }
+        .controls { display: flex; justify-content: center; gap: 20px; margin: 15px 0; flex-wrap: wrap; }
         .control-btn { background: #1e3799; color: white; border: none; width: 60px; height: 60px; border-radius: 30px; font-size: 2rem; cursor: pointer; }
         
         /* Leaderboard */
-        .leaderboard { background: linear-gradient(135deg, #f6b93b, #1e3799); padding: 20px; border-radius: 20px; color: white; }
+        .leaderboard { background: linear-gradient(135deg, #f6b93b, #1e3799); padding: 20px; border-radius: 20px; color: white; margin-top: 20px; }
         .leaderboard-item { background: rgba(255,255,255,0.2); padding: 15px; margin: 10px 0; border-radius: 15px; display: flex; justify-content: space-between; font-size: 1.2rem; }
         .rank-1 { background: gold; color: #1e3799; font-weight: bold; }
         .rank-2 { background: silver; color: #1e3799; }
@@ -82,11 +84,14 @@
         /* Scrollbaar bijbelverhaal */
         .bijbelverhaal { background: #f8f9fa; padding: 20px; border-radius: 20px; max-height: 500px; overflow-y: auto; margin-top: 10px; box-shadow: inset 0 0 10px rgba(0,0,0,0.1); }
         .bijbeltekst { background: white; padding: 20px; border-radius: 15px; line-height: 1.6; font-size: 1.1rem; }
+
+        /* Per stelling live feed */
+        .stelling-feed { margin-top: 10px; border-top: 2px solid #1e3799; padding-top: 10px; }
     </style>
 </head>
 <body>
 <div id="app">
-    <!-- Admin Bar - Alleen zichtbaar voor beheerder -->
+    <!-- Admin Bar -->
     <div id="admin-bar">
         <span id="screen-indicator">Scherm 1/7</span>
         <div style="display: flex; gap: 10px;">
@@ -95,7 +100,7 @@
         </div>
     </div>
 
-    <!-- Scherm 1: Login + Live Feed met tijden -->
+    <!-- Scherm 1: Login -->
     <div id="screen1" class="screen active">
         <h2>👋 Welkom Schatgravers!</h2>
         <input type="text" id="name-input" placeholder="Jouw naam...">
@@ -105,43 +110,36 @@
             <h3>📱 Live feed - wie doet er mee?</h3>
             <div id="name-list"></div>
         </div>
-        <p style="text-align: center; color: #666; margin-top: 10px;"><i>⏱️ De tijd loopt zodra je je naam invult!</i></p>
     </div>
 
-    <!-- Scherm 2: Google Maps - Olijfberg -->
+    <!-- Scherm 2: Google Maps -->
     <div id="screen2" class="screen">
         <h2>🏔️ De Olijfberg</h2>
         <div id="map"></div>
         <p style="margin-top: 15px; background: #f8f9fa; padding: 15px; border-radius: 15px;">📍 Dit is de plek waar Jezus vaak bad met zijn discipelen.</p>
     </div>
 
-    <!-- Scherm 3: Bijbelverhaal (scrollbaar) -->
+    <!-- Scherm 3: Bijbelverhaal -->
     <div id="screen3" class="screen">
         <h2>📖 Jezus bidt op de Olijfberg</h2>
         <div class="bijbelverhaal">
             <div class="bijbeltekst">
                 <p><strong style="color: #1e3799;">Jezus bidt op de Olijfberg</strong></p>
                 <p>Jezus ging de stad uit. Hij ging naar de Olijfberg, zoals altijd. De leerlingen gingen met hem mee. Toen ze op de berg waren, zei Jezus: 'Bid God om kracht, zodat je geen verkeerde keuze maakt.' Daarna liep hij zelf een stukje verder. Hij knielde en begon te bidden: 'Vader, als u het wilt, houd dan dit zware lijden bij mij weg! Maar doe wat u zelf wilt, niet wat ik wil.' Toen kwam er een engel uit de hemel om Jezus kracht te geven. Jezus was bang en ging steeds harder bidden. Zijn zweet viel in grote druppels op de grond. Het leken wel druppels bloed.</p>
-                
                 <p>Toen Jezus klaar was met bidden, stond Hij op en ging naar zijn leerlingen. Die waren van verdriet in slaap gevallen. Jezus zei: 'Waarom slapen jullie? Bid God om kracht, zodat je geen verkeerde keuze maakt.'</p>
-                
                 <p><strong style="color: #e74c3c;">Judas verraadt Jezus</strong></p>
                 <p>Terwijl Jezus dat zei, kwam er een groep mannen aan. Judas, één van de twaalf leerlingen, liep voorop. Hij ging naar Jezus toe en groette hem met een kus. Maar Jezus zei: 'Judas, verraad je de Mensenzoon met een kus?'</p>
-                
                 <p>Toen de leerlingen begrepen wat er ging gebeuren, vroegen ze: 'Heer, zullen we onze zwaarden pakken?' En één van de leerlingen pakte zijn zwaard en sloeg de knecht van de hogepriester. Hij sloeg zijn rechteroor eraf. Maar Jezus zei: 'Stop, genoeg!' En hij pakte het oor en maakte de man weer beter.</p>
-                
                 <p>Er waren priesters, officieren van de tempel en leiders van het volk meegekomen om Jezus gevangen te nemen. Jezus zei tegen hen: 'Jullie zijn hier gekomen met zwaarden en stokken. Alsof ik een gevaarlijke misdadiger ben! Elke dag was ik bij jullie in de tempel, maar toen namen jullie mij niet gevangen. Nu is het moment gekomen waarop jullie gewacht hebben. Nu laat de duisternis haar macht zien.'</p>
-                
                 <p style="font-style: italic; color: #666; margin-top: 15px;">(Lucas 22:39-53)</p>
             </div>
         </div>
-        
         <div style="background: #fff3cd; border-left: 5px solid #ffc107; padding: 15px; border-radius: 10px; margin-top: 15px;">
             <p style="margin: 0;"><strong>💭 Om over na te denken:</strong><br>Jezus zei: "Doe wat U zelf wilt, niet wat ik wil." Vind jij het moeilijk om te doen wat God wil, of juist niet?</p>
         </div>
     </div>
 
-    <!-- Scherm 4: Rad van Fortuin + 6 Stellingen -->
+    <!-- Scherm 4: Rad van Fortuin met 6 losse stellingen -->
     <div id="screen4" class="screen">
         <h2>🎡 Rad van Fortuin</h2>
         <div class="wheel-container">
@@ -151,18 +149,14 @@
         <div id="wheel-number">Klik op de knop om te draaien!</div>
         <button onclick="spinWheel()" class="btn" style="background: #f6b93b; color: #1e3799;">🎲 Draai aan het rad!</button>
         
-        <div id="stellingen-container" style="display: none; margin-top: 30px;">
-            <h3>📝 Stellingen - schrijf jouw idee op!</h3>
+        <!-- Container voor alle stellingen (1 per keer zichtbaar) -->
+        <div id="stellingen-container" style="margin-top: 30px;">
+            <h3>📝 Huidige stelling:</h3>
             <div id="stellingen-lijst"></div>
-        </div>
-        
-        <div id="antwoorden-overzicht" style="margin-top: 30px; display: none;">
-            <h3>👀 Wat vinden de anderen?</h3>
-            <div id="antwoorden-grid"></div>
         </div>
     </div>
 
-    <!-- Scherm 5: Drag & Drop Gebeden met timer -->
+    <!-- Scherm 5: Drag & Drop Gebeden -->
     <div id="screen5" class="screen">
         <h2>🙏 Bij welk gebed hoort wie?</h2>
         <div class="timer" id="drag-timer">⏱️ Tijd: 0:00</div>
@@ -172,7 +166,7 @@
         <div id="match-result" style="text-align: center; margin-top: 15px; font-weight: bold;"></div>
     </div>
 
-    <!-- Scherm 6: Woordveld "God is machtig" -->
+    <!-- Scherm 6: Woordveld -->
     <div id="screen6" class="screen">
         <h2>🔤 Woordveld</h2>
         <p style="text-align: center;">Vorm de woorden: <strong>"GOD IS MACHTIG"</strong></p>
@@ -180,20 +174,21 @@
         
         <div class="woord-oplossing" id="woord-oplossing">_ _ _   _ _   _ _ _ _ _ _</div>
         
-        <div class="woordveld-grid" id="woordveld-grid">
-            <!-- Letters worden hier ingeladen met JS -->
-        </div>
+        <div class="woordveld-grid" id="woordveld-grid"></div>
         
         <button onclick="checkWoord()" class="btn" style="background: #20bf6b;">✅ Controleer</button>
         <button onclick="resetWoord()" class="btn" style="background: #e55039;">🔄 Opnieuw</button>
         <div id="woord-result" style="text-align: center; margin-top: 15px; font-weight: bold;"></div>
     </div>
 
-    <!-- Scherm 7: Doolhof + Leaderboard -->
+    <!-- Scherm 7: Doolhof met beweegbare wachters + Leaderboard -->
     <div id="screen7" class="screen">
         <h2>🏃 Discipelen naar Jezus</h2>
         <div class="timer" id="maze-timer">⏱️ Tijd: 0:00</div>
-        <canvas id="maze-canvas" width="400" height="400"></canvas>
+        <p style="text-align: center; color: #e74c3c;">🚨 Pas op! Wachters bewegen elke 2 seconden!</p>
+        <div class="maze-container">
+            <canvas id="maze-canvas" width="600" height="400"></canvas>
+        </div>
         <div class="controls">
             <button class="control-btn" onclick="moveDisciple('up')">↑</button>
             <button class="control-btn" onclick="moveDisciple('left')">←</button>
@@ -201,7 +196,6 @@
             <button class="control-btn" onclick="moveDisciple('right')">→</button>
         </div>
         <button onclick="finishMaze()" class="btn" style="background: #20bf6b;">🏁 Jezus bereikt!</button>
-        <p style="text-align: center; margin: 10px 0; color: #666;">🚫 Pas op voor de wachters (rood)!</p>
         
         <!-- Leaderboard -->
         <div class="leaderboard">
@@ -214,7 +208,7 @@
 <script type="module">
     // 1. Firebase imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, push, onValue, set, remove, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, push, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     // 2. Firebase config
     const firebaseConfig = {
@@ -230,7 +224,6 @@
 
     // 3. Globale variabelen
     let currentScreen = 1;
-    let currentStelling = 0;
     let currentUser = null;
     let startTime = null;
     let dragStartTime = null;
@@ -239,6 +232,7 @@
     let dragTimerInterval = null;
     let woordTimerInterval = null;
     let mazeTimerInterval = null;
+    let guardMovementInterval = null;
     
     const stellingen = [
         "Ik ben nooit bang.",
@@ -249,7 +243,7 @@
         "Ik zou graag meer willen weten over wat God precies wil."
     ];
 
-    // 4. Login functie met starttijd
+    // 4. Login functie
     window.saveUser = () => {
         const name = document.getElementById('name-input').value.trim();
         if(name) {
@@ -257,7 +251,6 @@
             startTime = Date.now();
             localStorage.setItem('mijnNaam', name);
             
-            // Sla gebruiker op met starttijd
             push(ref(db, 'users'), { 
                 name: name, 
                 startTime: startTime,
@@ -268,7 +261,7 @@
         }
     };
 
-    // 5. Live feed met tijden
+    // 5. Live feed
     const nameList = document.getElementById('name-list');
     onValue(ref(db, 'users'), (snapshot) => {
         nameList.innerHTML = "";
@@ -286,11 +279,13 @@
 
     // 6. Reset functie
     window.resetAllData = () => {
-        if(confirm('⚠️ Weet je zeker dat je ALLES wilt resetten? Alle namen, tijden en antwoorden worden gewist!')) {
+        if(confirm('⚠️ Weet je zeker dat je ALLES wilt resetten?')) {
             remove(ref(db, 'users'));
             remove(ref(db, 'antwoorden'));
             remove(ref(db, 'leaderboard'));
             remove(ref(db, 'currentScreen'));
+            
+            if(guardMovementInterval) clearInterval(guardMovementInterval);
             
             currentScreen = 1;
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -300,18 +295,19 @@
             localStorage.clear();
             document.getElementById('name-input').value = '';
             
-            // Reset alle timers
             stopAllTimers();
-            
             alert('Alles is gereset!');
         }
     };
+
+    document.getElementById('reset-btn').addEventListener('click', resetAllData);
 
     // 7. Timer functies
     function stopAllTimers() {
         if(dragTimerInterval) clearInterval(dragTimerInterval);
         if(woordTimerInterval) clearInterval(woordTimerInterval);
         if(mazeTimerInterval) clearInterval(mazeTimerInterval);
+        if(guardMovementInterval) clearInterval(guardMovementInterval);
     }
 
     function formatTime(ms) {
@@ -328,15 +324,16 @@
         document.getElementById(`screen${currentScreen}`).classList.add('active');
         document.getElementById('screen-indicator').textContent = `Scherm ${currentScreen}/7`;
         
-        // Start timers voor specifieke schermen
         if(currentScreen === 5) startDragTimer();
         if(currentScreen === 6) startWoordTimer();
-        if(currentScreen === 7) startMazeTimer();
+        if(currentScreen === 7) {
+            startMazeTimer();
+            startGuardMovement();
+        }
         
         set(ref(db, 'currentScreen'), currentScreen);
     });
 
-    // 9. Luister naar schermwijzigingen
     onValue(ref(db, 'currentScreen'), (snapshot) => {
         if(snapshot.exists() && snapshot.val() !== currentScreen) {
             currentScreen = snapshot.val();
@@ -345,7 +342,7 @@
         }
     });
 
-    // 10. Google Maps
+    // 9. Google Maps
     window.initMap = function() {
         const olijfberg = { lat: 31.7778, lng: 35.2456 };
         const map = new google.maps.Map(document.getElementById('map'), {
@@ -356,7 +353,38 @@
         new google.maps.Marker({ position: olijfberg, map: map, title: 'Olijfberg' });
     };
 
-    // 11. Rad van Fortuin
+    // 10. Rad van Fortuin - Alleen 1 stelling per keer
+    function initStellingen() {
+        const container = document.getElementById('stellingen-lijst');
+        container.innerHTML = '';
+        
+        stellingen.forEach((stelling, index) => {
+            const stellingDiv = document.createElement('div');
+            stellingDiv.id = `stelling-${index+1}`;
+            stellingDiv.className = 'stelling-card';
+            stellingDiv.innerHTML = `
+                <strong>Stelling ${index+1}:</strong> ${stelling}
+                <textarea id="antwoord-${index+1}" placeholder="Jouw gedachten..." rows="2"></textarea>
+                <button onclick="saveAnswer(${index+1})" class="btn" style="padding: 10px;">💾 Opslaan</button>
+                <div class="stelling-feed">
+                    <h4>📱 Antwoorden van anderen:</h4>
+                    <div id="feed-stelling-${index+1}" class="antwoorden-grid"></div>
+                </div>
+            `;
+            container.appendChild(stellingDiv);
+        });
+        
+        // Zet alle stellingen onzichtbaar
+        hideAllStellingen();
+    }
+
+    function hideAllStellingen() {
+        for(let i = 1; i <= 6; i++) {
+            const el = document.getElementById(`stelling-${i}`);
+            if(el) el.classList.remove('active-stelling');
+        }
+    }
+
     window.spinWheel = () => {
         const wheel = document.getElementById('wheel');
         const spin = Math.floor(Math.random() * 360) + 720;
@@ -365,34 +393,20 @@
         setTimeout(() => {
             const degrees = spin % 360;
             const segment = Math.floor(degrees / 60) + 1;
-            currentStelling = segment;
+            
             document.getElementById('wheel-number').textContent = `Stelling ${segment}: ${stellingen[segment-1]}`;
             
-            document.getElementById('stellingen-container').style.display = 'block';
-            document.getElementById('antwoorden-overzicht').style.display = 'block';
+            // Verberg alle stellingen, toon alleen de gekozen
+            hideAllStellingen();
+            const activeStelling = document.getElementById(`stelling-${segment}`);
+            if(activeStelling) {
+                activeStelling.classList.add('active-stelling');
+            }
             
-            loadStellingen();
+            // Laad antwoorden voor alle stellingen (voor de feeds)
+            loadAnswers();
         }, 3000);
     };
-
-    // 12. Stellingen
-    function loadStellingen() {
-        const container = document.getElementById('stellingen-lijst');
-        container.innerHTML = '';
-        
-        stellingen.forEach((stelling, index) => {
-            const card = document.createElement('div');
-            card.className = 'stelling-card';
-            card.innerHTML = `
-                <strong>Stelling ${index+1}:</strong> ${stelling}
-                <textarea id="antwoord-${index+1}" placeholder="Jouw gedachten..." rows="2"></textarea>
-                <button onclick="saveAnswer(${index+1})" class="btn" style="padding: 10px;">💾 Opslaan</button>
-            `;
-            container.appendChild(card);
-        });
-        
-        loadAnswers();
-    }
 
     window.saveAnswer = (stellingNr) => {
         const naam = currentUser || localStorage.getItem('mijnNaam') || 'Anoniem';
@@ -408,20 +422,9 @@
     };
 
     function loadAnswers() {
-        const grid = document.getElementById('antwoorden-grid');
-        grid.innerHTML = '';
-        
         for(let i = 1; i <= 6; i++) {
-            const stellingDiv = document.createElement('div');
-            stellingDiv.innerHTML = `<h4>Stelling ${i}</h4>`;
-            const antwoordenDiv = document.createElement('div');
-            antwoordenDiv.className = 'antwoorden-grid';
-            antwoordenDiv.id = `antwoorden-stelling${i}`;
-            stellingDiv.appendChild(antwoordenDiv);
-            grid.appendChild(stellingDiv);
-            
             onValue(ref(db, `antwoorden/stelling${i}`), (snapshot) => {
-                const container = document.getElementById(`antwoorden-stelling${i}`);
+                const container = document.getElementById(`feed-stelling-${i}`);
                 if(container) {
                     container.innerHTML = '';
                     if(snapshot.exists()) {
@@ -437,7 +440,7 @@
         }
     }
 
-    // 13. Drag & Drop met timer
+    // 11. Drag & Drop (zelfde als eerder)
     function startDragTimer() {
         dragStartTime = Date.now();
         if(dragTimerInterval) clearInterval(dragTimerInterval);
@@ -516,7 +519,6 @@
             document.getElementById('match-result').innerHTML = `🎉 Geweldig! Tijd: ${formatTime(tijd)}`;
             if(dragTimerInterval) clearInterval(dragTimerInterval);
             
-            // Sla tijd op in leaderboard
             push(ref(db, 'leaderboard/drag'), {
                 naam: currentUser,
                 tijd: tijd,
@@ -527,7 +529,7 @@
         }
     };
 
-    // 14. Woordveld "GOD IS MACHTIG"
+    // 12. Woordveld
     function startWoordTimer() {
         woordStartTime = Date.now();
         if(woordTimerInterval) clearInterval(woordTimerInterval);
@@ -611,23 +613,21 @@
         document.getElementById('woord-result').innerHTML = '';
     };
 
-    // 15. Doolhof met timer
-    function startMazeTimer() {
-        mazeStartTime = Date.now();
-        if(mazeTimerInterval) clearInterval(mazeTimerInterval);
-        mazeTimerInterval = setInterval(() => {
-            if(mazeStartTime) {
-                const elapsed = Date.now() - mazeStartTime;
-                document.getElementById('maze-timer').textContent = `⏱️ Tijd: ${formatTime(elapsed)}`;
-            }
-        }, 100);
-    }
-
+    // 13. Doolhof met beweegbare wachters (10x15 grid)
     let maze = {
+        width: 15,
+        height: 10,
         disciple: { x: 0, y: 0 },
-        jesus: { x: 9, y: 9 },
-        guards: [{x: 3, y: 3}, {x: 5, y: 5}, {x: 7, y: 2}, {x: 2, y: 7}],
-        bushes: [{x: 1, y: 1}, {x: 2, y: 4}, {x: 6, y: 7}, {x: 8, y: 3}, {x: 4, y: 4}]
+        jesus: { x: 14, y: 9 },
+        guards: [
+            {x: 3, y: 2}, {x: 5, y: 4}, {x: 7, y: 3}, {x: 9, y: 6},
+            {x: 11, y: 5}, {x: 4, y: 7}, {x: 8, y: 8}, {x: 12, y: 4}
+        ],
+        bushes: [
+            {x: 1, y: 1}, {x: 2, y: 3}, {x: 4, y: 2}, {x: 6, y: 5},
+            {x: 8, y: 2}, {x: 10, y: 7}, {x: 12, y: 3}, {x: 13, y: 6},
+            {x: 3, y: 8}, {x: 5, y: 9}, {x: 7, y: 7}, {x: 9, y: 4}
+        ]
     };
 
     function drawMaze() {
@@ -636,18 +636,21 @@
         const ctx = canvas.getContext('2d');
         const cellSize = 40;
         
-        ctx.clearRect(0, 0, 400, 400);
+        ctx.clearRect(0, 0, 600, 400);
         
         // Teken grid
         ctx.strokeStyle = '#666';
-        for(let i = 0; i <= 10; i++) {
+        ctx.lineWidth = 1;
+        for(let i = 0; i <= maze.width; i++) {
             ctx.beginPath();
             ctx.moveTo(i * cellSize, 0);
             ctx.lineTo(i * cellSize, 400);
             ctx.stroke();
+        }
+        for(let i = 0; i <= maze.height; i++) {
             ctx.beginPath();
             ctx.moveTo(0, i * cellSize);
-            ctx.lineTo(400, i * cellSize);
+            ctx.lineTo(600, i * cellSize);
             ctx.stroke();
         }
         
@@ -690,19 +693,73 @@
         ctx.fillText('✝️', maze.jesus.x * cellSize + 12, maze.jesus.y * cellSize + 28);
     }
 
+    // Bewegende wachters
+    function moveGuards() {
+        maze.guards = maze.guards.map(guard => {
+            const directions = [
+                {x: 0, y: -1}, {x: 0, y: 1}, {x: -1, y: 0}, {x: 1, y: 0}
+            ];
+            const randomDir = directions[Math.floor(Math.random() * directions.length)];
+            
+            let newX = guard.x + randomDir.x;
+            let newY = guard.y + randomDir.y;
+            
+            // Blijf binnen het grid
+            if(newX >= 0 && newX < maze.width && newY >= 0 && newY < maze.height) {
+                // Check of nieuwe positie niet op Jezus of struik is
+                const onBush = maze.bushes.some(b => b.x === newX && b.y === newY);
+                const onJesus = (newX === maze.jesus.x && newY === maze.jesus.y);
+                
+                if(!onBush && !onJesus) {
+                    return {x: newX, y: newY};
+                }
+            }
+            return guard;
+        });
+        
+        drawMaze();
+        
+        // Check of discipel gepakt is
+        const caught = maze.guards.some(g => g.x === maze.disciple.x && g.y === maze.disciple.y);
+        if(caught) {
+            alert('👮 De wachters hebben je gepakt! Je begint opnieuw!');
+            resetMaze();
+        }
+    }
+
+    function startGuardMovement() {
+        if(guardMovementInterval) clearInterval(guardMovementInterval);
+        guardMovementInterval = setInterval(moveGuards, 2000); // Beweeg elke 2 seconden
+    }
+
+    function startMazeTimer() {
+        mazeStartTime = Date.now();
+        if(mazeTimerInterval) clearInterval(mazeTimerInterval);
+        mazeTimerInterval = setInterval(() => {
+            if(mazeStartTime) {
+                const elapsed = Date.now() - mazeStartTime;
+                document.getElementById('maze-timer').textContent = `⏱️ Tijd: ${formatTime(elapsed)}`;
+            }
+        }, 100);
+    }
+
     window.moveDisciple = (direction) => {
         const newPos = { ...maze.disciple };
         
         switch(direction) {
             case 'up': if(newPos.y > 0) newPos.y--; break;
-            case 'down': if(newPos.y < 9) newPos.y++; break;
+            case 'down': if(newPos.y < maze.height - 1) newPos.y++; break;
             case 'left': if(newPos.x > 0) newPos.x--; break;
-            case 'right': if(newPos.x < 9) newPos.x++; break;
+            case 'right': if(newPos.x < maze.width - 1) newPos.x++; break;
         }
         
+        // Check struiken (veilig)
+        const onBush = maze.bushes.some(b => b.x === newPos.x && b.y === newPos.y);
+        
+        // Check wachters
         const hitGuard = maze.guards.some(g => g.x === newPos.x && g.y === newPos.y);
         if(hitGuard) {
-            alert('👮 Wachter! Opnieuw!');
+            alert('👮 Wachter! Je begint opnieuw!');
             resetMaze();
             return;
         }
@@ -716,6 +773,7 @@
             const tijd = Date.now() - mazeStartTime;
             alert(`🎉 Je hebt Jezus gevonden in ${formatTime(tijd)}!`);
             if(mazeTimerInterval) clearInterval(mazeTimerInterval);
+            if(guardMovementInterval) clearInterval(guardMovementInterval);
             
             push(ref(db, 'leaderboard/maze'), {
                 naam: currentUser,
@@ -723,7 +781,6 @@
                 formattedTime: formatTime(tijd)
             });
             
-            // Update leaderboard display
             loadLeaderboard();
         } else {
             alert('Je bent nog niet bij Jezus!');
@@ -735,29 +792,24 @@
         drawMaze();
     };
 
-    // 16. Leaderboard
+    // 14. Leaderboard
     function loadLeaderboard() {
         const leaderboardList = document.getElementById('leaderboard-list');
-        
-        // Haal alle tijden op en sorteer
-        const allTimes = [];
         
         onValue(ref(db, 'leaderboard'), (snapshot) => {
             if(snapshot.exists()) {
                 const data = snapshot.val();
                 leaderboardList.innerHTML = '';
                 
-                // Verzamel alle tijden
+                const allTimes = [];
                 Object.values(data).forEach(category => {
                     Object.values(category).forEach(entry => {
                         allTimes.push(entry);
                     });
                 });
                 
-                // Sorteer op tijd (snelste eerst)
                 allTimes.sort((a, b) => a.tijd - b.tijd);
                 
-                // Toon top 10
                 allTimes.slice(0, 10).forEach((entry, index) => {
                     const div = document.createElement('div');
                     div.className = `leaderboard-item rank-${index + 1}`;
@@ -768,7 +820,7 @@
         }, { onlyOnce: true });
     }
 
-    // 17. Initialisatie
+    // 15. Initialisatie
     window.onload = () => {
         const savedName = localStorage.getItem('mijnNaam');
         if(savedName) {
@@ -779,6 +831,7 @@
             localStorage.setItem('mijnNaam', e.target.value);
         });
         
+        initStellingen();
         initDragDrop();
         initWoordveld();
         drawMaze();
