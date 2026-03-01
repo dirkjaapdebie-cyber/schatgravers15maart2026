@@ -17,9 +17,40 @@
         .screen.active { display: flex; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        #nav-bar { background: #1e3799; color: white; padding: 15px; border-radius: 50px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .nav-btn { background: #f6b93b; border: none; padding: 10px 25px; border-radius: 30px; font-weight: bold; cursor: pointer; color: #1e3799; font-size: 1.1rem; box-shadow: 0 3px 0 #b86d0c; }
-        #screen-title { font-weight: 600; font-size: 1.2rem; }
+        #nav-bar { 
+            background: #1e3799; 
+            color: white; 
+            padding: 12px; 
+            border-radius: 50px; 
+            margin-bottom: 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .nav-btn { 
+            background: #f6b93b; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 30px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            color: #1e3799; 
+            font-size: 1rem; 
+            box-shadow: 0 3px 0 #b86d0c;
+        }
+        #reset-btn {
+            background: #e55039;
+            color: white;
+            box-shadow: 0 3px 0 #b71540;
+        }
+        #screen-title { font-weight: 600; font-size: 1.2rem; padding: 0 10px; }
 
         h2 { color: #1e3799; margin-bottom: 15px; font-size: 1.8rem; text-align: center; }
         input, textarea { width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #ddd; border-radius: 15px; font-family: 'Fredoka', sans-serif; font-size: 16px; }
@@ -104,7 +135,7 @@
         .letter-tile.selected { background: #f6b93b; color: #1e3799; transform: scale(0.95); }
         .target-word { font-size: 2rem; letter-spacing: 10px; text-align: center; margin: 20px 0; font-weight: bold; color: #1e3799; }
 
-        /* Scherm 7 - Doolhof */
+        /* Scherm 7 - Doolhof met bewegende Jezus */
         .maze-container { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
         #mazeCanvas { 
             width: 1000px; 
@@ -148,6 +179,16 @@
             font-weight: bold;
             animation: pulse 1s infinite;
         }
+        .jesus-indicator { 
+            background: #f1c40f; 
+            color: #1e3799; 
+            padding: 10px; 
+            border-radius: 50px; 
+            text-align: center; 
+            margin: 10px 0;
+            font-weight: bold;
+            transition: all 0.5s;
+        }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
     </style>
 </head>
@@ -156,7 +197,10 @@
 <div id="app">
     <div id="nav-bar">
         <span id="screen-title">Inloggen</span>
-        <button class="nav-btn" onclick="nextScreen()">Volgende ➔</button>
+        <div class="nav-buttons">
+            <button class="nav-btn" id="reset-btn" onclick="resetAllData()">🔄 Reset</button>
+            <button class="nav-btn" onclick="nextScreen()">Volgende ➔</button>
+        </div>
     </div>
 
     <!-- Scherm 1: Inloggen -->
@@ -232,10 +276,11 @@
         <div id="wordResult" style="text-align:center; margin-top:10px;"></div>
     </div>
 
-    <!-- Scherm 7: GROOT Labyrinth met ACTIEVE wachters -->
+    <!-- Scherm 7: Doolhof met BEWEGENDE JEZUS -->
     <div id="screen7" class="screen">
-        <h2>🏃 GROOT Labyrinth</h2>
+        <h2>🏃 Jezus komt je tegemoet!</h2>
         <div class="danger-indicator" id="guardWarning">🚨 8 WACHTERS ACHTERVOLGEN JE! 🚨</div>
+        <div class="jesus-indicator" id="jesusDistance">✝️ Jezus is nog ver weg...</div>
         <div class="maze-container">
             <canvas id="mazeCanvas" width="1000" height="600"></canvas>
         </div>
@@ -245,7 +290,7 @@
             <button class="maze-btn" onclick="moveDisciple(0,1)">↓</button>
             <button class="maze-btn" onclick="moveDisciple(1,0)">→</button>
         </div>
-        <button class="btn" style="background:#20bf6b;" onclick="finishMaze()">🏁 Bij Jezus</button>
+        <button class="btn" style="background:#20bf6b;" onclick="finishMaze()">🏁 Omhels Jezus</button>
         <button class="btn" style="background:#e55039;" onclick="resetMaze()">🔄 Reset doolhof</button>
     </div>
 </div>
@@ -270,7 +315,10 @@
     let currentStelling = 0;
     let selectedLetters = [];
     let guardInterval;
+    let jesusMoveInterval;
+    let distanceInterval;
     let gameActive = true;
+    let gameStartTime;
     let dragMatches = {};
     
     const stellingen = [
@@ -305,6 +353,57 @@
     const words = ['GETSEMANE', 'OLIJFBERG', 'JEZUS', 'NARCISSEN', 'OPBLOEIEN'];
     let currentWord = '';
     
+    // ========== RESET ALLES ==========
+    window.resetAllData = function() {
+        if(confirm('⚠️ Weet je zeker dat je ALLES wilt resetten?\n\n- Alle namen worden gewist\n- Alle antwoorden worden gewist\n- Je gaat terug naar scherm 1')) {
+            
+            // 1. Wis alle Firebase data
+            db.ref('spelers').remove();
+            db.ref('antwoorden').remove();
+            db.ref('leaderboard').remove();
+            
+            // 2. Stop alle intervals
+            if(guardInterval) clearInterval(guardInterval);
+            if(jesusMoveInterval) clearInterval(jesusMoveInterval);
+            if(distanceInterval) clearInterval(distanceInterval);
+            
+            // 3. Reset naar scherm 1
+            currentScreen = 1;
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen1').classList.add('active');
+            document.getElementById('screen-title').innerText = 'Inloggen';
+            
+            // 4. Reset lokale variabelen
+            currentUser = '';
+            currentStelling = 0;
+            selectedLetters = [];
+            gameActive = true;
+            dragMatches = {};
+            
+            // 5. Reset invoervelden
+            document.getElementById('playerName').value = '';
+            localStorage.removeItem('spelerNaam');
+            
+            // 6. Reset doolhof
+            resetMaze();
+            
+            // 7. Reset rad
+            document.getElementById('wheel').style.transform = 'rotate(0deg)';
+            document.getElementById('currentStelling').innerHTML = '';
+            
+            // 8. Leeg stellingen container
+            document.getElementById('stellingenContainer').innerHTML = '';
+            
+            // 9. Leeg drag & drop
+            document.getElementById('dragDropArea').innerHTML = '';
+            
+            // 10. Reset woordveld
+            resetWordGame();
+            
+            alert('✅ Alles is gereset! Je kunt opnieuw beginnen.');
+        }
+    };
+    
     // ========== NAVIGATIE ==========
     window.nextScreen = function() {
         document.getElementById(`screen${currentScreen}`).classList.remove('active');
@@ -322,6 +421,10 @@
             initMaze();
             if(guardInterval) clearInterval(guardInterval);
             guardInterval = setInterval(moveGuards, 800);
+            if(jesusMoveInterval) clearInterval(jesusMoveInterval);
+            jesusMoveInterval = setInterval(moveJesusCloser, 2000);
+            if(distanceInterval) clearInterval(distanceInterval);
+            distanceInterval = setInterval(updateJesusDistance, 1000);
         }
     };
     
@@ -573,9 +676,10 @@
         selectedLetters = [];
         document.querySelectorAll('.letter-tile').forEach(t => t.classList.remove('selected'));
         initWordGame();
+        document.getElementById('wordResult').innerHTML = '';
     };
     
-    // ========== SCHERM 7: DOOLHOF ==========
+    // ========== SCHERM 7: DOOLHOF MET BEWEGENDE JEZUS ==========
     let maze = {
         disciple: {x: 2, y: 2},
         jesus: {x: 22, y: 12},
@@ -608,6 +712,7 @@
     
     window.initMaze = function() {
         gameActive = true;
+        gameStartTime = Date.now();
         drawMaze();
     };
     
@@ -680,6 +785,54 @@
         ctx.fillText('✝️', maze.jesus.x*cs + 10, maze.jesus.y*cs + 32);
     }
     
+    // NIEUW: Jezus komt dichterbij naarmate de tijd vordert
+    function moveJesusCloser() {
+        if(!gameActive) return;
+        
+        // Bereken hoe lang de speler al bezig is (max 30 seconden voor volledige beweging)
+        const elapsedSeconds = (Date.now() - gameStartTime) / 1000;
+        const progress = Math.min(elapsedSeconds / 30, 1); // Na 30 sec is Jezus halverwege
+        
+        // Bereken nieuwe positie (interpolatie tussen start en dichtbij)
+        const startX = 22, startY = 12;
+        const targetX = 10, targetY = 6; // Doelpositie dichter bij start
+        
+        let newX = Math.round(startX - (startX - targetX) * progress);
+        let newY = Math.round(startY - (startY - targetY) * progress);
+        
+        // Zorg dat Jezus niet door muren gaat
+        const hitWall = maze.walls.some(w => w.x === newX && w.y === newY);
+        if(!hitWall && (newX !== maze.jesus.x || newY !== maze.jesus.y)) {
+            maze.jesus = {x: newX, y: newY};
+            drawMaze();
+        }
+    }
+    
+    // NIEUW: Update afstandsindicator
+    function updateJesusDistance() {
+        if(!gameActive) return;
+        
+        const distance = Math.sqrt(
+            Math.pow(maze.disciple.x - maze.jesus.x, 2) + 
+            Math.pow(maze.disciple.y - maze.jesus.y, 2)
+        );
+        
+        const indicator = document.getElementById('jesusDistance');
+        if(distance < 5) {
+            indicator.innerHTML = '✝️ Jezus is vlakbij! ✝️';
+            indicator.style.background = '#f1c40f';
+            indicator.style.color = '#1e3799';
+        } else if(distance < 10) {
+            indicator.innerHTML = '✝️ Jezus komt dichterbij... ✝️';
+            indicator.style.background = '#f39c12';
+            indicator.style.color = 'white';
+        } else {
+            indicator.innerHTML = '✝️ Jezus is nog ver weg... ✝️';
+            indicator.style.background = '#e67e22';
+            indicator.style.color = 'white';
+        }
+    }
+    
     window.moveDisciple = function(dx, dy) {
         if(!gameActive) return;
         
@@ -696,28 +849,48 @@
         checkGuardCollision();
     };
     
+    // AANGEPAST: Wachters bewegen met ontzag voor Jezus
     function moveGuards() {
         if(!gameActive) return;
         
         maze.guards = maze.guards.map(guard => {
+            // Bereken afstand tot Jezus
+            const distanceToJesus = Math.sqrt(
+                Math.pow(guard.x - maze.jesus.x, 2) + 
+                Math.pow(guard.y - maze.jesus.y, 2)
+            );
+            
             let dx = maze.disciple.x - guard.x;
             let dy = maze.disciple.y - guard.y;
             
             let newX = guard.x;
             let newY = guard.y;
             
-            if(Math.abs(dx) > Math.abs(dy)) {
-                newX = guard.x + (dx > 0 ? 1 : -1) * guard.speed;
+            // NIEUW: Als Jezus dichtbij is (< 5 stappen), doen wachters een stap TERUG!
+            if(distanceToJesus < 5) {
+                // Wachter deinst terug van Jezus
+                const fearX = guard.x - (maze.jesus.x - guard.x) * 0.5;
+                const fearY = guard.y - (maze.jesus.y - guard.y) * 0.5;
+                newX = Math.round(fearX);
+                newY = Math.round(fearY);
             } else {
-                newY = guard.y + (dy > 0 ? 1 : -1) * guard.speed;
+                // Normale achtervolging
+                if(Math.abs(dx) > Math.abs(dy)) {
+                    newX = guard.x + (dx > 0 ? 1 : -1) * guard.speed;
+                } else {
+                    newY = guard.y + (dy > 0 ? 1 : -1) * guard.speed;
+                }
+                newX = Math.round(newX);
+                newY = Math.round(newY);
             }
             
-            newX = Math.round(newX);
-            newY = Math.round(newY);
-            
+            // Blijf binnen grenzen en niet door muren
             if(newX >= 0 && newX < 25 && newY >= 0 && newY < 15) {
                 const hitWall = maze.walls.some(w => w.x === newX && w.y === newY);
-                if(!hitWall) {
+                const onBush = maze.bushes.some(b => b.x === newX && b.y === newY);
+                
+                // Wachters kunnen niet door struiken
+                if(!hitWall && !onBush) {
                     return {x: newX, y: newY, speed: guard.speed};
                 }
             }
@@ -746,18 +919,39 @@
         }
     }
     
+    // AANGEPAST: Win conditie - omhels Jezus
     window.finishMaze = function() {
-        if(maze.disciple.x === maze.jesus.x && maze.disciple.y === maze.jesus.y) {
+        const distance = Math.sqrt(
+            Math.pow(maze.disciple.x - maze.jesus.x, 2) + 
+            Math.pow(maze.disciple.y - maze.jesus.y, 2)
+        );
+        
+        if(distance < 2) { // Dichtbij genoeg om Jezus te omhelzen
             gameActive = false;
             clearInterval(guardInterval);
-            alert('🎉 GEWELDIG! Je hebt Jezus gevonden in het labyrinth!');
+            clearInterval(jesusMoveInterval);
+            clearInterval(distanceInterval);
+            
+            const elapsedSeconds = ((Date.now() - gameStartTime) / 1000).toFixed(1);
+            alert(`🎉 GEWELDIG! Je hebt Jezus ontmoet in ${elapsedSeconds} seconden!`);
+            
+            // Sla tijd op in Firebase voor leaderboard
+            if(currentUser) {
+                db.ref('leaderboard/maze').push({
+                    naam: currentUser,
+                    tijd: parseFloat(elapsedSeconds),
+                    timestamp: Date.now()
+                });
+            }
         } else {
-            alert('Je bent nog niet bij Jezus! Blijf zoeken...');
+            alert(`Je bent nog ${Math.round(distance)} stappen van Jezus verwijderd!`);
         }
     };
     
+    // AANGEPAST: Reset met nieuwe starttijd
     window.resetMaze = function() {
         maze.disciple = {x: 2, y: 2};
+        maze.jesus = {x: 22, y: 12}; // Jezus terug naar beginpositie
         maze.guards = [
             {x: 8, y: 5, speed: 1.2},
             {x: 12, y: 8, speed: 1.5},
@@ -769,7 +963,12 @@
             {x: 21, y: 5, speed: 1.3}
         ];
         gameActive = true;
+        gameStartTime = Date.now(); // Nieuwe starttijd
         drawMaze();
+        
+        const warning = document.getElementById('guardWarning');
+        warning.innerHTML = '🚨 8 WACHTERS ACHTERVOLGEN JE! 🚨';
+        warning.style.background = '#e74c3c';
     };
     
     // ========== INIT ==========
