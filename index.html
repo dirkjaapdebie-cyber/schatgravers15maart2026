@@ -10,83 +10,118 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
+        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Fredoka', sans-serif; background: #0a3d62; min-height: 100vh; display: flex; justify-content: center; padding: 10px; }
         #app { width: 100%; max-width: 450px; position: relative; }
         .screen { display: none; background: white; border-radius: 30px; padding: 20px; min-height: 85vh; box-shadow: 0 20px 40px rgba(0,0,0,0.4); flex-direction: column; }
         .screen.active { display: flex; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        #nav-bar { background: #1e3799; color: white; padding: 12px; border-radius: 50px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); gap: 10px; }
-        .nav-buttons { display: flex; gap: 10px; }
-        .nav-btn { background: #f6b93b; border: none; padding: 10px 20px; border-radius: 30px; font-weight: bold; cursor: pointer; color: #1e3799; font-size: 1rem; box-shadow: 0 3px 0 #b86d0c; }
+        /* Navigatiebalk */
+        #nav-bar { background: #1e3799; color: white; padding: 15px; border-radius: 50px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); gap: 10px; flex-wrap: wrap; }
+        .nav-buttons { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+        .nav-btn { background: #f6b93b; border: none; padding: 10px 18px; border-radius: 30px; font-weight: bold; cursor: pointer; color: #1e3799; font-size: 0.95rem; box-shadow: 0 3px 0 #b86d0c; transition: all 0.1s; }
+        .nav-btn:active { transform: translateY(4px); box-shadow: none; }
         #reset-btn { background: #e55039; color: white; box-shadow: 0 3px 0 #b71540; }
         #screen-title { font-weight: 600; font-size: 1.2rem; }
+        #adminCode { background: white; border: 2px solid #f6b93b; border-radius: 30px; padding: 8px 12px; font-size: 0.9rem; width: 90px; text-align: center; }
+        #adminCode:focus { outline: none; border-color: #1e3799; }
+        #adminStatus { font-size: 0.8rem; font-weight: bold; animation: pulse 2s infinite; }
 
         h2 { color: #1e3799; margin-bottom: 15px; text-align: center; }
-        input, textarea { width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #ddd; border-radius: 15px; font-family: 'Fredoka', sans-serif; font-size: 16px; }
-        .btn { background: #1e3799; color: white; border: none; padding: 15px; border-radius: 50px; font-weight: bold; width: 100%; cursor: pointer; font-size: 1.1rem; margin: 10px 0; box-shadow: 0 4px #0a266e; }
+        input, textarea { width: 100%; padding: 15px; margin: 8px 0; border: 2px solid #ddd; border-radius: 15px; font-family: 'Fredoka', sans-serif; font-size: 16px; }
+        .btn { background: #1e3799; color: white; border: none; padding: 15px; border-radius: 50px; font-weight: bold; width: 100%; cursor: pointer; font-size: 1.1rem; margin: 8px 0; box-shadow: 0 4px #0a266e; transition: all 0.1s; }
         .btn:active { transform: translateY(4px); box-shadow: none; }
 
         /* Scherm 1 - Login */
-        .live-feed { background: #f1f2f6; padding: 15px; border-radius: 20px; margin-top: 20px; max-height: 250px; overflow-y: auto; }
+        .live-feed { background: #f1f2f6; padding: 15px; border-radius: 20px; margin-top: 20px; max-height: 250px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .name-tag { background: white; padding: 12px; margin: 5px 0; border-radius: 10px; border-left: 5px solid #20bf6b; }
 
-        /* Scherm 2 - Google Maps */
-        #map-container { width: 100%; height: 350px; border-radius: 20px; overflow: hidden; border: 3px solid #ddd; margin: 10px 0; }
+        /* Scherm 2 - Olijfberg met vragen */
+        .vraag-card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.2s; }
+        .vraag-card.vraag1 { border-left: 5px solid #1e3799; }
+        .vraag-card.vraag2 { border-left: 5px solid #20bf6b; }
+        .vraag-card.vraag3 { border-left: 5px solid #e55039; }
+        .vraag-card.vraag4 { border-left: 5px solid #f6b93b; }
+        .vraag-card.vraag5 { border-left: 5px solid #b71540; }
+        .antwoord-input { background: #f8f9fa; border: 2px solid #ddd; border-radius: 12px; padding: 12px; margin: 8px 0; width: 100%; }
+        .antwoord-opgeslagen { background: #c8e6c9; border: 2px solid #20bf6b; color: #1e3799; padding: 8px; border-radius: 30px; text-align: center; font-size: 0.9rem; margin: 5px 0; }
+        .samenwerken-box { background: #fdf6e3; border-radius: 15px; padding: 15px; margin: 15px 0; border: 2px solid #f6b93b; }
+        .antwoord-van-ander { background: white; padding: 10px; margin: 8px 0; border-radius: 10px; border-left: 3px solid #1e3799; font-size: 0.9rem; }
+        .extra-uitdaging { background: #1e3799; color: white; padding: 15px; border-radius: 15px; margin: 15px 0; }
+        .extra-uitdaging summary { font-weight: bold; cursor: pointer; padding: 5px; }
+        .extra-uitdaging p { margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 10px; }
 
         /* Scherm 3 - Bijbelverhaal */
-        .story-box { background: #fdf6e3; padding: 25px; border-radius: 20px; border-left: 8px solid #f6b93b; max-height: 500px; overflow-y: auto; box-shadow: inset 0 0 10px rgba(0,0,0,0.1); }
+        .story-box { background: #fdf6e3; padding: 25px; border-radius: 20px; border-left: 8px solid #f6b93b; max-height: 500px; overflow-y: auto; -webkit-overflow-scrolling: touch; box-shadow: inset 0 0 10px rgba(0,0,0,0.1); }
         .story-text { line-height: 1.8; font-size: 1.1rem; }
         .story-text h3 { color: #1e3799; margin: 15px 0 10px; }
 
         /* Scherm 4 - Rad van Fortuin */
-        .wheel-wrapper { position: relative; width: 280px; height: 280px; margin: 10px auto; }
+        .wheel-wrapper { position: relative; width: 250px; height: 250px; margin: 10px auto; }
         #wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #333; transition: transform 3s cubic-bezier(0.25, 0.1, 0.15, 1); background: conic-gradient(#f6b93b 0deg 60deg, #1e3799 60deg 120deg, #20bf6b 120deg 180deg, #e55039 180deg 240deg, #fa983a 240deg 300deg, #b71540 300deg 360deg); }
         #pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 40px; color: #333; z-index: 10; }
         .stelling-card { background: #f8f9fa; padding: 15px; border-radius: 15px; margin: 15px 0; border: 2px solid #1e3799; display: none; }
         .stelling-card.active { display: block; }
-        .answers-feed { background: #f1f2f6; padding: 10px; border-radius: 10px; margin-top: 10px; max-height: 150px; overflow-y: auto; }
-        .answer-item { background: white; padding: 5px 10px; margin: 3px 0; border-radius: 5px; border-left: 3px solid #20bf6b; font-size: 0.85rem; }
+        .answers-feed { background: #f1f2f6; padding: 10px; border-radius: 10px; margin-top: 10px; max-height: 150px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .answer-item { background: white; padding: 8px 12px; margin: 5px 0; border-radius: 8px; border-left: 3px solid #20bf6b; font-size: 0.9rem; }
         #currentStelling { text-align: center; font-size: 1.3rem; margin: 15px 0; color: #1e3799; font-weight: bold; }
 
-        /* Scherm 5 - LearningApps Embed */
+        /* Scherm 5 - LearningApps */
         .learningapps-container { width: 100%; height: 500px; border-radius: 20px; overflow: hidden; border: 3px solid #1e3799; margin: 10px 0; }
         .learningapps-container iframe { width: 100%; height: 100%; border: 0; }
 
-        /* Scherm 6 - Drag & Drop Gebeden */
-        .drag-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
-        .figuur-col, .gebed-col { background: #f1f2f6; padding: 15px; border-radius: 15px; max-height: 450px; overflow-y: auto; }
-        .figuur-card { background: white; padding: 12px; margin: 8px 0; border-radius: 12px; border: 2px solid #1e3799; cursor: grab; text-align: center; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .figuur-card:active { cursor: grabbing; opacity: 0.8; }
-        .gebed-card { background: #e3f2fd; padding: 12px; margin: 8px 0; border-radius: 12px; border: 2px dashed #1e3799; min-height: 70px; font-size: 0.85rem; transition: all 0.2s; }
-        .gebed-card.matched { background: #c8e6c9; border: 2px solid #20bf6b; border-style: solid; }
-        .match-badge { display: inline-block; background: #20bf6b; color: white; padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; margin-top: 5px; }
+        /* Scherm 6 - Drag & Drop (touch versie) */
+        .drag-container { display: grid; grid-template-columns: 1fr 1.2fr; gap: 15px; margin: 15px 0; }
+        .figuur-col, .gebed-col { background: #f1f2f6; padding: 15px; border-radius: 20px; max-height: 550px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .figuur-card { background: white; padding: 18px 12px; margin: 10px 0; border-radius: 15px; border: 2px solid #1e3799; text-align: center; font-weight: bold; font-size: 1.2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.2s; min-height: 70px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .figuur-card:active { transform: scale(0.98); background: #f6b93b; }
+        .figuur-card.selected { background: #f6b93b; border: 4px solid #1e3799; box-shadow: 0 0 15px rgba(30,55,153,0.5); }
+        .figuur-card.used { opacity: 0.3; pointer-events: none; }
+        .gebed-card { background: #e3f2fd; padding: 15px; margin: 12px 0; border-radius: 15px; border: 2px dashed #1e3799; font-size: 1rem; line-height: 1.4; transition: all 0.2s; min-height: 90px; cursor: pointer; }
+        .gebed-card:active { transform: scale(0.98); background: #bbdefb; }
+        .gebed-card.matched { background: #c8e6c9; border: 3px solid #20bf6b; border-style: solid; }
+        .match-badge { display: inline-block; background: #20bf6b; color: white; padding: 5px 15px; border-radius: 30px; font-size: 0.95rem; margin-top: 8px; font-weight: bold; }
+        .instructie-balk { background: #f6b93b; color: #1e3799; padding: 12px; border-radius: 50px; text-align: center; font-weight: bold; margin-bottom: 15px; animation: pulse 2s infinite; }
 
         /* Scherm 7 - Woordveld */
         .word-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
-        .letter-tile { background: #1e3799; color: white; font-size: 1.8rem; font-weight: bold; padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .letter-tile { background: #1e3799; color: white; font-size: 1.8rem; font-weight: bold; padding: 20px 10px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.2s; min-height: 80px; display: flex; align-items: center; justify-content: center; }
         .letter-tile.selected { background: #f6b93b; color: #1e3799; transform: scale(0.95); }
-        .target-word { font-size: 2rem; letter-spacing: 10px; text-align: center; margin: 20px 0; font-weight: bold; color: #1e3799; }
+        .target-word { font-size: 2rem; letter-spacing: 8px; text-align: center; margin: 20px 0; font-weight: bold; color: #1e3799; word-break: break-all; }
 
-        /* Scherm 8 - Uitdagend Labyrinth */
+        /* Scherm 8 - Doolhof */
         .maze-container { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; background: #2d5a27; border-radius: 20px; border: 4px solid #8B4513; }
-        #mazeCanvas { width: 800px; height: 600px; display: block; margin: 0 auto; background: #2d5a27; }
-        .maze-controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 200px; margin: 20px auto; }
-        .maze-btn { background: #1e3799; color: white; border: none; width: 60px; height: 60px; border-radius: 30px; font-size: 2rem; cursor: pointer; box-shadow: 0 4px #0a266e; display: flex; align-items: center; justify-content: center; }
+        #mazeCanvas { width: 350px; height: 260px; display: block; margin: 0 auto; background: #2d5a27; touch-action: none; }
+        .maze-controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; max-width: 250px; margin: 20px auto; }
+        .maze-btn { background: #1e3799; color: white; border: none; width: 70px; height: 70px; border-radius: 35px; font-size: 2rem; cursor: pointer; box-shadow: 0 4px #0a266e; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
         .maze-btn:active { transform: translateY(4px); box-shadow: none; }
-        .danger-indicator { background: #e74c3c; color: white; padding: 10px; border-radius: 50px; text-align: center; margin: 10px 0; font-weight: bold; animation: pulse 1s infinite; }
-        .jesus-indicator { background: #f1c40f; color: #1e3799; padding: 10px; border-radius: 50px; text-align: center; margin: 10px 0; font-weight: bold; transition: all 0.5s; }
+        .danger-indicator { background: #e74c3c; color: white; padding: 12px; border-radius: 50px; text-align: center; margin: 10px 0; font-weight: bold; animation: pulse 1s infinite; }
+        .jesus-indicator { background: #f1c40f; color: #1e3799; padding: 12px; border-radius: 50px; text-align: center; margin: 10px 0; font-weight: bold; transition: all 0.5s; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
-        .maze-instructions { background: #f8f9fa; padding: 10px; border-radius: 10px; font-size: 0.9rem; margin: 10px 0; }
+
+        @media (max-width: 450px) {
+            #nav-bar { flex-direction: column; align-items: stretch; }
+            .nav-buttons { justify-content: space-between; }
+            #adminCode { width: 100%; }
+            .wheel-wrapper { width: 220px; height: 220px; }
+            .letter-tile { font-size: 1.5rem; padding: 15px 5px; }
+        }
     </style>
 </head>
 <body>
 
 <div id="app">
     <div id="nav-bar">
-        <span id="screen-title">Inloggen</span>
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+            <span id="screen-title">Inloggen</span>
+            <div id="adminStatus" style="font-size: 0.8rem;"></div>
+        </div>
         <div class="nav-buttons">
+            <div id="adminLogin" style="display: flex; gap: 5px; margin-right: 5px;">
+                <input type="password" id="adminCode" placeholder="code" style="width: 80px; padding: 8px; margin: 0; font-size: 0.9rem;">
+                <button class="nav-btn" style="padding: 8px 12px;" onclick="checkAdmin()">🔑</button>
+            </div>
             <button class="nav-btn" id="reset-btn" onclick="resetAllData()">🔄 Reset</button>
             <button class="nav-btn" onclick="nextScreen()">Volgende ➔</button>
         </div>
@@ -104,13 +139,100 @@
         <p style="text-align:center; color:#666; margin-top:10px;"><i>Wacht tot de leider op "Volgende" klikt</i></p>
     </div>
 
-    <!-- Scherm 2: Google Maps Olijfberg -->
+    <!-- Scherm 2: Olijfberg met vragen en samenwerken -->
     <div id="screen2" class="screen">
         <h2>🏔️ De Olijfberg</h2>
-        <div id="map-container">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3392.564547905878!2d35.24222221523456!3d31.778055581285215!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x150329eb965a396b%3A0x6a0531b7474a006e!2sMount%20of%20Olives!5e0!3m2!1sen!2snl!4v1647000000000" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        
+        <div style="background: #e8f4f8; border-radius: 20px; padding: 15px; margin-bottom: 15px;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <span style="font-size: 2rem;">📍</span>
+                <span style="color: #1e3799; font-weight: bold;">Jeruzalem, Israël</span>
+            </div>
+            
+            <img src="https://images.unsplash.com/photo-1547994775-25c2-406e9f7d1b8e?w=400" 
+                 alt="Olijfberg uitzicht" 
+                 style="width: 100%; height: 200px; object-fit: cover; border-radius: 15px; border: 3px solid #1e3799;">
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+                <button class="btn" style="padding: 12px; font-size: 1rem;" onclick="openGoogleMaps()">🗺️ Open in Maps</button>
+                <button class="btn" style="padding: 12px; font-size: 1rem; background: #f6b93b;" onclick="showStreetView()">👀 Street View</button>
+            </div>
         </div>
-        <p style="margin-top:15px;">Dit is de Olijfberg, waar Jezus vaak kwam om te bidden.</p>
+        
+        <!-- 5 Onderzoeksvragen -->
+        <div style="background: #fdf6e3; border-radius: 20px; padding: 20px; margin: 15px 0; border: 3px solid #f6b93b;">
+            <h3 style="color: #1e3799; display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <span style="font-size: 1.8rem;">🔍</span> Onderzoek de Olijfberg!
+            </h3>
+            <p style="margin-bottom: 15px; font-style: italic;">Gebruik Maps of Street View om de antwoorden te vinden:</p>
+            
+            <!-- Vraag 1 -->
+            <div class="vraag-card vraag1" id="vraag1">
+                <p style="font-weight: bold;">1️⃣ Wat zie je vanaf de Olijfberg?</p>
+                <input type="text" id="antwoord1" class="antwoord-input" placeholder="Typ je antwoord...">
+                <button class="btn" style="padding: 10px; font-size: 0.95rem;" onclick="bewaarAntwoord(1)">💾 Antwoord opslaan</button>
+                <div id="samenwerken1" class="samenwerken-box" style="display:none;"></div>
+            </div>
+            
+            <!-- Vraag 2 -->
+            <div class="vraag-card vraag2" id="vraag2">
+                <p style="font-weight: bold;">2️⃣ Hoeveel olijfbomen tel je ongeveer?</p>
+                <input type="text" id="antwoord2" class="antwoord-input" placeholder="Typ je antwoord...">
+                <button class="btn" style="padding: 10px; font-size: 0.95rem; background: #20bf6b;" onclick="bewaarAntwoord(2)">💾 Antwoord opslaan</button>
+                <div id="samenwerken2" class="samenwerken-box" style="display:none;"></div>
+            </div>
+            
+            <!-- Vraag 3 -->
+            <div class="vraag-card vraag3" id="vraag3">
+                <p style="font-weight: bold;">3️⃣ Welke belangrijke gebouwen zie je in de verte?</p>
+                <input type="text" id="antwoord3" class="antwoord-input" placeholder="Typ je antwoord...">
+                <button class="btn" style="padding: 10px; font-size: 0.95rem; background: #e55039;" onclick="bewaarAntwoord(3)">💾 Antwoord opslaan</button>
+                <div id="samenwerken3" class="samenwerken-box" style="display:none;"></div>
+            </div>
+            
+            <!-- Vraag 4 -->
+            <div class="vraag-card vraag4" id="vraag4">
+                <p style="font-weight: bold;">4️⃣ Hoe lang zou je erover doen om naar de top te lopen?</p>
+                <input type="text" id="antwoord4" class="antwoord-input" placeholder="Typ je antwoord...">
+                <button class="btn" style="padding: 10px; font-size: 0.95rem; background: #f6b93b; color: #1e3799;" onclick="bewaarAntwoord(4)">💾 Antwoord opslaan</button>
+                <div id="samenwerken4" class="samenwerken-box" style="display:none;"></div>
+            </div>
+            
+            <!-- Vraag 5 -->
+            <div class="vraag-card vraag5" id="vraag5">
+                <p style="font-weight: bold;">5️⃣ Waarom denk je dat Jezus juist deze berg koos om te bidden?</p>
+                <textarea id="antwoord5" class="antwoord-input" placeholder="Typ je antwoord..." rows="2"></textarea>
+                <button class="btn" style="padding: 10px; font-size: 0.95rem; background: #b71540;" onclick="bewaarAntwoord(5)">💾 Antwoord opslaan</button>
+                <div id="samenwerken5" class="samenwerken-box" style="display:none;"></div>
+            </div>
+            
+            <!-- Voortgang -->
+            <div style="background: #1e3799; color: white; padding: 15px; border-radius: 50px; text-align: center; margin-top: 15px;" id="voortgangOlijfberg">
+                📊 0 van de 5 vragen beantwoord
+            </div>
+        </div>
+        
+        <!-- EXTRA: Samenwerkingsmodus (antwoorden van anderen zien) -->
+        <details class="samenwerken-box" id="samenwerkingsModus" style="margin-top: 10px;">
+            <summary style="font-weight: bold; cursor: pointer; color: #1e3799;">👥 Bekijk antwoorden van klasgenoten</summary>
+            <div id="antwoordenVanAnderen" style="margin-top: 15px;"></div>
+        </details>
+        
+        <!-- EXTRA UITDAGING: Voor snelle kijkers -->
+        <details class="extra-uitdaging">
+            <summary>🌟 EXTRA UITDAGING voor snelle kijkers 🌟</summary>
+            <p>🔎 <strong>Zoekopdracht 1:</strong> Kun je de Kerk van alle Naties vinden? (Hij staat aan de voet van de Olijfberg)</p>
+            <p>📸 <strong>Zoekopdracht 2:</strong> Zoek een foto van de oude olijfbomen. Sommigen zijn wel 900 jaar oud!</p>
+            <p>🗺️ <strong>Zoekopdracht 3:</strong> Meet met Google Maps hoe ver het is van de Olijfberg naar de Tempelberg.</p>
+            <p>📖 <strong>Zoekopdracht 4:</strong> In welk bijbelboek staat het verhaal van Jezus op de Olijfberg nog meer?</p>
+            <p>⭐ <strong>Bonus:</strong> Zoek uit wat de naam "Getsemane" betekent!</p>
+        </details>
+        
+        <!-- Bijbeltekst -->
+        <div style="background: #f1f2f6; padding: 15px; border-radius: 15px; margin-top: 15px;">
+            <p style="font-style: italic;">"Jezus ging met zijn leerlingen naar de Olijfberg, zoals Hij gewend was."</p>
+            <p style="text-align: right; font-weight: bold;">— Lucas 22:39</p>
+        </div>
     </div>
 
     <!-- Scherm 3: Bijbelverhaal -->
@@ -132,7 +254,7 @@
         </div>
     </div>
 
-    <!-- Scherm 4: RAD VAN FORTUIN + 6 STELLINGEN -->
+    <!-- Scherm 4: Rad van Fortuin -->
     <div id="screen4" class="screen">
         <h2>🎡 Rad van Fortuin</h2>
         <div class="wheel-wrapper">
@@ -144,7 +266,7 @@
         <div id="stellingenContainer"></div>
     </div>
 
-    <!-- Scherm 5: LearningApps Oefening -->
+    <!-- Scherm 5: LearningApps -->
     <div id="screen5" class="screen">
         <h2>🎮 Interactieve Oefening</h2>
         <div class="learningapps-container">
@@ -153,10 +275,12 @@
         <p style="text-align:center; margin-top:10px;">Maak de oefening op je eigen tempo!</p>
     </div>
 
-    <!-- Scherm 6: Drag & Drop Gebeden -->
+    <!-- Scherm 6: Drag & Drop Gebeden (touch versie) -->
     <div id="screen6" class="screen">
         <h2>🙏 Bij welk gebed hoort wie?</h2>
-        <p style="text-align:center; margin-bottom:10px;">Sleep de bijbelfiguur naar het juiste gebed</p>
+        <div class="instructie-balk">
+            👆 Tik op een figuur, dan op een gebed
+        </div>
         <div class="drag-container" id="dragDropArea"></div>
         <button class="btn" style="background:#20bf6b;" onclick="checkAllMatches()">✅ Controleer</button>
         <div id="dragResult" style="text-align:center; margin-top:15px; font-weight:bold;"></div>
@@ -172,16 +296,11 @@
         <div id="wordResult" style="text-align:center; margin-top:10px;"></div>
     </div>
 
-    <!-- Scherm 8: Uitdagend Labyrinth -->
+    <!-- Scherm 8: Doolhof -->
     <div id="screen8" class="screen">
         <h2>🏃 Het Grote Labyrinth</h2>
         <div class="danger-indicator" id="guardWarning">🚨 10 WACHTERS PATROUILLEREN! 🚨</div>
         <div class="jesus-indicator" id="jesusDistance">✝️ Jezus wacht in het midden...</div>
-        <div class="maze-instructions">
-            <strong>🎯 Doel:</strong> Bereik Jezus (gele kruis) zonder gepakt te worden!<br>
-            <strong>🌿 Struiken</strong> zijn veilige schuilplaatsen.<br>
-            <strong>👮 Wachters</strong> bewegen en achtervolgen je. Als Jezus dichtbij is, durven ze niet!
-        </div>
         <div class="maze-container">
             <canvas id="mazeCanvas" width="800" height="600"></canvas>
         </div>
@@ -208,11 +327,14 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    // ========== GLOBALE VARIABELEN ==========
     let currentScreen = 1;
     let currentUser = '';
+    let isAdmin = false;
     let currentStelling = 0;
     let selectedLetters = [];
     let dragMatches = {};
+    let currentSelectedFiguur = null;
     let gameActive = true;
     let gameStartTime;
     let guardInterval, jesusMoveInterval, distanceInterval;
@@ -247,8 +369,28 @@
     const words = ['GETSEMANE', 'OLIJFBERG', 'JEZUS', 'NARCISSEN', 'OPBLOEIEN'];
     let currentWord = '';
 
-    // ========== NAVIGATIE ==========
+    // ========== ADMIN FUNCTIES ==========
+    window.checkAdmin = function() {
+        const adminCode = document.getElementById('adminCode').value.trim();
+        if(adminCode === 'bie123') {
+            isAdmin = true;
+            document.getElementById('adminCode').value = '';
+            document.getElementById('adminLogin').style.display = 'none';
+            document.getElementById('adminStatus').innerHTML = '✅ Admin modus actief';
+            document.getElementById('adminStatus').style.color = '#20bf6b';
+            alert('👋 Welkom begeleider! Je kunt nu door de schermen navigeren.');
+        } else {
+            alert('❌ Verkeerde code! Alleen de begeleider kan verder.');
+            document.getElementById('adminCode').value = '';
+        }
+    };
+
     window.nextScreen = function() {
+        if(!isAdmin) {
+            alert('🔒 Alleen de begeleider mag naar het volgende scherm. Vraag om de code!');
+            return;
+        }
+        
         document.getElementById(`screen${currentScreen}`).classList.remove('active');
         currentScreen = currentScreen < 8 ? currentScreen + 1 : 1;
         document.getElementById(`screen${currentScreen}`).classList.add('active');
@@ -256,7 +398,7 @@
         const titles = ['', 'Inloggen', 'Olijfberg', 'Verhaal', 'Rad van Fortuin', 'LearningApps', 'Gebeden', 'Woordveld', 'Doolhof'];
         document.getElementById('screen-title').innerText = titles[currentScreen];
 
-        // Initialiseer schermen
+        if(currentScreen === 2) { laadOlijfbergAntwoorden(); startSamenwerken(); }
         if(currentScreen === 4) initStellingen();
         if(currentScreen === 6) initDragDrop();
         if(currentScreen === 7) initWordGame();
@@ -268,6 +410,34 @@
             jesusMoveInterval = setInterval(moveJesusCloser, 1500);
             if(distanceInterval) clearInterval(distanceInterval);
             distanceInterval = setInterval(updateJesusDistance, 1000);
+        }
+    };
+
+    window.resetAllData = function() { 
+        if(!isAdmin) {
+            alert('🔒 Alleen de begeleider kan resetten!');
+            return;
+        }
+        
+        if(confirm("⚠️ Alles wissen?\n\nAlle namen en antwoorden worden gewist!")) { 
+            db.ref('spelers').remove();
+            db.ref('antwoorden').remove();
+            db.ref('leaderboard').remove();
+            db.ref('olijfberg_antwoorden').remove();
+            
+            clearInterval(guardInterval);
+            clearInterval(jesusMoveInterval);
+            clearInterval(distanceInterval);
+            
+            currentScreen = 1;
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen1').classList.add('active');
+            document.getElementById('screen-title').innerText = 'Inloggen';
+            
+            document.getElementById('playerName').value = '';
+            localStorage.removeItem('spelerNaam');
+            
+            if(typeof resetMaze === 'function') resetMaze();
         }
     };
 
@@ -295,6 +465,158 @@
         }
     });
 
+    // ========== SCHERM 2: OLIJFBERG VRAGEN ==========
+    window.bewaarAntwoord = function(vraagNr) {
+        if(!currentUser) {
+            alert('👋 Vul eerst je naam in op het eerste scherm!');
+            return;
+        }
+        
+        const antwoord = document.getElementById(`antwoord${vraagNr}`).value.trim();
+        if(!antwoord) {
+            alert('✏️ Typ eerst je antwoord!');
+            return;
+        }
+        
+        db.ref(`olijfberg_antwoorden/${currentUser}/vraag${vraagNr}`).set({
+            antwoord: antwoord,
+            tijd: Date.now()
+        });
+        
+        const inputField = document.getElementById(`antwoord${vraagNr}`);
+        inputField.style.background = '#c8e6c9';
+        inputField.style.border = '2px solid #20bf6b';
+        inputField.disabled = true;
+        
+        const parentDiv = inputField.closest('.vraag-card');
+        const button = parentDiv.querySelector('.btn');
+        if(button) {
+            button.innerText = '✅ Opgeslagen!';
+            button.disabled = true;
+            button.style.opacity = '0.6';
+        }
+        
+        updateVoortgang();
+        toonMelding(`✅ Antwoord bij vraag ${vraagNr} opgeslagen!`);
+    }
+
+    window.updateVoortgang = function() {
+        if(!currentUser) return;
+        
+        db.ref(`olijfberg_antwoorden/${currentUser}`).once('value', (snapshot) => {
+            if(snapshot.exists()) {
+                const antwoorden = snapshot.val();
+                const aantal = Object.keys(antwoorden).length;
+                document.getElementById('voortgangOlijfberg').innerHTML = `📊 ${aantal} van de 5 vragen beantwoord`;
+                
+                if(aantal === 5) {
+                    document.getElementById('voortgangOlijfberg').style.background = '#20bf6b';
+                    toonMelding('🎉 Super! Je hebt alle vragen beantwoord!');
+                }
+            }
+        });
+    }
+
+    window.laadOlijfbergAntwoorden = function() {
+        if(!currentUser) return;
+        
+        db.ref(`olijfberg_antwoorden/${currentUser}`).once('value', (snapshot) => {
+            if(snapshot.exists()) {
+                const antwoorden = snapshot.val();
+                
+                for(let i=1; i<=5; i++) {
+                    if(antwoorden[`vraag${i}`]) {
+                        const inputField = document.getElementById(`antwoord${i}`);
+                        if(inputField) {
+                            inputField.value = antwoorden[`vraag${i}`].antwoord;
+                            inputField.style.background = '#c8e6c9';
+                            inputField.style.border = '2px solid #20bf6b';
+                            inputField.disabled = true;
+                            
+                            const parentDiv = inputField.closest('.vraag-card');
+                            const button = parentDiv.querySelector('.btn');
+                            if(button) {
+                                button.innerText = '✅ Opgeslagen!';
+                                button.disabled = true;
+                                button.style.opacity = '0.6';
+                            }
+                        }
+                    }
+                }
+                
+                updateVoortgang();
+            }
+        });
+    }
+
+    // SAMENWERKEN: Antwoorden van anderen zien
+    window.startSamenwerken = function() {
+        for(let i=1; i<=5; i++) {
+            db.ref('olijfberg_antwoorden').on('value', (snapshot) => {
+                if(!snapshot.exists()) return;
+                
+                const alleAntwoorden = snapshot.val();
+                const container = document.getElementById(`samenwerken${i}`);
+                if(!container) return;
+                
+                let html = '<strong style="display:block; margin-bottom:8px;">👥 Wat anderen ontdekten:</strong>';
+                let aantal = 0;
+                
+                Object.entries(alleAntwoorden).forEach(([naam, antwoorden]) => {
+                    if(naam !== currentUser && antwoorden[`vraag${i}`]) {
+                        html += `<div class="antwoord-van-ander">👤 <b>${naam}:</b> ${antwoorden[`vraag${i}`].antwoord}</div>`;
+                        aantal++;
+                    }
+                });
+                
+                if(aantal > 0) {
+                    container.style.display = 'block';
+                    container.innerHTML = html;
+                } else {
+                    container.style.display = 'none';
+                }
+            });
+        }
+    }
+
+    window.openGoogleMaps = function() {
+        const lat = 31.7780556;
+        const lng = 35.2422222;
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        
+        if (isIOS) {
+            window.location.href = `http://maps.apple.com/?ll=${lat},${lng}&q=Mount+of+Olives`;
+        } else {
+            window.location.href = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+        }
+    };
+
+    window.showStreetView = function() {
+        const lat = 31.7780556;
+        const lng = 35.2422222;
+        window.open(`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${lat},${lng}`, '_blank');
+    };
+
+    window.toonMelding = function(tekst) {
+        const melding = document.createElement('div');
+        melding.style.position = 'fixed';
+        melding.style.bottom = '20px';
+        melding.style.left = '50%';
+        melding.style.transform = 'translateX(-50%)';
+        melding.style.background = '#1e3799';
+        melding.style.color = 'white';
+        melding.style.padding = '15px 25px';
+        melding.style.borderRadius = '50px';
+        melding.style.boxShadow = '0 5px 15px rgba(0,0,0,0.3)';
+        melding.style.zIndex = '9999';
+        melding.style.fontWeight = 'bold';
+        melding.style.animation = 'fadeIn 0.3s';
+        melding.innerText = tekst;
+        
+        document.body.appendChild(melding);
+        setTimeout(() => melding.remove(), 2000);
+    }
+
     // ========== SCHERM 4: RAD VAN FORTUIN ==========
     window.initStellingen = function() {
         const container = document.getElementById('stellingenContainer');
@@ -308,14 +630,13 @@
             stellingDiv.className = 'stelling-card';
             stellingDiv.innerHTML = `
                 <strong>Stelling ${i+1}:</strong> ${s}
-                <textarea id="antwoord${i+1}" placeholder="Jouw gedachten..." rows="2"></textarea>
-                <button class="btn" style="padding:10px;" onclick="saveAnswer(${i+1})">💾 Opslaan</button>
+                <textarea id="antwoord${i+1}" placeholder="Jouw gedachten..." rows="2" style="margin:10px 0;"></textarea>
+                <button class="btn" style="padding:12px;" onclick="saveAnswer(${i+1})">💾 Opslaan</button>
                 <div class="answers-feed" id="feed${i+1}"></div>
             `;
             container.appendChild(stellingDiv);
         });
         
-        // Live feeds voor elke stelling
         for(let i=1; i<=6; i++) {
             db.ref(`antwoorden/stelling${i}`).on('value', (snap) => {
                 const feed = document.getElementById(`feed${i}`);
@@ -341,7 +662,6 @@
             currentStelling = segment;
             document.getElementById('currentStelling').innerHTML = `🎯 <strong>Stelling ${segment}</strong> is actief!`;
             
-            // Verberg alle stellingen, toon alleen de gekozen
             for(let i=1; i<=6; i++) {
                 const el = document.getElementById(`stelling${i}`);
                 if(el) el.classList.remove('active');
@@ -360,35 +680,48 @@
                 tijd: Date.now()
             });
             document.getElementById(`antwoord${nr}`).value = '';
+            toonMelding('💾 Antwoord opgeslagen!');
         } else {
             alert('Je moet eerst inloggen met je naam!');
         }
     };
 
-    // ========== SCHERM 6: DRAG & DROP ==========
+    // ========== SCHERM 6: DRAG & DROP TOUCH VERSIE ==========
     window.initDragDrop = function() {
         const area = document.getElementById('dragDropArea');
         dragMatches = {};
+        currentSelectedFiguur = null;
         
         area.innerHTML = `
-            <div class="figuur-col" id="figuurContainer"></div>
-            <div class="gebed-col" id="gebedContainer"></div>
+            <div class="figuur-col" id="figuurContainer">
+                <h3 style="text-align:center; margin-bottom:10px;">👤 Tik op een figuur:</h3>
+            </div>
+            <div class="gebed-col" id="gebedContainer">
+                <h3 style="text-align:center; margin-bottom:10px;">🙏 Tik op een gebed:</h3>
+            </div>
         `;
         
         const figuurContainer = document.getElementById('figuurContainer');
         const gebedContainer = document.getElementById('gebedContainer');
         
         const figuren = [...new Set(gebedenMatch.map(g => g.figuur))];
+        
         figuren.forEach(figuur => {
             const div = document.createElement('div');
             div.className = 'figuur-card';
-            div.draggable = true;
             div.innerText = figuur;
             div.id = `fig-${figuur.replace(/\s+/g, '')}`;
-            div.ondragstart = (e) => {
-                e.dataTransfer.setData('text/plain', figuur);
-                e.dataTransfer.effectAllowed = 'move';
-            };
+            
+            div.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                selectFiguur(figuur, div);
+            });
+            
+            div.addEventListener('click', (e) => {
+                e.preventDefault();
+                selectFiguur(figuur, div);
+            });
+            
             figuurContainer.appendChild(div);
         });
 
@@ -397,39 +730,118 @@
             const div = document.createElement('div');
             div.className = 'gebed-card';
             div.id = `gebed-${index}`;
+            div.dataset.figuur = item.figuur;
+            div.dataset.gebed = item.gebed;
             div.innerHTML = `
                 <small>${item.gebed}</small>
                 <div id="match-${index}" class="match-badge" style="display:none;">✓ ${item.figuur}</div>
             `;
             
-            div.ondragover = (e) => e.preventDefault();
-            div.ondrop = (e) => {
+            div.addEventListener('touchstart', (e) => {
                 e.preventDefault();
-                const figuur = e.dataTransfer.getData('text/plain');
-                
-                if(figuur === item.figuur) {
-                    document.getElementById(`match-${index}`).style.display = 'inline-block';
-                    div.classList.add('matched');
-                    dragMatches[`gebed-${index}`] = figuur;
-                    
-                    const figElem = document.getElementById(`fig-${figuur.replace(/\s+/g, '')}`);
-                    if(figElem) {
-                        figElem.draggable = false;
-                        figElem.style.opacity = '0.5';
-                    }
-                } else {
-                    alert(`❌ Dit gebed is niet van ${figuur}. Probeer opnieuw!`);
-                }
-            };
+                matchGebed(div, item.figuur, index);
+            });
+            
+            div.addEventListener('click', (e) => {
+                e.preventDefault();
+                matchGebed(div, item.figuur, index);
+            });
+            
             gebedContainer.appendChild(div);
         });
+        
+        const resetBtn = document.createElement('button');
+        resetBtn.className = 'btn';
+        resetBtn.style.background = '#e55039';
+        resetBtn.style.marginTop = '10px';
+        resetBtn.innerText = '🔄 Opnieuw beginnen';
+        resetBtn.onclick = resetDragDrop;
+        area.parentNode.appendChild(resetBtn);
     };
+
+    function selectFiguur(figuur, element) {
+        if(element.classList.contains('used')) return;
+        
+        document.querySelectorAll('.figuur-card').forEach(f => {
+            f.classList.remove('selected');
+            f.style.background = f.classList.contains('used') ? '#ccc' : 'white';
+            f.style.border = '2px solid #1e3799';
+            f.style.transform = 'scale(1)';
+        });
+        
+        element.classList.add('selected');
+        element.style.background = '#f6b93b';
+        element.style.border = '4px solid #1e3799';
+        element.style.transform = 'scale(1.05)';
+        
+        currentSelectedFiguur = figuur;
+        toonMelding(`👆 Je hebt ${figuur} geselecteerd`);
+    }
+
+    function matchGebed(gebedElement, juisteFiguur, index) {
+        if (!currentSelectedFiguur) {
+            toonMelding('👆 Selecteer eerst een figuur!');
+            return;
+        }
+        
+        if (dragMatches[`gebed-${index}`]) {
+            toonMelding('❌ Dit gebed is al gekoppeld!');
+            return;
+        }
+        
+        if (currentSelectedFiguur === juisteFiguur) {
+            document.getElementById(`match-${index}`).style.display = 'inline-block';
+            gebedElement.classList.add('matched');
+            dragMatches[`gebed-${index}`] = currentSelectedFiguur;
+            
+            const figElem = document.getElementById(`fig-${currentSelectedFiguur.replace(/\s+/g, '')}`);
+            if (figElem) {
+                figElem.classList.add('used');
+                figElem.style.background = '#ccc';
+                figElem.style.pointerEvents = 'none';
+            }
+            
+            toonMelding(`✅ Goed! ${currentSelectedFiguur} hoort bij dit gebed!`);
+            
+            currentSelectedFiguur = null;
+            document.querySelectorAll('.figuur-card').forEach(f => {
+                f.classList.remove('selected');
+                if(!f.classList.contains('used')) {
+                    f.style.background = 'white';
+                }
+                f.style.border = '2px solid #1e3799';
+                f.style.transform = 'scale(1)';
+            });
+            
+            checkAllMatches();
+        } else {
+            toonMelding(`❌ Dit gebed is niet van ${currentSelectedFiguur}`);
+        }
+    }
 
     window.checkAllMatches = function() {
         const totalMatches = Object.keys(dragMatches).length;
-        document.getElementById('dragResult').innerText = totalMatches === gebedenMatch.length 
-            ? '🎉 Geweldig! Alle gebeden zijn goed!'
-            : `Je hebt ${totalMatches} van de ${gebedenMatch.length} goed.`;
+        const resultDiv = document.getElementById('dragResult');
+        
+        if (totalMatches === gebedenMatch.length) {
+            resultDiv.innerHTML = '🎉 🌟 GEWELDIG! Alle gebeden zijn goed! 🌟 🎉';
+            resultDiv.style.color = '#20bf6b';
+            resultDiv.style.fontSize = '1.3rem';
+        } else {
+            const teGaan = gebedenMatch.length - totalMatches;
+            resultDiv.innerHTML = `✅ Je hebt ${totalMatches} van de ${gebedenMatch.length} goed. Nog ${teGaan} te gaan!`;
+            resultDiv.style.color = '#1e3799';
+        }
+    };
+
+    window.resetDragDrop = function() {
+        if (confirm('Wil je opnieuw beginnen?')) {
+            currentSelectedFiguur = null;
+            dragMatches = {};
+            const area = document.getElementById('dragDropArea');
+            area.innerHTML = '';
+            initDragDrop();
+        }
     };
 
     // ========== SCHERM 7: WOORDVELD ==========
@@ -480,6 +892,7 @@
         const current = document.getElementById('targetDisplay').innerText.replace(/ /g, '');
         if(current === currentWord) {
             document.getElementById('wordResult').innerHTML = '🎉 Goed gedaan!';
+            toonMelding('🎉 Goed gedaan!');
         } else {
             document.getElementById('wordResult').innerHTML = '❌ Nog niet goed';
         }
@@ -529,7 +942,7 @@
         const canvas = document.getElementById('mazeCanvas');
         if(!canvas) return;
         const ctx = canvas.getContext('2d');
-        const cs = 40;
+        const cs = 20;
         
         ctx.clearRect(0, 0, 800, 600);
         
@@ -554,36 +967,36 @@
         maze.bushes.forEach(b => {
             ctx.fillStyle = '#2ecc71';
             ctx.beginPath();
-            ctx.arc(b.x*cs + cs/2, b.y*cs + cs/2, 15, 0, 2*Math.PI);
+            ctx.arc(b.x*cs + cs/2, b.y*cs + cs/2, 8, 0, 2*Math.PI);
             ctx.fill();
             ctx.fillStyle = '#27ae60';
-            ctx.font = '20px Arial';
-            ctx.fillText('🌿', b.x*cs + 10, b.y*cs + 28);
+            ctx.font = '10px Arial';
+            ctx.fillText('🌿', b.x*cs + 5, b.y*cs + 12);
         });
         
         maze.guards.forEach(g => {
             ctx.fillStyle = '#e74c3c';
-            ctx.fillRect(g.x*cs + 5, g.y*cs + 5, 30, 30);
+            ctx.fillRect(g.x*cs + 3, g.y*cs + 3, 14, 14);
             ctx.fillStyle = 'white';
-            ctx.font = 'bold 20px Arial';
-            ctx.fillText('👮', g.x*cs + 10, g.y*cs + 30);
+            ctx.font = 'bold 10px Arial';
+            ctx.fillText('👮', g.x*cs + 5, g.y*cs + 12);
         });
         
         ctx.fillStyle = '#3498db';
         ctx.beginPath();
-        ctx.arc(maze.disciple.x*cs + cs/2, maze.disciple.y*cs + cs/2, 15, 0, 2*Math.PI);
+        ctx.arc(maze.disciple.x*cs + cs/2, maze.disciple.y*cs + cs/2, 7, 0, 2*Math.PI);
         ctx.fill();
         ctx.fillStyle = 'white';
-        ctx.font = 'bold 20px Arial';
-        ctx.fillText('👤', maze.disciple.x*cs + 12, maze.disciple.y*cs + 28);
+        ctx.font = 'bold 10px Arial';
+        ctx.fillText('👤', maze.disciple.x*cs + 6, maze.disciple.y*cs + 12);
         
         ctx.fillStyle = '#f1c40f';
         ctx.beginPath();
-        ctx.arc(maze.jesus.x*cs + cs/2, maze.jesus.y*cs + cs/2, 18, 0, 2*Math.PI);
+        ctx.arc(maze.jesus.x*cs + cs/2, maze.jesus.y*cs + cs/2, 9, 0, 2*Math.PI);
         ctx.fill();
         ctx.fillStyle = '#000';
-        ctx.font = 'bold 22px Arial';
-        ctx.fillText('✝️', maze.jesus.x*cs + 8, maze.jesus.y*cs + 30);
+        ctx.font = 'bold 11px Arial';
+        ctx.fillText('✝️', maze.jesus.x*cs + 4, maze.jesus.y*cs + 12);
     }
 
     function moveJesusCloser() {
@@ -606,7 +1019,7 @@
     }
 
     function updateJesusDistance() {
-        if(!gameActive) return;
+        if(!gameActive || !maze.disciple || !maze.jesus) return;
         
         const distance = Math.sqrt(
             Math.pow(maze.disciple.x - maze.jesus.x, 2) + 
@@ -702,6 +1115,8 @@
     }
 
     window.finishMaze = function() {
+        if(!gameActive) return;
+        
         const distance = Math.sqrt(
             Math.pow(maze.disciple.x - maze.jesus.x, 2) + 
             Math.pow(maze.disciple.y - maze.jesus.y, 2)
@@ -742,28 +1157,13 @@
         drawMaze();
     };
 
-    // ========== RESET ALLES ==========
-    window.resetAllData = function() { 
-        if(confirm("⚠️ Alles wissen?\n\nAlle namen en antwoorden worden gewist!")) { 
-            db.ref('spelers').remove();
-            db.ref('antwoorden').remove();
-            db.ref('leaderboard').remove();
-            
-            clearInterval(guardInterval);
-            clearInterval(jesusMoveInterval);
-            clearInterval(distanceInterval);
-            
-            currentScreen = 1;
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('screen1').classList.add('active');
-            document.getElementById('screen-title').innerText = 'Inloggen';
-            
-            document.getElementById('playerName').value = '';
-            localStorage.removeItem('spelerNaam');
-            
-            if(typeof resetMaze === 'function') resetMaze();
+    // Start bij laden
+    window.addEventListener('load', function() {
+        const savedName = localStorage.getItem('spelerNaam');
+        if(savedName) {
+            currentUser = savedName;
         }
-    };
+    });
 </script>
 </body>
 </html>
