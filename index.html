@@ -28,7 +28,7 @@
         #adminCode:focus { outline: none; border-color: #1e3799; }
         #adminStatus { font-size: 0.8rem; font-weight: bold; animation: pulse 2s infinite; }
 
-        /* Nieuwe stijlen voor offline indicator en live antwoorden */
+        /* Offline indicator */
         #offlineIndicator { background: #95a5a6; color: white; padding: 5px 10px; border-radius: 30px; font-size: 0.8rem; display: inline-block; margin-right: 5px; }
         #offlineIndicator.online { background: #20bf6b; }
         #offlineIndicator.offline { background: #e55039; }
@@ -43,10 +43,6 @@
         .live-antwoord-tekst { margin: 5px 0 0 20px; color: #2c3e50; }
         .live-antwoord-tijd { font-size: 0.7rem; color: #95a5a6; text-align: right; margin-top: 5px; }
         .antwoord-badge { background: #20bf6b; color: white; padding: 2px 8px; border-radius: 30px; font-size: 0.7rem; margin-left: 8px; }
-        
-        /* Nieuwe stijl voor rad van fortuin antwoorden */
-        .stelling-antwoorden-live { background: #f8f9fa; border-radius: 15px; padding: 10px; margin-top: 10px; border: 2px solid #f6b93b; }
-        .antwoord-stelling-item { background: white; padding: 8px 12px; margin: 5px 0; border-radius: 10px; border-left: 3px solid #1e3799; }
 
         h2 { color: #1e3799; margin-bottom: 15px; text-align: center; }
         input, textarea { width: 100%; padding: 15px; margin: 8px 0; border: 2px solid #ddd; border-radius: 15px; font-family: 'Fredoka', sans-serif; font-size: 16px; }
@@ -91,7 +87,7 @@
         .learningapps-container { width: 100%; height: 500px; border-radius: 20px; overflow: hidden; border: 3px solid #1e3799; margin: 10px 0; }
         .learningapps-container iframe { width: 100%; height: 100%; border: 0; }
 
-        /* Scherm 6 - Drag & Drop (touch versie) */
+        /* Scherm 6 - Drag & Drop Gebeden */
         .drag-container { display: grid; grid-template-columns: 1fr 1.2fr; gap: 15px; margin: 15px 0; }
         .figuur-col, .gebed-col { background: #f1f2f6; padding: 15px; border-radius: 20px; max-height: 550px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .figuur-card { background: white; padding: 18px 12px; margin: 10px 0; border-radius: 15px; border: 2px solid #1e3799; text-align: center; font-weight: bold; font-size: 1.2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.2s; min-height: 70px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
@@ -104,20 +100,17 @@
         .match-badge { display: inline-block; background: #20bf6b; color: white; padding: 5px 15px; border-radius: 30px; font-size: 0.95rem; margin-top: 8px; font-weight: bold; }
         .instructie-balk { background: #f6b93b; color: #1e3799; padding: 12px; border-radius: 50px; text-align: center; font-weight: bold; margin-bottom: 15px; animation: pulse 2s infinite; }
 
-        /* Scherm 7 - Woordveld */
-        .word-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
-        .letter-tile { background: #1e3799; color: white; font-size: 1.8rem; font-weight: bold; padding: 20px 10px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.2s; min-height: 80px; display: flex; align-items: center; justify-content: center; }
-        .letter-tile.selected { background: #f6b93b; color: #1e3799; transform: scale(0.95); }
-        .target-word { font-size: 2rem; letter-spacing: 8px; text-align: center; margin: 20px 0; font-weight: bold; color: #1e3799; word-break: break-all; }
-
-        /* Scherm 8 - Doolhof */
-        .maze-container { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; background: #2d5a27; border-radius: 20px; border: 4px solid #8B4513; }
-        #mazeCanvas { width: 350px; height: 260px; display: block; margin: 0 auto; background: #2d5a27; touch-action: none; }
+        /* Scherm 7 - Doolhof (nu het 7e scherm) */
+        .maze-container { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; background: #2d5a27; border-radius: 20px; border: 4px solid #8B4513; padding: 10px; }
+        #mazeCanvas { width: 400px; height: 400px; display: block; margin: 0 auto; background: #2d5a27; touch-action: none; border-radius: 10px; }
         .maze-controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; max-width: 250px; margin: 20px auto; }
         .maze-btn { background: #1e3799; color: white; border: none; width: 70px; height: 70px; border-radius: 35px; font-size: 2rem; cursor: pointer; box-shadow: 0 4px #0a266e; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
         .maze-btn:active { transform: translateY(4px); box-shadow: none; }
         .danger-indicator { background: #e74c3c; color: white; padding: 12px; border-radius: 50px; text-align: center; margin: 10px 0; font-weight: bold; animation: pulse 1s infinite; }
         .jesus-indicator { background: #f1c40f; color: #1e3799; padding: 12px; border-radius: 50px; text-align: center; margin: 10px 0; font-weight: bold; transition: all 0.5s; }
+        .afstand-meter { background: white; border-radius: 30px; padding: 5px; margin: 10px 0; border: 2px solid #1e3799; }
+        .afstand-bar { height: 20px; background: #20bf6b; border-radius: 30px; width: 100%; transition: width 0.3s; }
+        
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
 
         @media (max-width: 450px) {
@@ -125,7 +118,7 @@
             .nav-buttons { justify-content: space-between; }
             #adminCode { width: 100%; }
             .wheel-wrapper { width: 220px; height: 220px; }
-            .letter-tile { font-size: 1.5rem; padding: 15px 5px; }
+            #mazeCanvas { width: 350px; height: 350px; }
         }
     </style>
 </head>
@@ -194,9 +187,16 @@
                  alt="Olijfberg uitzicht" 
                  style="width: 100%; height: 200px; object-fit: cover; border-radius: 15px; border: 3px solid #1e3799;">
             
+            <!-- Google Maps browserlinks (geen app nodig!) -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
-                <button class="btn" style="padding: 12px; font-size: 1rem;" onclick="window.open('https://earth.google.com/earth/d/1NKs1oll_nGNH1hTaD59dMgSj4F51__O-?usp=sharing', '_blank')">🗺️ Open in Maps</button>
-                <button class="btn" style="padding: 12px; font-size: 1rem; background: #f6b93b;" onclick="window.open('https://earth.google.com/earth/d/1NKs1oll_nGNH1hTaD59dMgSj4F51__O-?usp=sharing', '_blank')">👀 Street View</button>
+                <button class="btn" style="padding: 12px; font-size: 1rem; background: #1e3799;" 
+                        onclick="window.open('https://www.google.com/maps/search/?api=1&query=Olijfberg+Jeruzalem&query=31.7778,35.2456', '_blank')">
+                    🗺️ Google Maps
+                </button>
+                <button class="btn" style="padding: 12px; font-size: 1rem; background: #f6b93b; color: #1e3799;" 
+                        onclick="window.open('https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=31.7778,35.2456', '_blank')">
+                    👀 360° Street View
+                </button>
             </div>
         </div>
         
@@ -270,7 +270,7 @@
         </div>
     </div>
 
-    <!-- Scherm 3: Bijbelverhaal -->
+    <!-- Scherm 3: Bijbelverhaal (NIET VERANDERD) -->
     <div id="screen3" class="screen">
         <h2>📖 Het verhaal</h2>
         <div class="story-box">
@@ -308,7 +308,6 @@
         <button class="btn" style="background:#f6b93b; color:#1e3799;" onclick="spinWheel()">🎲 Draai aan het rad!</button>
         <div id="currentStelling"></div>
         <div id="stellingenContainer"></div>
-        <div id="stellingAntwoorden" class="stelling-antwoorden-live" style="display:none;"></div>
     </div>
 
     <!-- Scherm 5: LearningApps -->
@@ -320,7 +319,7 @@
         <p style="text-align:center; margin-top:10px;">Maak de oefening op je eigen tempo!</p>
     </div>
 
-    <!-- Scherm 6: Drag & Drop Gebeden (LIVE versie) -->
+    <!-- Scherm 6: Drag & Drop Gebeden -->
     <div id="screen6" class="screen">
         <h2>🙏 Bij welk gebed hoort wie?</h2>
         
@@ -340,48 +339,45 @@
         <div id="dragResult" style="text-align:center; margin-top:15px; font-weight:bold;"></div>
     </div>
 
-    <!-- Scherm 7: Woordveld (LIVE versie) -->
+    <!-- Scherm 7: Doolhof (nu het 7e scherm) -->
     <div id="screen7" class="screen">
-        <h2>🔤 Zoek de woorden</h2>
+        <h2>🏃 Het Grote Doolhof</h2>
         
         <!-- LIVE antwoorden feed voor scherm 7 -->
         <div class="live-antwoorden-header" onclick="toggleLiveSection('screen7-live')">
-            <span>🔴 LIVE</span> Bekijk gevonden woorden <span id="antwoordCount7">0</span>
+            <span>🔴 LIVE</span> Bekijk wie Jezus gevonden heeft <span id="antwoordCount7">0</span>
         </div>
         <div id="screen7-live" class="live-antwoorden-container">
-            <div id="liveWoorden"></div>
-        </div>
-        
-        <p>Vorm woorden rond Pasen: <strong>GETSEMANE • OLIJFBERG • JEZUS • NARCISSEN • OPBLOEIEN</strong></p>
-        <div class="target-word" id="targetDisplay"></div>
-        <div class="word-grid" id="letterGrid"></div>
-        <button class="btn" style="background:#20bf6b;" onclick="checkWord()">✅ Controleer en deel</button>
-        <div id="wordResult" style="text-align:center; margin-top:10px;"></div>
-    </div>
-
-    <!-- Scherm 8: Doolhof -->
-    <div id="screen8" class="screen">
-        <h2>🏃 Het Grote Labyrinth</h2>
-        
-        <!-- LIVE antwoorden feed voor scherm 8 -->
-        <div class="live-antwoorden-header" onclick="toggleLiveSection('screen8-live')">
-            <span>🔴 LIVE</span> Bekijk wie Jezus gevonden heeft <span id="antwoordCount8">0</span>
-        </div>
-        <div id="screen8-live" class="live-antwoorden-container">
             <div id="liveDoolhofWinnaars"></div>
         </div>
         
-        <div class="danger-indicator" id="guardWarning">🚨 10 WACHTERS PATROUILLEREN! 🚨</div>
+        <div class="danger-indicator" id="guardWarning">🚨 3 WACHTERS PATROUILLEREN! 🚨</div>
+        
+        <div class="afstand-meter">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span>✝️ Afstand tot Jezus:</span>
+                <span id="afstandText">0 stappen</span>
+            </div>
+            <div style="background: #ddd; border-radius: 30px;">
+                <div class="afstand-bar" id="afstandBar" style="width: 100%;"></div>
+            </div>
+        </div>
+        
         <div class="jesus-indicator" id="jesusDistance">✝️ Jezus wacht in het midden...</div>
+        
         <div class="maze-container">
-            <canvas id="mazeCanvas" width="800" height="600"></canvas>
+            <canvas id="mazeCanvas" width="400" height="400"></canvas>
         </div>
+        
         <div class="maze-controls">
-            <div></div><button class="maze-btn" onclick="moveDisciple(0,-1)">↑</button><div></div>
-            <button class="maze-btn" onclick="moveDisciple(-1,0)">←</button>
-            <button class="maze-btn" onclick="moveDisciple(0,1)">↓</button>
-            <button class="maze-btn" onclick="moveDisciple(1,0)">→</button>
+            <div></div>
+            <button class="maze-btn" onclick="moveDisciple(0, -1)">↑</button>
+            <div></div>
+            <button class="maze-btn" onclick="moveDisciple(-1, 0)">←</button>
+            <button class="maze-btn" onclick="moveDisciple(0, 1)">↓</button>
+            <button class="maze-btn" onclick="moveDisciple(1, 0)">→</button>
         </div>
+        
         <button class="btn" style="background:#20bf6b;" onclick="finishMaze()">🏁 Ik ben bij Jezus!</button>
         <button class="btn" style="background:#e55039;" onclick="resetMaze()">🔄 Reset doolhof</button>
     </div>
@@ -404,10 +400,36 @@
     let currentUser = localStorage.getItem('spelerNaam') || '';
     let isAdmin = false;
     let currentStelling = 0;
-    let selectedLetters = [];
     let dragMatches = {};
     let currentSelectedFiguur = null;
     let isOnline = navigator.onLine;
+    
+    // Doolhof variabelen
+    let maze = {
+        disciplePos: { x: 1, y: 1 },
+        jesusPos: { x: 7, y: 7 },
+        guards: [
+            { x: 3, y: 3, direction: 'right' },
+            { x: 5, y: 2, direction: 'down' },
+            { x: 2, y: 6, direction: 'left' }
+        ],
+        walls: [
+            // Horizontale muren (y, x start, x einde)
+            { type: 'h', y: 2, x1: 2, x2: 5 },
+            { type: 'h', y: 4, x1: 4, x2: 7 },
+            { type: 'h', y: 6, x1: 1, x2: 3 },
+            { type: 'h', y: 8, x1: 5, x2: 8 },
+            // Verticale muren (x, y start, y einde)
+            { type: 'v', x: 3, y1: 1, y2: 4 },
+            { type: 'v', x: 5, y1: 3, y2: 6 },
+            { type: 'v', x: 7, y1: 5, y2: 8 },
+            { type: 'v', x: 2, y1: 6, y2: 8 }
+        ]
+    };
+    
+    let gameInterval;
+    let canvas, ctx;
+    let cellSize = 40;
 
     const stellingen = [
         "Ik ben nooit bang.",
@@ -436,8 +458,41 @@
         { figuur: "Salomo", gebed: "Ik bid om het verschil tussen goed en kwaad te zien. (1 Koningen 3:9)" }
     ];
 
-    const words = ['GETSEMANE', 'OLIJFBERG', 'JEZUS', 'NARCISSEN', 'OPBLOEIEN'];
-    let currentWord = '';
+    // ========== RESET FUNCTIE (WERKT NU) ==========
+    window.resetAllData = function() { 
+        if(!isAdmin) {
+            alert('🔒 Alleen de begeleider kan resetten!');
+            return;
+        }
+        
+        if(confirm("⚠️ Alles wissen?\n\nAlle namen, antwoorden, matches en winnaars worden gewist!")) { 
+            // Firebase data wissen
+            db.ref('spelers').remove();
+            db.ref('olijfberg_antwoorden').remove();
+            db.ref('stelling_antwoorden').remove();
+            db.ref('matches').remove();
+            db.ref('doolhof_winnaars').remove();
+            
+            // Lokale storage wissen
+            localStorage.clear();
+            
+            // Intervallen stoppen
+            if(gameInterval) clearInterval(gameInterval);
+            
+            // Terug naar scherm 1
+            currentScreen = 1;
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen1').classList.add('active');
+            document.getElementById('screen-title').innerText = 'Inloggen';
+            
+            // Reset variabelen
+            document.getElementById('playerName').value = '';
+            currentUser = '';
+            isAdmin = false;
+            
+            alert('✅ Alles is gewist!');
+        }
+    };
 
     // ========== LIVE ANTWOORDEN FUNCTIES ==========
     window.toggleLiveAntwoorden = function() {
@@ -454,340 +509,220 @@
         }
     };
 
-    // ========== SCHERM 6: DRAG & DROP LIVE ==========
-    window.initDragDrop = function() {
-        const container = document.getElementById('dragDropArea');
-        if(!container) return;
+    // ========== DOOLHOF FUNCTIES ==========
+    window.initMaze = function() {
+        canvas = document.getElementById('mazeCanvas');
+        ctx = canvas.getContext('2d');
         
-        // Reset
-        dragMatches = {};
-        currentSelectedFiguur = null;
+        // Reset posities
+        maze.disciplePos = { x: 1, y: 1 };
         
-        // Haal bestaande matches op voor deze gebruiker
-        if(currentUser) {
-            db.ref(`matches/${currentUser}`).once('value', (snapshot) => {
-                if(snapshot.exists()) {
-                    dragMatches = snapshot.val().matches || {};
-                }
-                toonDragDrop();
-            });
-        } else {
-            toonDragDrop();
-        }
+        // Start game loop
+        if(gameInterval) clearInterval(gameInterval);
+        gameInterval = setInterval(() => {
+            moveGuards();
+            checkGuardCollision();
+            updateJesusDistance();
+            drawMaze();
+        }, 800);
+        
+        drawMaze();
+        updateJesusDistance();
     };
 
-    function toonDragDrop() {
-        const container = document.getElementById('dragDropArea');
-        if(!container) return;
+    function drawMaze() {
+        if(!ctx) return;
         
-        // Verzamel unieke figuren
-        const figuren = [...new Set(gebedenMatch.map(item => item.figuur))];
+        ctx.clearRect(0, 0, 400, 400);
         
-        let html = `
-            <div class="figuur-col">
-                <h4 style="color:#1e3799; text-align:center;">Bijbelse figuren</h4>
-        `;
+        // Teken grid
+        ctx.strokeStyle = '#555';
+        ctx.lineWidth = 1;
+        for(let i = 0; i <= 10; i++) {
+            ctx.beginPath();
+            ctx.strokeStyle = '#555';
+            ctx.lineWidth = 0.5;
+            ctx.moveTo(i * cellSize, 0);
+            ctx.lineTo(i * cellSize, 400);
+            ctx.stroke();
+            ctx.moveTo(0, i * cellSize);
+            ctx.lineTo(400, i * cellSize);
+            ctx.stroke();
+        }
         
-        // Toon figuren
-        figuren.forEach(figuur => {
-            const isUsed = Object.values(dragMatches).includes(figuur);
-            const usedClass = isUsed ? 'used' : '';
-            html += `
-                <div class="figuur-card ${usedClass}" data-figuur="${figuur}" onclick="selectFiguur('${figuur}')">
-                    ${figuur}
-                </div>
-            `;
+        // Teken muren
+        ctx.fillStyle = '#8B4513';
+        maze.walls.forEach(wall => {
+            if(wall.type === 'h') {
+                ctx.fillRect(wall.x1 * cellSize, wall.y * cellSize - 2, (wall.x2 - wall.x1 + 1) * cellSize, 6);
+            } else {
+                ctx.fillRect(wall.x * cellSize - 2, wall.y1 * cellSize, 6, (wall.y2 - wall.y1 + 1) * cellSize);
+            }
         });
         
-        html += `</div><div class="gebed-col"><h4 style="color:#1e3799; text-align:center;">Gebeden</h4>`;
+        // Teken Jezus (✝️)
+        ctx.font = '30px Arial';
+        ctx.fillStyle = '#FDB913';
+        ctx.fillText('✝️', maze.jesusPos.x * cellSize + 5, maze.jesusPos.y * cellSize + 30);
         
-        // Toon gebeden
-        gebedenMatch.forEach((item, index) => {
-            const isMatched = dragMatches[index] !== undefined;
-            const matchedClass = isMatched ? 'matched' : '';
-            const matchText = isMatched ? `<div class="match-badge">✓ Gematched met ${dragMatches[index]}</div>` : '';
-            
-            html += `
-                <div class="gebed-card ${matchedClass}" data-gebed-index="${index}" onclick="selectGebed(${index})">
-                    <p>${item.gebed}</p>
-                    ${matchText}
-                </div>
-            `;
+        // Teken wachters (👤)
+        ctx.font = '25px Arial';
+        ctx.fillStyle = '#e74c3c';
+        maze.guards.forEach(guard => {
+            ctx.fillText('👤', guard.x * cellSize + 8, guard.y * cellSize + 25);
         });
         
-        html += `</div>`;
-        container.innerHTML = html;
-        
-        // Update live feed
-        updateLiveMatches();
+        // Teken leerling (🧑)
+        ctx.font = '30px Arial';
+        ctx.fillStyle = '#3498db';
+        ctx.fillText('🧑', maze.disciplePos.x * cellSize + 5, maze.disciplePos.y * cellSize + 30);
     }
 
-    window.selectFiguur = function(figuur) {
-        // Check of figuur al gebruikt is
-        if(Object.values(dragMatches).includes(figuur)) {
-            alert('Deze figuur is al gebruikt!');
-            return;
-        }
+    window.moveDisciple = function(dx, dy) {
+        let newX = maze.disciplePos.x + dx;
+        let newY = maze.disciplePos.y + dy;
         
-        // Deselecteer vorige
-        document.querySelectorAll('.figuur-card').forEach(c => c.classList.remove('selected'));
+        // Check boundaries
+        if(newX < 1 || newX > 8 || newY < 1 || newY > 8) return;
         
-        // Selecteer nieuwe
-        currentSelectedFiguur = figuur;
-        const selectedElement = document.querySelector(`[data-figuur="${figuur}"]`);
-        if(selectedElement) {
-            selectedElement.classList.add('selected');
-        }
-    };
-
-    window.selectGebed = function(gebedIndex) {
-        if(!currentSelectedFiguur) {
-            alert('👆 Tik eerst op een figuur!');
-            return;
-        }
+        // Check muren
+        let canMove = true;
+        maze.walls.forEach(wall => {
+            if(wall.type === 'h' && wall.y === maze.disciplePos.y && dy === 1) {
+                if(newX >= wall.x1 && newX <= wall.x2) canMove = false;
+            }
+            if(wall.type === 'h' && wall.y === newY && dy === -1) {
+                if(newX >= wall.x1 && newX <= wall.x2) canMove = false;
+            }
+            if(wall.type === 'v' && wall.x === maze.disciplePos.x && dx === 1) {
+                if(newY >= wall.y1 && newY <= wall.y2) canMove = false;
+            }
+            if(wall.type === 'v' && wall.x === newX && dx === -1) {
+                if(newY >= wall.y1 && newY <= wall.y2) canMove = false;
+            }
+        });
         
-        if(dragMatches[gebedIndex]) {
-            alert('Dit gebed is al gematched!');
-            return;
-        }
-        
-        // Match opslaan
-        dragMatches[gebedIndex] = currentSelectedFiguur;
-        
-        // Opslaan in Firebase
-        if(currentUser && isOnline) {
-            db.ref(`matches/${currentUser}`).set({
-                matches: dragMatches,
-                tijd: Date.now()
-            });
-        } else if(currentUser) {
-            // Offline opslaan
-            localStorage.setItem('offlineMatches', JSON.stringify({
-                matches: dragMatches,
-                gebruiker: currentUser
-            }));
-        }
-        
-        // Update display
-        toonDragDrop();
-        currentSelectedFiguur = null;
-        
-        // Check of alle matches gemaakt zijn
-        const totaalMatches = Object.keys(dragMatches).length;
-        if(totaalMatches === gebedenMatch.length) {
-            document.getElementById('dragResult').innerHTML = '🎉 Gefeliciteerd! Je hebt alle matches gemaakt!';
+        if(canMove) {
+            maze.disciplePos.x = newX;
+            maze.disciplePos.y = newY;
+            drawMaze();
+            updateJesusDistance();
         }
     };
 
-    window.checkAllMatches = function() {
-        const totaalMatches = Object.keys(dragMatches).length;
-        const totaal = gebedenMatch.length;
-        
-        if(totaalMatches === totaal) {
-            alert(`✅ Perfect! Je hebt alle ${totaal} matches gemaakt!`);
-        } else {
-            alert(`📊 Je hebt ${totaalMatches} van de ${totaal} matches. Ga zo door!`);
-        }
-    };
-
-    // LIVE matches feed
-    function updateLiveMatches() {
-        db.ref('matches').on('value', (snapshot) => {
-            const feed = document.getElementById('liveMatches');
-            const countSpan = document.getElementById('antwoordCount6');
-            if(feed && snapshot.exists()) {
-                feed.innerHTML = '';
-                let totaalMatches = 0;
-                
-                snapshot.forEach((userSnap) => {
-                    const userName = userSnap.key;
-                    const userData = userSnap.val();
-                    const matchCount = Object.keys(userData.matches || {}).length;
-                    totaalMatches += matchCount;
-                    
-                    feed.innerHTML += `
-                        <div class="live-antwoord-card">
-                            <div class="live-antwoord-naam">👤 ${userName}</div>
-                            <div class="live-antwoord-tekst">✅ ${matchCount} matches gemaakt</div>
-                            <div class="live-antwoord-tijd">${new Date(userData.tijd).toLocaleTimeString('nl-NL')}</div>
-                        </div>
-                    `;
-                });
-                
-                if(countSpan) countSpan.textContent = totaalMatches;
-            } else if(feed) {
-                feed.innerHTML = '<p style="text-align:center; color:#666;">Nog geen matches...</p>';
+    function moveGuards() {
+        maze.guards.forEach(guard => {
+            let newX = guard.x;
+            let newY = guard.y;
+            
+            // Beweeg in huidige richting
+            if(guard.direction === 'right') newX++;
+            if(guard.direction === 'left') newX--;
+            if(guard.direction === 'up') newY--;
+            if(guard.direction === 'down') newY++;
+            
+            // Check of ze nog binnen het grid zijn
+            if(newX < 1 || newX > 8 || newY < 1 || newY > 8) {
+                // Draai richting om
+                if(guard.direction === 'right') guard.direction = 'left';
+                else if(guard.direction === 'left') guard.direction = 'right';
+                else if(guard.direction === 'up') guard.direction = 'down';
+                else if(guard.direction === 'down') guard.direction = 'up';
+            } else {
+                guard.x = newX;
+                guard.y = newY;
             }
         });
     }
 
-    // ========== SCHERM 7: WOORDVELD LIVE ==========
-    window.initWordGame = function() {
-        // Willekeurig woord kiezen
-        currentWord = words[Math.floor(Math.random() * words.length)];
-        document.getElementById('targetDisplay').innerHTML = '🔤 Klik letters';
-        
-        // Letters in willekeurige volgorde
-        const letters = currentWord.split('');
-        for(let i = letters.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [letters[i], letters[j]] = [letters[j], letters[i]];
-        }
-        
-        const grid = document.getElementById('letterGrid');
-        grid.innerHTML = '';
-        selectedLetters = [];
-        
-        letters.forEach((letter, index) => {
-            const tile = document.createElement('div');
-            tile.className = 'letter-tile';
-            tile.textContent = letter;
-            tile.setAttribute('data-letter', letter);
-            tile.setAttribute('data-index', index);
-            tile.onclick = () => selectLetter(tile, letter, index);
-            grid.appendChild(tile);
+    function checkGuardCollision() {
+        maze.guards.forEach(guard => {
+            if(guard.x === maze.disciplePos.x && guard.y === maze.disciplePos.y) {
+                alert('😱 Oh nee! Een wachter heeft je gevangen! Je begint opnieuw...');
+                resetMaze();
+            }
         });
-        
-        // Haal eerder gevonden woorden op
-        updateLiveWoorden();
-    };
+    }
 
-    window.selectLetter = function(tile, letter, index) {
-        if(tile.classList.contains('selected')) {
-            // Deselecteer
-            tile.classList.remove('selected');
-            selectedLetters = selectedLetters.filter(l => l.index !== index);
+    function updateJesusDistance() {
+        const distance = Math.abs(maze.disciplePos.x - maze.jesusPos.x) + 
+                        Math.abs(maze.disciplePos.y - maze.jesusPos.y);
+        
+        document.getElementById('afstandText').innerText = distance + ' stappen';
+        
+        // Update afstandsbalk
+        const maxDistance = 14; // Maximale afstand in het doolhof
+        const percentage = ((maxDistance - distance) / maxDistance) * 100;
+        document.getElementById('afstandBar').style.width = percentage + '%';
+        
+        if(distance <= 2) {
+            document.getElementById('jesusDistance').innerHTML = '✝️ Jezus is vlakbij!';
+        } else if(distance <= 4) {
+            document.getElementById('jesusDistance').innerHTML = '✝️ Jezus is dichtbij...';
         } else {
-            // Selecteer
-            tile.classList.add('selected');
-            selectedLetters.push({ letter, index });
+            document.getElementById('jesusDistance').innerHTML = '✝️ Jezus wacht in het midden...';
         }
-        
-        // Toon geselecteerde letters
-        const woord = selectedLetters.map(l => l.letter).join('');
-        document.getElementById('targetDisplay').innerHTML = woord || '🔤 Klik letters';
-    };
+    }
 
-    window.checkWord = function() {
+    window.finishMaze = function() {
         if(!currentUser) {
             alert('👋 Log eerst in!');
             return;
         }
         
-        const gevondenWoord = selectedLetters.map(l => l.letter).join('');
+        const distance = Math.abs(maze.disciplePos.x - maze.jesusPos.x) + 
+                        Math.abs(maze.disciplePos.y - maze.jesusPos.y);
         
-        if(words.includes(gevondenWoord)) {
-            // Opslaan in Firebase
-            const woordData = {
-                woord: gevondenWoord,
-                tijd: Date.now(),
-                speler: currentUser
-            };
+        if(distance === 0) {
+            // Jezus gevonden!
+            db.ref('doolhof_winnaars').push({
+                naam: currentUser,
+                tijd: Date.now()
+            });
             
-            if(isOnline) {
-                db.ref(`gevonden_woorden/${currentUser}`).push(woordData);
-                document.getElementById('wordResult').innerHTML = `✅ Goed! ${gevondenWoord} is correct!`;
-            } else {
-                // Offline opslaan
-                let offlineWoorden = JSON.parse(localStorage.getItem('offlineWoorden') || '[]');
-                offlineWoorden.push(woordData);
-                localStorage.setItem('offlineWoorden', JSON.stringify(offlineWoorden));
-                document.getElementById('wordResult').innerHTML = `✅ Goed! (offline opgeslagen)`;
-            }
-            
-            // Reset selectie
-            document.querySelectorAll('.letter-tile').forEach(t => t.classList.remove('selected'));
-            selectedLetters = [];
-            document.getElementById('targetDisplay').innerHTML = '🔤 Klik letters';
-            
-            // Kies nieuw woord
-            setTimeout(() => {
-                initWordGame();
-            }, 1500);
+            alert('🎉 Gefeliciteerd! Je hebt Jezus gevonden in het doolhof!');
+            resetMaze();
         } else {
-            document.getElementById('wordResult').innerHTML = `❌ ${gevondenWoord} is geen geldig woord. Probeer opnieuw!`;
-            setTimeout(() => {
-                document.getElementById('wordResult').innerHTML = '';
-            }, 2000);
+            alert(`❌ Je staat nog ${distance} stappen van Jezus vandaan. Blijf zoeken!`);
         }
     };
 
-    // LIVE woorden feed
-    function updateLiveWoorden() {
-        db.ref('gevonden_woorden').on('value', (snapshot) => {
-            const feed = document.getElementById('liveWoorden');
+    window.resetMaze = function() {
+        maze.disciplePos = { x: 1, y: 1 };
+        maze.guards = [
+            { x: 3, y: 3, direction: 'right' },
+            { x: 5, y: 2, direction: 'down' },
+            { x: 2, y: 6, direction: 'left' }
+        ];
+        drawMaze();
+        updateJesusDistance();
+    };
+
+    // LIVE doolhof winnaars feed
+    function initLiveDoolhof() {
+        db.ref('doolhof_winnaars').on('value', (snapshot) => {
+            const feed = document.getElementById('liveDoolhofWinnaars');
             const countSpan = document.getElementById('antwoordCount7');
             if(feed && snapshot.exists()) {
                 feed.innerHTML = '';
-                let totaalWoorden = 0;
+                let totaal = 0;
                 
-                snapshot.forEach((userSnap) => {
-                    const userName = userSnap.key;
-                    userSnap.forEach((woordSnap) => {
-                        totaalWoorden++;
-                        feed.innerHTML += `
-                            <div class="live-antwoord-card">
-                                <div class="live-antwoord-naam">👤 ${userName}</div>
-                                <div class="live-antwoord-tekst">🔤 ${woordSnap.val().woord}</div>
-                                <div class="live-antwoord-tijd">${new Date(woordSnap.val().tijd).toLocaleTimeString('nl-NL')}</div>
-                            </div>
-                        `;
-                    });
+                snapshot.forEach((winnaar) => {
+                    totaal++;
+                    feed.innerHTML += `
+                        <div class="live-antwoord-card">
+                            <div class="live-antwoord-naam">👤 ${winnaar.val().naam}</div>
+                            <div class="live-antwoord-tekst">✨ Heeft Jezus gevonden! ✨</div>
+                            <div class="live-antwoord-tijd">${new Date(winnaar.val().tijd).toLocaleTimeString('nl-NL')}</div>
+                        </div>
+                    `;
                 });
                 
-                if(countSpan) countSpan.textContent = totaalWoorden;
+                if(countSpan) countSpan.textContent = totaal;
             } else if(feed) {
-                feed.innerHTML = '<p style="text-align:center; color:#666;">Nog geen woorden gevonden...</p>';
+                feed.innerHTML = '<p style="text-align:center; color:#666;">Nog niemand bij Jezus...</p>';
             }
         });
-    }
-
-    // ========== OFFLINE ONDERSTEUNING ==========
-    window.addEventListener('online', updateOnlineStatus);
-    window.addEventListener('offline', updateOnlineStatus);
-
-    function updateOnlineStatus() {
-        isOnline = navigator.onLine;
-        const indicator = document.getElementById('offlineIndicator');
-        if(indicator) {
-            if(isOnline) {
-                indicator.className = 'online';
-                indicator.innerHTML = '📶 Online';
-                syncLocalData();
-            } else {
-                indicator.className = 'offline';
-                indicator.innerHTML = '⚠️ Offline';
-            }
-        }
-    }
-
-    function syncLocalData() {
-        if(!isOnline || !currentUser) return;
-        
-        // Sync matches
-        const offlineMatches = localStorage.getItem('offlineMatches');
-        if(offlineMatches) {
-            const data = JSON.parse(offlineMatches);
-            if(data.gebruiker === currentUser) {
-                db.ref(`matches/${currentUser}`).set({
-                    matches: data.matches,
-                    tijd: Date.now()
-                });
-                localStorage.removeItem('offlineMatches');
-            }
-        }
-        
-        // Sync woorden
-        const offlineWoorden = localStorage.getItem('offlineWoorden');
-        if(offlineWoorden) {
-            const woorden = JSON.parse(offlineWoorden);
-            woorden.forEach(woord => {
-                if(woord.speler === currentUser) {
-                    db.ref(`gevonden_woorden/${currentUser}`).push(woord);
-                }
-            });
-            localStorage.removeItem('offlineWoorden');
-        }
     }
 
     // ========== ADMIN FUNCTIES ==========
@@ -813,40 +748,15 @@
         }
         
         document.getElementById(`screen${currentScreen}`).classList.remove('active');
-        currentScreen = currentScreen < 8 ? currentScreen + 1 : 1;
+        currentScreen = currentScreen < 7 ? currentScreen + 1 : 1;
         document.getElementById(`screen${currentScreen}`).classList.add('active');
         
-        const titles = ['', 'Inloggen', 'Olijfberg', 'Verhaal', 'Rad van Fortuin', 'LearningApps', 'Gebeden', 'Woordveld', 'Doolhof'];
+        const titles = ['', 'Inloggen', 'Olijfberg', 'Verhaal', 'Rad van Fortuin', 'LearningApps', 'Gebeden', 'Doolhof'];
         document.getElementById('screen-title').innerText = titles[currentScreen];
         
         // Initialiseer scherm-specifieke functies
         if(currentScreen === 6) initDragDrop();
-        if(currentScreen === 7) initWordGame();
-    };
-
-    window.resetAllData = function() { 
-        if(!isAdmin) {
-            alert('🔒 Alleen de begeleider kan resetten!');
-            return;
-        }
-        
-        if(confirm("⚠️ Alles wissen?\n\nAlle namen, antwoorden, matches en woorden worden gewist!")) { 
-            db.ref('spelers').remove();
-            db.ref('olijfberg_antwoorden').remove();
-            db.ref('stelling_antwoorden').remove();
-            db.ref('matches').remove();
-            db.ref('gevonden_woorden').remove();
-            db.ref('doolhof_winnaars').remove();
-            localStorage.clear();
-            
-            currentScreen = 1;
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('screen1').classList.add('active');
-            document.getElementById('screen-title').innerText = 'Inloggen';
-            
-            document.getElementById('playerName').value = '';
-            localStorage.removeItem('spelerNaam');
-        }
+        if(currentScreen === 7) initMaze();
     };
 
     // ========== SCHERM 1: LOGIN ==========
@@ -1066,45 +976,190 @@
         });
     }
 
-    // ========== SCHERM 8: DOOLHOF ==========
-    window.finishMaze = function() {
-        if(!currentUser) {
-            alert('Log eerst in!');
+    // ========== SCHERM 6: DRAG & DROP LIVE ==========
+    window.initDragDrop = function() {
+        const container = document.getElementById('dragDropArea');
+        if(!container) return;
+        
+        dragMatches = {};
+        currentSelectedFiguur = null;
+        
+        if(currentUser) {
+            db.ref(`matches/${currentUser}`).once('value', (snapshot) => {
+                if(snapshot.exists()) {
+                    dragMatches = snapshot.val().matches || {};
+                }
+                toonDragDrop();
+            });
+        } else {
+            toonDragDrop();
+        }
+    };
+
+    function toonDragDrop() {
+        const container = document.getElementById('dragDropArea');
+        if(!container) return;
+        
+        const figuren = [...new Set(gebedenMatch.map(item => item.figuur))];
+        
+        let html = `
+            <div class="figuur-col">
+                <h4 style="color:#1e3799; text-align:center;">Bijbelse figuren</h4>
+        `;
+        
+        figuren.forEach(figuur => {
+            const isUsed = Object.values(dragMatches).includes(figuur);
+            const usedClass = isUsed ? 'used' : '';
+            html += `
+                <div class="figuur-card ${usedClass}" data-figuur="${figuur}" onclick="selectFiguur('${figuur}')">
+                    ${figuur}
+                </div>
+            `;
+        });
+        
+        html += `</div><div class="gebed-col"><h4 style="color:#1e3799; text-align:center;">Gebeden</h4>`;
+        
+        gebedenMatch.forEach((item, index) => {
+            const isMatched = dragMatches[index] !== undefined;
+            const matchedClass = isMatched ? 'matched' : '';
+            const matchText = isMatched ? `<div class="match-badge">✓ Gematched met ${dragMatches[index]}</div>` : '';
+            
+            html += `
+                <div class="gebed-card ${matchedClass}" data-gebed-index="${index}" onclick="selectGebed(${index})">
+                    <p>${item.gebed}</p>
+                    ${matchText}
+                </div>
+            `;
+        });
+        
+        html += `</div>`;
+        container.innerHTML = html;
+        updateLiveMatches();
+    }
+
+    window.selectFiguur = function(figuur) {
+        if(Object.values(dragMatches).includes(figuur)) {
+            alert('Deze figuur is al gebruikt!');
             return;
         }
         
-        db.ref('doolhof_winnaars').push({
-            naam: currentUser,
-            tijd: Date.now()
-        });
+        document.querySelectorAll('.figuur-card').forEach(c => c.classList.remove('selected'));
         
-        alert('🎉 Gefeliciteerd! Je hebt Jezus gevonden!');
+        currentSelectedFiguur = figuur;
+        const selectedElement = document.querySelector(`[data-figuur="${figuur}"]`);
+        if(selectedElement) {
+            selectedElement.classList.add('selected');
+        }
     };
 
-    function initLiveDoolhof() {
-        db.ref('doolhof_winnaars').on('value', (snapshot) => {
-            const feed = document.getElementById('liveDoolhofWinnaars');
-            const countSpan = document.getElementById('antwoordCount8');
+    window.selectGebed = function(gebedIndex) {
+        if(!currentSelectedFiguur) {
+            alert('👆 Tik eerst op een figuur!');
+            return;
+        }
+        
+        if(dragMatches[gebedIndex]) {
+            alert('Dit gebed is al gematched!');
+            return;
+        }
+        
+        dragMatches[gebedIndex] = currentSelectedFiguur;
+        
+        if(currentUser && isOnline) {
+            db.ref(`matches/${currentUser}`).set({
+                matches: dragMatches,
+                tijd: Date.now()
+            });
+        } else if(currentUser) {
+            localStorage.setItem('offlineMatches', JSON.stringify({
+                matches: dragMatches,
+                gebruiker: currentUser
+            }));
+        }
+        
+        toonDragDrop();
+        currentSelectedFiguur = null;
+        
+        const totaalMatches = Object.keys(dragMatches).length;
+        if(totaalMatches === gebedenMatch.length) {
+            document.getElementById('dragResult').innerHTML = '🎉 Gefeliciteerd! Je hebt alle matches gemaakt!';
+        }
+    };
+
+    window.checkAllMatches = function() {
+        const totaalMatches = Object.keys(dragMatches).length;
+        const totaal = gebedenMatch.length;
+        
+        if(totaalMatches === totaal) {
+            alert(`✅ Perfect! Je hebt alle ${totaal} matches gemaakt!`);
+        } else {
+            alert(`📊 Je hebt ${totaalMatches} van de ${totaal} matches. Ga zo door!`);
+        }
+    };
+
+    function updateLiveMatches() {
+        db.ref('matches').on('value', (snapshot) => {
+            const feed = document.getElementById('liveMatches');
+            const countSpan = document.getElementById('antwoordCount6');
             if(feed && snapshot.exists()) {
                 feed.innerHTML = '';
-                let totaal = 0;
+                let totaalMatches = 0;
                 
-                snapshot.forEach((winnaar) => {
-                    totaal++;
+                snapshot.forEach((userSnap) => {
+                    const userName = userSnap.key;
+                    const userData = userSnap.val();
+                    const matchCount = Object.keys(userData.matches || {}).length;
+                    totaalMatches += matchCount;
+                    
                     feed.innerHTML += `
                         <div class="live-antwoord-card">
-                            <div class="live-antwoord-naam">👤 ${winnaar.val().naam}</div>
-                            <div class="live-antwoord-tekst">✨ Heeft Jezus gevonden! ✨</div>
-                            <div class="live-antwoord-tijd">${new Date(winnaar.val().tijd).toLocaleTimeString('nl-NL')}</div>
+                            <div class="live-antwoord-naam">👤 ${userName}</div>
+                            <div class="live-antwoord-tekst">✅ ${matchCount} matches gemaakt</div>
+                            <div class="live-antwoord-tijd">${new Date(userData.tijd).toLocaleTimeString('nl-NL')}</div>
                         </div>
                     `;
                 });
                 
-                if(countSpan) countSpan.textContent = totaal;
+                if(countSpan) countSpan.textContent = totaalMatches;
             } else if(feed) {
-                feed.innerHTML = '<p style="text-align:center; color:#666;">Nog niemand bij Jezus...</p>';
+                feed.innerHTML = '<p style="text-align:center; color:#666;">Nog geen matches...</p>';
             }
         });
+    }
+
+    // ========== OFFLINE ONDERSTEUNING ==========
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+
+    function updateOnlineStatus() {
+        isOnline = navigator.onLine;
+        const indicator = document.getElementById('offlineIndicator');
+        if(indicator) {
+            if(isOnline) {
+                indicator.className = 'online';
+                indicator.innerHTML = '📶 Online';
+                syncLocalData();
+            } else {
+                indicator.className = 'offline';
+                indicator.innerHTML = '⚠️ Offline';
+            }
+        }
+    }
+
+    function syncLocalData() {
+        if(!isOnline || !currentUser) return;
+        
+        const offlineMatches = localStorage.getItem('offlineMatches');
+        if(offlineMatches) {
+            const data = JSON.parse(offlineMatches);
+            if(data.gebruiker === currentUser) {
+                db.ref(`matches/${currentUser}`).set({
+                    matches: data.matches,
+                    tijd: Date.now()
+                });
+                localStorage.removeItem('offlineMatches');
+            }
+        }
     }
 
     // ========== INIT ALLE LIVE FEEDS ==========
@@ -1113,14 +1168,6 @@
     initLiveStellingen();
     initLiveDoolhof();
     db.ref('olijfberg_antwoorden').keepSynced(true);
-
-    // ========== PLACEHOLDER FUNCTIES ==========
-    window.moveDisciple = function(dx, dy) { console.log('Verplaats...', dx, dy); };
-    window.moveGuards = function() { console.log('Wachters bewegen...'); };
-    window.moveJesusCloser = function() { console.log('Jezus dichterbij...'); };
-    window.updateJesusDistance = function() { console.log('Afstand updaten...'); };
-    window.resetMaze = function() { console.log('Doolhof reset...'); };
-    window.initMaze = function() { console.log('Doolhof init...'); };
 </script>
 </body>
 </html>
